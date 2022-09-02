@@ -1,7 +1,7 @@
-const baseURL = "https://homer.tvz.hr/CalendarJson";
+const baseURL = "/.netlify/functions/forward";
 
 function buildURL(params: Record<string, string | number>): URL {
-	const url = new URL(baseURL);
+	const url = new URL(baseURL, document.URL);
 
 	for (const key in params) {
 		url.searchParams.append(key, params[key].toString());
@@ -28,10 +28,6 @@ export async function fetchSchedule(department: string, semester: number, from: 
 		end: justDateString(to)
 	});
 	
-	const result = await fetch(url, {
-		mode: "no-cors" // damned cors
-	});
 	
-	//return await result.json();
-	return []
+	return await (await fetch(url)).json();
 }

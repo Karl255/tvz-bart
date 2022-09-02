@@ -17,5 +17,5 @@
 <button on:click={fetch}>Click</button>
 
 {#each result as item}
-	<p>{ item.toString() }</p>
+	<p>{ JSON.stringify(item) }</p>
 {/each}
