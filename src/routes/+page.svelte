@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { fetchSchedule } from "$lib/fetchSchedule";
-	
+	import fetchSchedule from "$lib/fetchSchedule";
+	import parse from "$lib/apiParser";
+
 	let result: Array<Object> = [];
-	
+
 	async function fetch() {
-		result = await fetchSchedule("RAC", 2, new Date("2022-06-06"), new Date("2022-06-12"))
+		result = await fetchSchedule("RAC", 2, new Date("2022-06-06"), new Date("2022-06-12"));
 	}
 </script>
 
@@ -17,5 +18,5 @@
 <button on:click={fetch}>Click</button>
 
 {#each result as item}
-	<p>{ JSON.stringify(item) }</p>
+	<p>{JSON.stringify(item)}</p>
 {/each}

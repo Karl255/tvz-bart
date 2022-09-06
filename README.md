@@ -1,1 +1,1 @@
-Run with `netlify dev`.
+Run with `netlify dev --targetPort 5173`.
