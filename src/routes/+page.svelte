@@ -1,11 +1,13 @@
 <script lang="ts">
 	import fetchSchedule from "$lib/fetchSchedule";
-	import parse from "$lib/apiParser";
+	import parseSchedule from "$lib/apiParser";
+	import type { Schedule } from "$lib/types/api";
 
-	let result: Array<Object> = [];
+	let schedule: Schedule | null = null;
 
 	async function fetch() {
-		result = await fetchSchedule("RAC", 2, new Date("2022-06-06"), new Date("2022-06-12"));
+		let apiResult = await fetchSchedule("RAC", 2, new Date("2022-06-06"), new Date("2022-06-12"));
+		schedule = parseSchedule(apiResult);
 	}
 </script>
 
@@ -17,6 +19,12 @@
 
 <button on:click={fetch}>Click</button>
 
-{#each result as item}
-	<p>{JSON.stringify(item)}</p>
-{/each}
+{#if schedule}
+	{#each schedule.holidays as item}
+		<p>{JSON.stringify(item)}</p>
+	{/each}
+
+	{#each [...schedule.workdays] as v}
+		<p>{JSON.stringify(v)}</p>
+	{/each}
+{/if}

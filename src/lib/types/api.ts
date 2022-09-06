@@ -1,3 +1,5 @@
+// TODO: replace all Date types with a third-party date type
+
 export type ApiClassPeriod = {
 	id: number;
 	title: string;
@@ -21,16 +23,16 @@ export type ApiHoliday = {
 export type ApiSchedule = (ApiClassPeriod | ApiHoliday)[];
 
 export type ClassPeriod = {
-	apiId: number;
+	id: number;
 	apiColor: string | null;
 
 	from: Date;
 	to: Date;
 
-	studyName: string;
+	courseName: string;
 	className: string;
 	professor: string;
-	periodType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe";
+	classType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe";
 	classroom: string;
 	amountOfStudents: number | null;
 };
@@ -42,6 +44,5 @@ export type Holiday = {
 
 export type Schedule = {
 	holidays: Holiday[];
-
-	workdays: { [key: string]: ClassPeriod };
+	workdays: Map<Date, Map<number, ClassPeriod>>;
 };

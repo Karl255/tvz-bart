@@ -1,3 +1,5 @@
+import type { ApiSchedule } from "./types/api";
+
 const baseURL = "/.netlify/functions/forward";
 
 function buildURL(params: Record<string, string | number>): URL {
@@ -16,7 +18,7 @@ function justDateString(date: Date): string {
 	return date.toJSON().slice(0, 10);
 }
 
-export default async function fetchSchedule(department: string, semester: number, from: Date, to: Date): Promise<Array<Object>> {
+export default async function fetchSchedule(department: string, semester: number, from: Date, to: Date): Promise<ApiSchedule> {
 	// a requirement by the API; seems like there is a 1-off error
 	const year = from.getFullYear() - 1;
 

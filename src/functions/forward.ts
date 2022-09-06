@@ -18,7 +18,7 @@ function buildURL(params: Record<string, string | number>): URL {
 const handler: Handler = async (event, context) => {
 	const { queryStringParameters } = event;
 
-	const url = buildURL(queryStringParameters as any);
+	const url = buildURL(queryStringParameters as Record<string, string | number>);
 	const result = await fetch(url.toString());
 
 	return {
