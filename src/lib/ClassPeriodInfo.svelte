@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { dateToStringHHMM } from "./helpers";
 	import type { ClassPeriod } from "./types/api";
 
 	export let classPeriod: ClassPeriod | null = null;
@@ -8,7 +7,7 @@
 {#if classPeriod}
 	<p><b>ID:</b> {classPeriod.id}</p>
 	<p><b>Color:</b> {classPeriod.apiColor}</p>
-	<p>{dateToStringHHMM(classPeriod.from)} - {dateToStringHHMM(classPeriod.to)}</p>
+	<p>{classPeriod.start.toString({ smallestUnit: "minutes" })} - {classPeriodendo.toString({ smallestUnit: "minutes" })}</p>
 	<p><b>{classPeriod.courseName}</b></p>
 	<p>{classPeriod.className}</p>
 	<p>{classPeriod.classType}</p>

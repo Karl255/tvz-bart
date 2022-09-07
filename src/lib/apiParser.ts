@@ -1,16 +1,15 @@
 import type { ApiClassPeriod, ApiHoliday, ApiSchedule, ClassPeriod, Holiday, Schedule } from "$lib/types/api";
+import { Temporal } from "@js-temporal/polyfill";
 
 function parseHoliday(apiHoliday: ApiHoliday): Holiday {
 	return {
-		date: new Date(apiHoliday.start),
+		date: Temporal.PlainDate.from(apiHoliday.start),
 		title: apiHoliday.title,
 	};
 }
 
-function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [Date, number, ClassPeriod] {
-	const date = new Date(apiClassPeriod.start);
-	date.setHours(0);
-	date.setMinutes(0);
+function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [string, number, ClassPeriod] {
+	const date = apiClassPeriod.start.split("T")[0];
 
 	const titleParsingRegexes = [
 		/^\<strong\>([0-9A-Za-zŠĐČĆŽšđčćž ]+)\<\/strong\> \- ([A-Za-zŠĐČĆŽšđčćž ]+)$/,
@@ -28,8 +27,8 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [Date, number, ClassP
 		id: Number(apiClassPeriod.id),
 		apiColor: apiClassPeriod.color,
 
-		from: new Date(apiClassPeriod.start),
-		to: new Date(apiClassPeriod.end),
+		start: Temporal.PlainTime.from(apiClassPeriod.start),
+		end: Temporal.PlainTime.from(apiClassPeriod.end),
 
 		courseName: parsedTitle[3][1],
 		className: parsedTitle[0][1],
@@ -43,12 +42,16 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [Date, number, ClassP
 }
 
 export default function parseSchedule(apiSchedule: ApiSchedule): Schedule {
-	const apiClassPeriods = apiSchedule.filter((x) => x.id !== null) as ApiClassPeriod[];
-	const apiHolidays = apiSchedule.filter((x) => x.id === null) as ApiHoliday[];
+	const apiClassPeriods = apiSchedule.filter(x => x.id !== null) as ApiClassPeriod[];
+	const apiHolidays = apiSchedule.filter(x => x.id === null) as ApiHoliday[];
 
-	const workdays = new Map<Date, Map<number, ClassPeriod>>();
+	const workdays = new Map<string, Map<number, ClassPeriod>>();
 
-	for (const [date, id, classPeriod] of apiClassPeriods.map(parseClassPeriod)) {
+	let t = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
+		return Temporal.PlainTime.compare(a[2].start, b[2].start);
+	});
+
+	for (const [date, id, classPeriod] of t) {
 		if (!workdays.has(date)) {
 			workdays.set(date, new Map<number, ClassPeriod>());
 		}

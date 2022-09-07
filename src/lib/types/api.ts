@@ -1,5 +1,9 @@
 // TODO: replace all Date types with a third-party date type
 
+import type { Temporal } from "@js-temporal/polyfill";
+
+export type StringDate = string;
+
 export type ApiClassPeriod = {
 	id: number;
 	title: string;
@@ -26,8 +30,8 @@ export type ClassPeriod = {
 	id: number;
 	apiColor: string | null;
 
-	from: Date;
-	to: Date;
+	start: Temporal.PlainTime;
+	end: Temporal.PlainTime;
 
 	courseName: string;
 	className: string;
@@ -38,11 +42,11 @@ export type ClassPeriod = {
 };
 
 export type Holiday = {
-	date: Date;
+	date: Temporal.PlainDate;
 	title: string;
 };
 
 export type Schedule = {
 	holidays: Holiday[];
-	workdays: Map<Date, Map<number, ClassPeriod>>;
+	workdays: Map<StringDate, Map<number, ClassPeriod>>;
 };

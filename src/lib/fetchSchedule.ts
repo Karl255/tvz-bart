@@ -1,3 +1,4 @@
+import type { Temporal } from "@js-temporal/polyfill";
 import type { ApiSchedule } from "./types/api";
 
 const baseURL = "/.netlify/functions/forward";
@@ -14,20 +15,16 @@ function buildURL(params: Record<string, string | number>): URL {
 	return url;
 }
 
-function justDateString(date: Date): string {
-	return date.toJSON().slice(0, 10);
-}
-
-export default async function fetchSchedule(department: string, semester: number, from: Date, to: Date): Promise<ApiSchedule> {
+export default async function fetchSchedule(department: string, semester: number, from: Temporal.PlainDate, to: Temporal.PlainDate): Promise<ApiSchedule> {
 	// a requirement by the API; seems like there is a 1-off error
-	const year = from.getFullYear() - 1;
+	const year = from.year - 1;
 
 	const url = buildURL({
 		department,
-		semester: semester,
-		year: year,
-		start: justDateString(from),
-		end: justDateString(to),
+		semester,
+		year,
+		start: from.toString({ calendarName: "never" }),
+		end: to.toString({ calendarName: "never" }),
 	});
 
 	return await (await fetch(url)).json();
