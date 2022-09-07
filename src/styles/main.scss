@@ -1,3 +1,7 @@
+@charset "UTF-8";
+// @use "fonts";
+@use "text";
+
 *,
 ::before,
 ::after {
@@ -11,23 +15,9 @@
 
 html {
 	height: 100%;
-	display: grid;
 }
 
 body {
 	height: 100%;
-	min-width: 1024px;
-	margin: 0 auto;
-	padding: 1rem 2rem;
-	
-	box-shadow: 0 0 1rem hsl(0 0% 0% / 0.3);
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-weight: normal;
-	margin: 0;
-}
-
-p {
-	margin: 0;
+	padding: 1rem;
 }

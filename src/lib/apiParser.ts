@@ -36,7 +36,7 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [Date, number, ClassP
 		professor: parsedTitle[1][1],
 		classType: parsedTitle[0][2],
 		classroom: parsedTitle[2][1],
-		amountOfStudents: Number(parsedTitle[4][1]),
+		amountOfStudents: parsedTitle[4][1] === "Nepoznato" ? null : Number(parsedTitle[4][1]),
 	} as ClassPeriod;
 
 	return [date, classPeriod.id, classPeriod];
