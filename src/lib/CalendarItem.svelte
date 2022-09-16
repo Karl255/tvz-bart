@@ -7,8 +7,8 @@
 	let end = classPeriod.end.hour + classPeriod.end.minute / 60;
 </script>
 
-<div class="item" style="--start: {start}; --end: {end}; --color: {classPeriod.apiColor};">
-	<p class="timestamp">{classPeriod.start.toString({ smallestUnit: "minutes" })} - {classPeriodendo.toString({ smallestUnit: "minutes" })}</p>
+<div class="item" style="--start: {start}; --end: {end}; --color: {classPeriod.apiColor};" on:click on:mouseenter on:mouseleave data-id={classPeriod.id}>
+	<p class="timestamp">{classPeriod.start.toString({ smallestUnit: "minutes" })} - {classPeriod.end.toString({ smallestUnit: "minutes" })}</p>
 	<p class="class-name">{classPeriod.className}</p>
 </div>
 

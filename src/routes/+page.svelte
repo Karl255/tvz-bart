@@ -1,7 +1,7 @@
 <script lang="ts">
 	import fetchSchedule from "$lib/fetchSchedule";
 	import parseSchedule from "$lib/apiParser";
-	import type { Schedule } from "$lib/types/api";
+	import type { ClassPeriod, Schedule } from "$lib/types/api";
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
 	import { Temporal } from "@js-temporal/polyfill";
@@ -10,11 +10,30 @@
 	let from = Temporal.PlainDate.from("2022-06-06");
 	let to = Temporal.PlainDate.from("2022-06-12");
 
-	$: infoSample = schedule?.workdays.values().next().value.values().next().value;
+	let selectedPeriod: ClassPeriod | null = null;
+	let previewedPeriod: ClassPeriod | null = null;
 
 	async function fetch() {
 		let apiResult = await fetchSchedule("RAC", 2, from, to);
 		schedule = parseSchedule(apiResult);
+	}
+
+	function onPeriodSelect(e: MouseEvent) {
+		if (schedule) {
+			let element = e.currentTarget as HTMLDivElement;
+			selectedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
+		}
+	}
+
+	function onPeriodPreview(e: MouseEvent) {
+		if (schedule) {
+			let element = e.currentTarget as HTMLDivElement;
+			previewedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
+		}
+	}
+
+	function onPeriodPreviewNone() {
+		previewedPeriod = null;
 	}
 </script>
 
@@ -24,11 +43,15 @@
 
 <div class="container">
 	<div class="panel panel--calendar">
-		<Calendar {schedule} {from} />
+		<Calendar {schedule} {from} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
 	</div>
 
 	<div class="panel panel--info">
-		<ClassPeriodInfo classPeriod={infoSample} />
+		<ClassPeriodInfo classPeriod={selectedPeriod} />
+	</div>
+
+	<div class="panel panel--info-preview">
+		<ClassPeriodInfo classPeriod={previewedPeriod} />
 	</div>
 
 	<div class="panel panel--options">
@@ -43,8 +66,8 @@
 
 		display: grid;
 		grid-template-columns: 3fr 1fr;
-		grid-auto-rows: auto;
-		grid-template-areas: "calendar info" "options options";
+		grid-auto-rows: 1fr 1fr auto;
+		grid-template-areas: "calendar info" "calendar info-preview" "options options";
 		gap: 1rem;
 	}
 
@@ -58,6 +81,11 @@
 
 	.panel--info {
 		grid-area: info;
+		padding: 1rem;
+	}
+
+	.panel--info-preview {
+		grid-area: info-preview;
 		padding: 1rem;
 	}
 

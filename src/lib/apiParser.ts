@@ -8,7 +8,7 @@ function parseHoliday(apiHoliday: ApiHoliday): Holiday {
 	};
 }
 
-function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [string, number, ClassPeriod] {
+function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod] {
 	const date = apiClassPeriod.start.split("T")[0];
 
 	const titleParsingRegexes = [
@@ -27,6 +27,7 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [string, number, Clas
 		id: Number(apiClassPeriod.id),
 		apiColor: apiClassPeriod.color,
 
+		date: Temporal.PlainDate.from(apiClassPeriod.start),
 		start: Temporal.PlainTime.from(apiClassPeriod.start),
 		end: Temporal.PlainTime.from(apiClassPeriod.end),
 
@@ -38,29 +39,19 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [string, number, Clas
 		amountOfStudents: parsedTitle[4][1] === "Nepoznato" ? null : Number(parsedTitle[4][1]),
 	} as ClassPeriod;
 
-	return [date, classPeriod.id, classPeriod];
+	return [classPeriod.id, classPeriod];
 }
 
 export default function parseSchedule(apiSchedule: ApiSchedule): Schedule {
 	const apiClassPeriods = apiSchedule.filter(x => x.id !== null) as ApiClassPeriod[];
 	const apiHolidays = apiSchedule.filter(x => x.id === null) as ApiHoliday[];
 
-	const workdays = new Map<string, Map<number, ClassPeriod>>();
-
-	let t = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
-		return Temporal.PlainTime.compare(a[2].start, b[2].start);
+	let workdaysKV = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
+		return Temporal.PlainTime.compare(a[1].start, b[1].start);
 	});
-
-	for (const [date, id, classPeriod] of t) {
-		if (!workdays.has(date)) {
-			workdays.set(date, new Map<number, ClassPeriod>());
-		}
-
-		workdays.get(date)!.set(id, classPeriod);
-	}
 
 	return {
 		holidays: apiHolidays.map(parseHoliday),
-		workdays: workdays,
+		workdays: new Map<number, ClassPeriod>(workdaysKV),
 	};
 }

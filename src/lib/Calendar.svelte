@@ -1,28 +1,32 @@
 <script lang="ts">
 	import { Temporal } from "@js-temporal/polyfill";
 	import CalendarItem from "./CalendarItem.svelte";
+	import { workdaysFilterByDate } from "./helpers";
 	import type { ClassPeriod, Schedule } from "./types/api";
 
 	const fromHour = 7;
 	const toHour = 22;
 	const hourRange = toHour - fromHour;
 
+	export let onPeriodSelect: (e: MouseEvent) => void;
+	export let onPeriodPreview: (e: MouseEvent) => void;
+	export let onPeriodPreviewNone: () => void;
+
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
-	let calendarDays: (Map<number, ClassPeriod> | null)[] = [null, null, null, null, null];
+	let calendarDays: (ClassPeriod[] | null)[] = [null, null, null, null, null];
 
 	$: {
 		if (schedule) {
-			let days: (Map<number, ClassPeriod> | null)[] = [];
+			let newDays: (ClassPeriod[] | null)[] = [];
 			let d = from;
 
 			for (let i = 0; i < 5; i++) {
-				let daySchedule = schedule.workdays.get(d.toString({ calendarName: "never" }));
-				days.push(daySchedule ?? null);
+				newDays.push(workdaysFilterByDate(schedule, d));
 				d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day
 			}
 
-			calendarDays = days;
+			calendarDays = newDays;
 		}
 	}
 </script>
@@ -44,11 +48,11 @@
 		<div class="calendar__dashed-line" style="grid-row: {2 + i}"></div>
 	{/each}
 
-	{#each calendarDays as day, i}
+	{#each calendarDays as dayItems, i}
 		<div class="calendar__day" style="grid-column: {i + 2}">
-			{#if day}
-				{#each [...day.values()] as item}
-					<CalendarItem classPeriod={item} />
+			{#if dayItems}
+				{#each dayItems as item}
+					<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
 				{/each}
 			{/if}
 		</div>
