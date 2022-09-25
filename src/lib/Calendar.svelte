@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Temporal } from "@js-temporal/polyfill";
 	import CalendarItem from "./CalendarItem.svelte";
-	import { workdaysFilterByDate } from "./helpers";
+	import { segregatePeriods as segregateItems, workdaysFilterByDate } from "./helpers";
 	import type { ClassPeriod, Schedule } from "./types/api";
 
 	const fromHour = 7;
@@ -51,7 +51,7 @@
 	{#each calendarDays as dayItems, i}
 		<div class="calendar__day" style="grid-column: {i + 2}">
 			{#if dayItems}
-				{#each dayItems as item}
+				{#each segregateItems(dayItems) as item}
 					<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
 				{/each}
 			{/if}
@@ -94,6 +94,8 @@
 	.calendar__day {
 		grid-row: 2 / -1;
 		border-right: 1px solid #444;
-		position: relative;
+		
+		display: grid;
+		grid-auto-columns: 1fr;
 	}
 </style>

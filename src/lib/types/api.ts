@@ -41,6 +41,11 @@ export type ClassPeriod = {
 	amountOfStudents: number | null;
 };
 
+export type ClassPeriodSegregated = ClassPeriod & {
+	column: number;
+	width: number;
+};
+
 export type Holiday = {
 	date: Temporal.PlainDate;
 	title: string;
