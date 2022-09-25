@@ -15,7 +15,8 @@ function buildURL(params: Record<string, string | number>): URL {
 	return url;
 }
 
-export default async function fetchSchedule(department: string, semester: number, from: Temporal.PlainDate, to: Temporal.PlainDate): Promise<ApiSchedule> {
+export default async function fetchScheduleWeek(department: string, semester: number, from: Temporal.PlainDate): Promise<ApiSchedule> {
+	const to = from.add({ days: 6 });
 	// a requirement by the API; seems like there is a 1-off error
 	const year = from.year - 1;
 

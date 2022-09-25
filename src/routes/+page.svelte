@@ -1,23 +1,35 @@
 <script lang="ts">
-	import fetchSchedule from "$lib/fetchSchedule";
+	import fetchScheduleWeek from "$lib/fetcher";
 	import parseSchedule from "$lib/apiParser";
 	import type { ClassPeriod, Schedule } from "$lib/types/api";
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
 	import { Temporal } from "@js-temporal/polyfill";
+	import { getThisWeeksMonday } from "$lib/helpers";
 
 	let schedule: Schedule | null = null;
-	let from = Temporal.PlainDate.from("2022-06-06");
-	let to = Temporal.PlainDate.from("2022-06-12");
+	let today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
+	$: from = getThisWeeksMonday(today);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
 
 	async function fetch() {
-		let apiResult = await fetchSchedule("RAC", 2, from, to);
+		let apiResult = await fetchScheduleWeek("RAC", 2, from);
 		schedule = parseSchedule(apiResult);
 	}
 
+	function currentWeek() {
+		today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
+		fetch();
+	}
+
+	function cycleWeek(e: MouseEvent) {
+		let element = e.currentTarget as HTMLButtonElement;
+		from = from.add({ days: Number(element.dataset.delta) * 7 });
+		fetch();
+	}
+	
 	function onPeriodSelect(e: MouseEvent) {
 		if (schedule) {
 			let element = e.currentTarget as HTMLDivElement;
@@ -43,6 +55,18 @@
 
 <div class="container">
 	<div class="panel panel--calendar">
+		<div class="panel--calendar__controls">
+			<button data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
+			<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
+			<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
+
+			<button title="Go back to current week" on:click={currentWeek}>{from.toString()}</button>
+
+			<button data-delta="1" on:click={cycleWeek}>&gt;</button>
+			<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
+			<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+		</div>
+		
 		<Calendar {schedule} {from} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
 	</div>
 
@@ -77,6 +101,15 @@
 
 	.panel--calendar {
 		grid-area: calendar;
+
+		display: grid;
+		grid-template-rows: auto 1fr;
+
+		&__controls {
+			display: flex;
+			justify-content: space-between;
+			padding: 0.5rem;
+		}
 	}
 
 	.panel--info {

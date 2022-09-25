@@ -11,7 +11,7 @@ export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDat
 
 function intersects(p1: ClassPeriod, p2: ClassPeriod): boolean {
 	const cmp = Temporal.PlainTime.compare;
-	
+
 	return cmp(p1.start, p2.end) < 0 && cmp(p1.end, p2.start) > 0;
 }
 
@@ -20,10 +20,10 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 
 	// segregate into columns
 	let isSegregated: boolean;
-	
+
 	do {
 		isSegregated = true;
-		
+
 		for (let i = 0; i < periods.length - 1; i++) {
 			for (let j = i + 1; j < periods.length; j++) {
 				if (segregated[i].column === segregated[j].column && intersects(segregated[i], segregated[j])) {
@@ -32,11 +32,10 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 				}
 			}
 		}
-		
 	} while (false && !isSegregated);
-	
+
 	const maxColumn = segregated.reduce<number>((a, p) => Math.max(a, p.column), 1);
-	
+
 	// spread out
 	for (let i = 0; i < periods.length; i++) {
 		let isUnobstructed = true;
@@ -46,11 +45,15 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 				break;
 			}
 		}
-		
+
 		if (isUnobstructed) {
 			segregated[i].width = maxColumn - segregated[i].column + 1;
 		}
 	}
-	
+
 	return segregated;
+}
+
+export function getThisWeeksMonday(day: Temporal.PlainDate): Temporal.PlainDate {
+	return day.subtract({ days: day.dayOfWeek - 1 });
 }
