@@ -1,34 +1,43 @@
 <script lang="ts">
-	import fetchScheduleWeek from "$lib/fetcher";
-	import parseSchedule from "$lib/apiParser";
-	import type { ClassPeriod, Schedule } from "$lib/types/api";
+	import fetchScheduleWeek from "$lib/scheduleFetcher";
+	import parseSchedule from "$lib/scheduleParser";
+	import type { ClassPeriod, Schedule } from "$lib/types/schedule";
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
 	import { Temporal } from "@js-temporal/polyfill";
 	import { dateToStringHR, getThisWeeksMonday } from "$lib/helpers";
-
-	let schedule: Schedule | null = null;
-	let today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
-	$: from = getThisWeeksMonday(today);
+	import { browser } from "$app/environment";
+	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
 
-	async function fetch() {
-		let apiResult = await fetchScheduleWeek("RAC", 2, from);
+	let selectedDepartment: string = "RAC";
+	let schedule: Schedule | null = null;
+	let currentMonday = thisMonday();
+	
+	if (browser) {
+		fetch(currentMonday, selectedDepartment);
+	}
+
+	async function fetch(weekStart: Temporal.PlainDate, department: string) {
+		let apiResult = await fetchScheduleWeek(department, 2, weekStart);
 		schedule = parseSchedule(apiResult);
 	}
 
-	function currentWeek() {
-		//today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
-		from = getThisWeeksMonday(today);
-		fetch();
+	function thisMonday() {
+		return getThisWeeksMonday(Temporal.PlainDate.from("2022-06-09") /*Temporal.Now.plainDateISO()*/);
+	}
+	
+	function resetWeek() {
+		currentMonday = thisMonday();
+		fetch(currentMonday, selectedDepartment);
 	}
 
 	function cycleWeek(e: MouseEvent) {
 		let element = e.currentTarget as HTMLButtonElement;
-		from = from.add({ days: Number(element.dataset.delta) * 7 });
-		fetch();
+		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
+		fetch(currentMonday, selectedDepartment);
 	}
 	
 	function onPeriodSelect(e: MouseEvent) {
@@ -48,6 +57,11 @@
 	function onPeriodPreviewNone() {
 		previewedPeriod = null;
 	}
+	
+	function onDepartmentPicked(d: string) {
+		selectedDepartment = d;
+		fetch(currentMonday, d);
+	}
 </script>
 
 <svelte:head>
@@ -61,14 +75,14 @@
 			<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
 			<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
 
-			<button title="Go back to current week" on:click={currentWeek}>{dateToStringHR(from)}</button>
+			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)}</button>
 
 			<button data-delta="1" on:click={cycleWeek}>&gt;</button>
 			<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
 			<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
 		</div>
 		
-		<Calendar {schedule} {from} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
+		<Calendar {schedule} from={currentMonday} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
 	</div>
 
 	<div class="panel panel--info">
@@ -80,7 +94,7 @@
 	</div>
 
 	<div class="panel panel--options">
-		<button on:click={fetch}>Get schedule</button>
+		<DepartmentPicker {onDepartmentPicked} />
 	</div>
 </div>
 

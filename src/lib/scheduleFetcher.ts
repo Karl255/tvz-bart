@@ -1,7 +1,7 @@
 import type { Temporal } from "@js-temporal/polyfill";
-import type { ApiSchedule } from "./types/api";
+import type { ApiSchedule } from "$lib/types/schedule";
 
-const baseURL = "/.netlify/functions/forward";
+const baseURL = "/.netlify/functions/schedule";
 
 function buildURL(params: Record<string, string | number>): URL {
 	const url = new URL(baseURL, document.URL);
