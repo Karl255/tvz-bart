@@ -4,14 +4,14 @@
 	import parseNewDepartments from "./departmentsParser";
 	import type { Department } from "./types/departments";
 
-	export let onDepartmentPicked: (department: string) => void;
+	export let departmentCode: string;
 	let newDepartments: Department[] | null = null;
 	
 	if (browser) {
-		fetch();
+		loadDepartments();
 	}
 	
-	async function fetch() {
+	async function loadDepartments() {
 		let deps = await fetchDepartments();
 		newDepartments = parseNewDepartments(deps);
 		console.log(`${newDepartments.length} new departments found`);
@@ -21,7 +21,7 @@
 		const element = e.currentTarget as HTMLButtonElement;
 
 		if (element.dataset.dep) {
-			onDepartmentPicked(element.dataset.dep);
+			departmentCode = element.dataset.dep;
 		}
 	}
 </script>

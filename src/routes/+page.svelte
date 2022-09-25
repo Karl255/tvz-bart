@@ -4,42 +4,58 @@
 	import type { ClassPeriod, Schedule } from "$lib/types/schedule";
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
-	import { Temporal } from "@js-temporal/polyfill";
-	import { dateToStringHR, getThisWeeksMonday } from "$lib/helpers";
+	import type { Temporal } from "@js-temporal/polyfill";
+	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
 	import { browser } from "$app/environment";
 	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
+	import type { Semester } from "$lib/types/semesters";
+	import fetchSemesters from "$lib/semestersFetcher";
+	import parseSemesters from "$lib/semestersParser";
+	import SemesterPicker from "$lib/SemesterPicker.svelte";
+	import { supportedDepartments } from "$lib/types/departments";
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
 
-	let selectedDepartment: string = "RAC";
+	let selectedDepartment: string = supportedDepartments[6];
+	let selectedSemester: Semester | null = null;
+
+	let availableSemesters: Semester[] = [];
 	let schedule: Schedule | null = null;
 	let currentMonday = thisMonday();
 	
-	if (browser) {
-		fetch(currentMonday, selectedDepartment);
-	}
-
-	async function fetch(weekStart: Temporal.PlainDate, department: string) {
-		let apiResult = await fetchScheduleWeek(department, 2, weekStart);
-		schedule = parseSchedule(apiResult);
-	}
-
-	function thisMonday() {
-		return getThisWeeksMonday(Temporal.PlainDate.from("2022-06-09") /*Temporal.Now.plainDateISO()*/);
+	$: loadSemesters(selectedDepartment);
+	$: loadSchedule(currentMonday, selectedSemester)
+	
+	async function loadSemesters(departmentCode: string) {
+		if (browser) {
+			const res = await fetchSemesters(departmentCode, getAcademicYear(currentMonday));
+			availableSemesters = parseSemesters(res);
+			
+			if (selectedSemester === null) {
+				selectedSemester = availableSemesters[1];
+			}
+		}
 	}
 	
+	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null) {
+		if (browser && semester) {
+			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
+			schedule = parseSchedule(res);
+		}
+	}
+
 	function resetWeek() {
 		currentMonday = thisMonday();
-		fetch(currentMonday, selectedDepartment);
+		//loadSchedule(currentMonday, selectedSemester);
 	}
 
 	function cycleWeek(e: MouseEvent) {
 		let element = e.currentTarget as HTMLButtonElement;
 		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
-		fetch(currentMonday, selectedDepartment);
+		//loadSchedule(currentMonday, selectedSemester);
 	}
-	
+
 	function onPeriodSelect(e: MouseEvent) {
 		if (schedule) {
 			let element = e.currentTarget as HTMLDivElement;
@@ -56,11 +72,6 @@
 
 	function onPeriodPreviewNone() {
 		previewedPeriod = null;
-	}
-	
-	function onDepartmentPicked(d: string) {
-		selectedDepartment = d;
-		fetch(currentMonday, d);
 	}
 </script>
 
@@ -94,7 +105,8 @@
 	</div>
 
 	<div class="panel panel--options">
-		<DepartmentPicker {onDepartmentPicked} />
+		<DepartmentPicker bind:departmentCode={selectedDepartment} />
+		<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
 	</div>
 </div>
 
@@ -140,5 +152,8 @@
 	.panel--options {
 		grid-area: options;
 		padding: 1rem;
+		
+		display: grid;
+		gap: 1rem;
 	}
 </style>
