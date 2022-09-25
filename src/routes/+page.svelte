@@ -47,13 +47,11 @@
 
 	function resetWeek() {
 		currentMonday = thisMonday();
-		//loadSchedule(currentMonday, selectedSemester);
 	}
 
 	function cycleWeek(e: MouseEvent) {
 		let element = e.currentTarget as HTMLButtonElement;
 		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
-		//loadSchedule(currentMonday, selectedSemester);
 	}
 
 	function onPeriodSelect(e: MouseEvent) {
