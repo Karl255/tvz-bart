@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Temporal } from "@js-temporal/polyfill";
 	import CalendarItem from "./CalendarItem.svelte";
-	import { segregatePeriods as segregateItems, workdaysFilterByDate } from "./helpers";
-	import type { ClassPeriod, Schedule } from "./types/api";
+	import { dateToStringHR, segregatePeriods as segregateItems, workdaysFilterByDate } from "./helpers";
+	import type { ClassPeriod, Holiday, Schedule } from "./types/api";
 
 	const fromHour = 7;
 	const toHour = 22;
@@ -14,15 +14,22 @@
 
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
-	let calendarDays: (ClassPeriod[] | null)[] = [null, null, null, null, null];
+	let calendarDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
 
 	$: {
 		if (schedule) {
-			let newDays: (ClassPeriod[] | null)[] = [];
+			let newDays: (ClassPeriod[] | Holiday | null)[] = [];
 			let d = from;
 
 			for (let i = 0; i < 5; i++) {
-				newDays.push(workdaysFilterByDate(schedule, d));
+				const ds = d.toString({ calendarName: "never" });
+
+				if (schedule.holidays.has(ds)) {
+					newDays.push(schedule.holidays.get(ds)!);
+				} else {
+					newDays.push(workdaysFilterByDate(schedule, d));
+				}
+
 				d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day
 			}
 
@@ -48,12 +55,20 @@
 		<div class="calendar__dashed-line" style="grid-row: {2 + i}"></div>
 	{/each}
 
-	{#each calendarDays as dayItems, i}
+	{#each calendarDays as day, i}
 		<div class="calendar__day" style="grid-column: {i + 2}">
-			{#if dayItems}
-				{#each segregateItems(dayItems) as item}
-					<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
-				{/each}
+			{#if day}
+				{#if "title" in day}
+					<p class="calendar__holiday">
+						{ dateToStringHR(day.date) }
+						<br />
+						{ day.title }
+					</p>
+				{:else}
+					{#each segregateItems(day) as item}
+						<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
+					{/each}
+				{/if}
 			{/if}
 		</div>
 	{/each}
@@ -97,5 +112,12 @@
 		
 		display: grid;
 		grid-auto-columns: 1fr;
+	}
+	
+	.calendar__holiday {
+		place-self: center;
+		text-align: center;
+		font-weight: 600;
+		color: #f3361d;
 	}
 </style>

@@ -5,7 +5,7 @@
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
 	import { Temporal } from "@js-temporal/polyfill";
-	import { getThisWeeksMonday } from "$lib/helpers";
+	import { dateToStringHR, getThisWeeksMonday } from "$lib/helpers";
 
 	let schedule: Schedule | null = null;
 	let today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
@@ -20,7 +20,8 @@
 	}
 
 	function currentWeek() {
-		today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
+		//today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
+		from = getThisWeeksMonday(today);
 		fetch();
 	}
 
@@ -60,7 +61,7 @@
 			<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
 			<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
 
-			<button title="Go back to current week" on:click={currentWeek}>{from.toString()}</button>
+			<button title="Go back to current week" on:click={currentWeek}>{dateToStringHR(from)}</button>
 
 			<button data-delta="1" on:click={cycleWeek}>&gt;</button>
 			<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>

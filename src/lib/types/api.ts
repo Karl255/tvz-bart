@@ -53,5 +53,5 @@ export type Holiday = {
 
 export type Schedule = {
 	workdays: Map<number, ClassPeriod>;
-	holidays: Holiday[];
+	holidays: Map<StringPlainDate, Holiday>;
 };

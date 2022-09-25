@@ -1,4 +1,4 @@
-import type { ApiClassPeriod, ApiHoliday, ApiSchedule, ClassPeriod, Holiday, Schedule } from "$lib/types/api";
+import type { ApiClassPeriod, ApiHoliday, ApiSchedule, ClassPeriod, Holiday, Schedule, StringPlainDate } from "$lib/types/api";
 import { Temporal } from "@js-temporal/polyfill";
 
 function parseHoliday(apiHoliday: ApiHoliday): Holiday {
@@ -44,14 +44,16 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod]
 
 export default function parseSchedule(apiSchedule: ApiSchedule): Schedule {
 	const apiClassPeriods = apiSchedule.filter(x => x.id !== null) as ApiClassPeriod[];
-	const apiHolidays = apiSchedule.filter(x => x.id === null) as ApiHoliday[];
+	const apiHolidaysKV = (apiSchedule.filter(x => x.id === null) as ApiHoliday[])
+		.map(parseHoliday)
+		.map(h => [h.date.toString({ calendarName: "never" }), h] as [StringPlainDate, Holiday]);
 
 	let workdaysKV = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
 		return Temporal.PlainTime.compare(a[1].start, b[1].start);
 	});
 
 	return {
-		holidays: apiHolidays.map(parseHoliday),
+		holidays: new Map<StringPlainDate, Holiday>(apiHolidaysKV),
 		workdays: new Map<number, ClassPeriod>(workdaysKV),
 	};
 }

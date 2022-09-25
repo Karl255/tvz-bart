@@ -57,3 +57,7 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 export function getThisWeeksMonday(day: Temporal.PlainDate): Temporal.PlainDate {
 	return day.subtract({ days: day.dayOfWeek - 1 });
 }
+
+export function dateToStringHR(date: Temporal.PlainDate): string {
+	return `${leading0(date.day, 2)}.${leading0(date.month, 2)}.${leading0(date.year, 4)}.`;
+}
