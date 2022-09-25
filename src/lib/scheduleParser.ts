@@ -1,4 +1,4 @@
-import type { ApiClassPeriod, ApiHoliday, ApiSchedule, ClassPeriod, Holiday, Schedule, StringPlainDate } from "$lib/types/api";
+import type { ApiClassPeriod, ApiHoliday, ApiSchedule, ClassPeriod, Holiday, Schedule, StringPlainDate } from "$lib/types/schedule";
 import { Temporal } from "@js-temporal/polyfill";
 
 function parseHoliday(apiHoliday: ApiHoliday): Holiday {
@@ -14,8 +14,9 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod]
 	const titleParsingRegexes = [
 		/^\<strong\>([0-9A-Za-zŠĐČĆŽšđčćž ]+)\<\/strong\> \- ([A-Za-zŠĐČĆŽšđčćž ]+)$/,
 		/^(.+)$/,
-		/^Učionica\: ([0-9A-Za-zŠĐČĆŽšđčćž,.\- ]+)$/,
+		/^Učionica\: ([0-9A-Za-zŠĐČĆŽšđčćž,.\-\/ ]+)$/,
 		/^Smjer\: ([0-9A-Za-zŠĐČĆŽšđčćž ]+)$/,
+		// TODO: add napomena field here (double-check position)
 		/^Broj studenata na kolegiju\: (\d+|Nepoznato)$/,
 	];
 

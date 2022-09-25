@@ -1,5 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
-import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "./types/api";
+import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/types/schedule";
 
 export function leading0(x: number, digits: number): string {
 	return x.toString().padStart(digits, "0");
@@ -60,4 +60,13 @@ export function getThisWeeksMonday(day: Temporal.PlainDate): Temporal.PlainDate 
 
 export function dateToStringHR(date: Temporal.PlainDate): string {
 	return `${leading0(date.day, 2)}.${leading0(date.month, 2)}.${leading0(date.year, 4)}.`;
+}
+
+export function getAcademicYear(d: Temporal.PlainDate): number {
+	// starts October, ends September
+	return d.month >= 10 ? d.year : d.year - 1;
+}
+
+export function thisMonday() {
+	return getThisWeeksMonday(Temporal.PlainDate.from("2022-06-09") /*Temporal.Now.plainDateISO()*/);
 }

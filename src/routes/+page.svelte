@@ -1,36 +1,59 @@
 <script lang="ts">
-	import fetchScheduleWeek from "$lib/fetcher";
-	import parseSchedule from "$lib/apiParser";
-	import type { ClassPeriod, Schedule } from "$lib/types/api";
+	import fetchScheduleWeek from "$lib/scheduleFetcher";
+	import parseSchedule from "$lib/scheduleParser";
+	import type { ClassPeriod, Schedule } from "$lib/types/schedule";
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import Calendar from "$lib/Calendar.svelte";
-	import { Temporal } from "@js-temporal/polyfill";
-	import { dateToStringHR, getThisWeeksMonday } from "$lib/helpers";
-
-	let schedule: Schedule | null = null;
-	let today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
-	$: from = getThisWeeksMonday(today);
+	import type { Temporal } from "@js-temporal/polyfill";
+	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
+	import { browser } from "$app/environment";
+	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
+	import type { Semester } from "$lib/types/semesters";
+	import fetchSemesters from "$lib/semestersFetcher";
+	import parseSemesters from "$lib/semestersParser";
+	import SemesterPicker from "$lib/SemesterPicker.svelte";
+	import { supportedDepartments } from "$lib/types/departments";
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
 
-	async function fetch() {
-		let apiResult = await fetchScheduleWeek("RAC", 2, from);
-		schedule = parseSchedule(apiResult);
+	let selectedDepartment: string = supportedDepartments[6];
+	let selectedSemester: Semester | null = null;
+
+	let availableSemesters: Semester[] = [];
+	let schedule: Schedule | null = null;
+	let currentMonday = thisMonday();
+	
+	$: loadSemesters(selectedDepartment);
+	$: loadSchedule(currentMonday, selectedSemester)
+	
+	async function loadSemesters(departmentCode: string) {
+		if (browser) {
+			const res = await fetchSemesters(departmentCode, getAcademicYear(currentMonday));
+			availableSemesters = parseSemesters(res);
+			
+			if (selectedSemester === null) {
+				selectedSemester = availableSemesters[1];
+			}
+		}
+	}
+	
+	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null) {
+		if (browser && semester) {
+			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
+			schedule = parseSchedule(res);
+		}
 	}
 
-	function currentWeek() {
-		//today = Temporal.PlainDate.from("2022-06-09") //Temporal.Now.plainDateISO();
-		from = getThisWeeksMonday(today);
-		fetch();
+	function resetWeek() {
+		currentMonday = thisMonday();
 	}
 
 	function cycleWeek(e: MouseEvent) {
 		let element = e.currentTarget as HTMLButtonElement;
-		from = from.add({ days: Number(element.dataset.delta) * 7 });
-		fetch();
+		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
 	}
-	
+
 	function onPeriodSelect(e: MouseEvent) {
 		if (schedule) {
 			let element = e.currentTarget as HTMLDivElement;
@@ -61,14 +84,14 @@
 			<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
 			<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
 
-			<button title="Go back to current week" on:click={currentWeek}>{dateToStringHR(from)}</button>
+			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)}</button>
 
 			<button data-delta="1" on:click={cycleWeek}>&gt;</button>
 			<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
 			<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
 		</div>
 		
-		<Calendar {schedule} {from} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
+		<Calendar {schedule} from={currentMonday} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
 	</div>
 
 	<div class="panel panel--info">
@@ -80,7 +103,8 @@
 	</div>
 
 	<div class="panel panel--options">
-		<button on:click={fetch}>Get schedule</button>
+		<DepartmentPicker bind:departmentCode={selectedDepartment} />
+		<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
 	</div>
 </div>
 
@@ -126,5 +150,8 @@
 	.panel--options {
 		grid-area: options;
 		padding: 1rem;
+		
+		display: grid;
+		gap: 1rem;
 	}
 </style>
