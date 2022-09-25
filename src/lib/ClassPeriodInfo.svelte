@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ClassPeriod } from "./types/api";
+	import type { ClassPeriod } from "$lib/types/schedule";
 
 	export let classPeriod: ClassPeriod | null = null;
 </script>
