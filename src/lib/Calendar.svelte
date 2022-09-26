@@ -7,10 +7,9 @@
 	const fromHour = 7;
 	const toHour = 22;
 	const hourRange = toHour - fromHour;
-
-	export let onPeriodSelect: (e: MouseEvent) => void;
-	export let onPeriodPreview: (e: MouseEvent) => void;
-	export let onPeriodPreviewNone: () => void;
+	
+	export let selectedPeriod: ClassPeriod | null;
+	export let previewedPeriod: ClassPeriod | null;
 
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
@@ -35,6 +34,24 @@
 
 			calendarDays = newDays;
 		}
+	}
+
+	function onPeriodSelect(e: MouseEvent) {
+		if (schedule) {
+			let element = e.currentTarget as HTMLDivElement;
+			selectedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
+		}
+	}
+
+	function onPeriodPreview(e: MouseEvent) {
+		if (schedule) {
+			let element = e.currentTarget as HTMLDivElement;
+			previewedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
+		}
+	}
+
+	function onPeriodPreviewNone() {
+		previewedPeriod = null;
 	}
 </script>
 

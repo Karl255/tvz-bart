@@ -14,30 +14,30 @@
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
 	import { supportedDepartments } from "$lib/types/departments";
 
-	let selectedPeriod: ClassPeriod | null = null;
-	let previewedPeriod: ClassPeriod | null = null;
-
 	let selectedDepartment: string = supportedDepartments[6];
 	let selectedSemester: Semester | null = null;
 
 	let availableSemesters: Semester[] = [];
 	let schedule: Schedule | null = null;
 	let currentMonday = thisMonday();
-	
+
 	$: loadSemesters(selectedDepartment);
-	$: loadSchedule(currentMonday, selectedSemester)
-	
+	$: loadSchedule(currentMonday, selectedSemester);
+
+	let selectedPeriod: ClassPeriod | null = null;
+	let previewedPeriod: ClassPeriod | null = null;
+
 	async function loadSemesters(departmentCode: string) {
 		if (browser) {
 			const res = await fetchSemesters(departmentCode, getAcademicYear(currentMonday));
 			availableSemesters = parseSemesters(res);
-			
+
 			if (selectedSemester === null) {
 				selectedSemester = availableSemesters[1];
 			}
 		}
 	}
-	
+
 	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null) {
 		if (browser && semester) {
 			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
@@ -53,24 +53,6 @@
 		let element = e.currentTarget as HTMLButtonElement;
 		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
 	}
-
-	function onPeriodSelect(e: MouseEvent) {
-		if (schedule) {
-			let element = e.currentTarget as HTMLDivElement;
-			selectedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
-		}
-	}
-
-	function onPeriodPreview(e: MouseEvent) {
-		if (schedule) {
-			let element = e.currentTarget as HTMLDivElement;
-			previewedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
-		}
-	}
-
-	function onPeriodPreviewNone() {
-		previewedPeriod = null;
-	}
 </script>
 
 <svelte:head>
@@ -80,18 +62,22 @@
 <div class="container">
 	<div class="panel panel--calendar">
 		<div class="panel--calendar__controls">
-			<button data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
-			<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
-			<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
-
-			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)}</button>
-
-			<button data-delta="1" on:click={cycleWeek}>&gt;</button>
-			<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
-			<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+			<div class="control-group">
+				<button data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
+				<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
+				<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
+			</div>
+			
+			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			
+			<div class="control-group">
+				<button data-delta="1" on:click={cycleWeek}>&gt;</button>
+				<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
+				<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+			</div>
 		</div>
-		
-		<Calendar {schedule} from={currentMonday} {onPeriodSelect} {onPeriodPreview} {onPeriodPreviewNone} />
+
+		<Calendar {schedule} from={currentMonday} bind:selectedPeriod bind:previewedPeriod />
 	</div>
 
 	<div class="panel panel--info">
@@ -132,9 +118,15 @@
 
 		&__controls {
 			display: flex;
-			justify-content: space-between;
+			justify-content: center;
+			gap: 3rem;
 			padding: 0.5rem;
 		}
+	}
+	
+	.control-group {
+		display: flex;
+		gap: 1rem;
 	}
 
 	.panel--info {
@@ -150,7 +142,7 @@
 	.panel--options {
 		grid-area: options;
 		padding: 1rem;
-		
+
 		display: grid;
 		gap: 1rem;
 	}
