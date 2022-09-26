@@ -16,6 +16,8 @@
 	{#if classPeriod.amountOfStudents}
 		<p>{classPeriod.amountOfStudents}</p>
 	{/if}
+{:else}
+	<slot></slot>
 {/if}
 
 <style lang="scss">

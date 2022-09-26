@@ -80,12 +80,16 @@
 		<Calendar {schedule} from={currentMonday} bind:selectedPeriod bind:previewedPeriod />
 	</div>
 
-	<div class="panel panel--info">
-		<ClassPeriodInfo classPeriod={selectedPeriod} />
+	<div class="panel panel--info-preview">
+		<ClassPeriodInfo classPeriod={previewedPeriod}>
+			<p class="description">Put your mouse over an item in the calendar and details about it will appear here.</p>
+		</ClassPeriodInfo>
 	</div>
 
-	<div class="panel panel--info-preview">
-		<ClassPeriodInfo classPeriod={previewedPeriod} />
+	<div class="panel panel--info-selected">
+		<ClassPeriodInfo classPeriod={selectedPeriod}>
+			<p class="description">Click on an item in the calendar to select it and details about it will show in here.</p>
+		</ClassPeriodInfo>
 	</div>
 
 	<div class="panel panel--options">
@@ -102,7 +106,7 @@
 		display: grid;
 		grid-template-columns: 3fr 1fr;
 		grid-auto-rows: 1fr 1fr auto;
-		grid-template-areas: "calendar info" "calendar info-preview" "options options";
+		grid-template-areas: "calendar info-preview" "calendar info-selected" "options options";
 		gap: 1rem;
 	}
 
@@ -129,8 +133,8 @@
 		gap: 1rem;
 	}
 
-	.panel--info {
-		grid-area: info;
+	.panel--info-selected {
+		grid-area: info-selected;
 		padding: 1rem;
 	}
 
@@ -145,5 +149,9 @@
 
 		display: grid;
 		gap: 1rem;
+	}
+	
+	.description {
+		font-style: italic;
 	}
 </style>
