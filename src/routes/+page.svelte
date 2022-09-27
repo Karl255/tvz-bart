@@ -1,18 +1,16 @@
 <script lang="ts">
-	import fetchScheduleWeek from "$lib/scheduleFetcher";
-	import parseSchedule from "$lib/scheduleParser";
-	import type { ClassPeriod, Schedule } from "$lib/types/schedule";
-	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
-	import Calendar from "$lib/Calendar.svelte";
 	import type { Temporal } from "@js-temporal/polyfill";
-	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
 	import { browser } from "$app/environment";
+
+	import { type ClassPeriod, type Schedule, fetchScheduleWeek, parseSchedule } from "$lib/api/schedule";
+	import { fetchSemesters, parseSemesters, type Semester } from "$lib/api/semesters";
+	import { supportedDepartments } from "$lib/api/departments";
+	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
+
+	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
 	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
-	import type { Semester } from "$lib/types/semesters";
-	import fetchSemesters from "$lib/semestersFetcher";
-	import parseSemesters from "$lib/semestersParser";
+	import Calendar from "$lib/Calendar.svelte";
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
-	import { supportedDepartments } from "$lib/types/departments";
 
 	let selectedDepartment: string = supportedDepartments[6];
 	let selectedSemester: Semester | null = null;
@@ -67,9 +65,9 @@
 				<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
 				<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
-			
+
 			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
-			
+
 			<div class="control-group">
 				<button data-delta="1" on:click={cycleWeek}>&gt;</button>
 				<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
@@ -127,7 +125,7 @@
 			padding: 0.5rem;
 		}
 	}
-	
+
 	.control-group {
 		display: flex;
 		gap: 1rem;
@@ -150,7 +148,7 @@
 		display: grid;
 		gap: 1rem;
 	}
-	
+
 	.description {
 		font-style: italic;
 	}

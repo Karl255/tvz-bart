@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Semester } from "./types/semesters";
+	import type { Semester } from "$lib/api/semesters";
 
 	export let availableSemesters: Semester[] = [];
 	export let semester: Semester | null;
