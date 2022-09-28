@@ -39,9 +39,11 @@ export type ClassPeriod = {
 	courseName: string;
 	className: string;
 	professor: string;
-	classType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe";
+	classType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe" | string;
 	classroom: string;
 	amountOfStudents: number | null;
+	group: string | null;
+	note: string | null;
 };
 
 export type ClassPeriodSegregated = ClassPeriod & {
@@ -82,23 +84,34 @@ function parseHoliday(apiHoliday: ApiHoliday): Holiday {
 	};
 }
 
+const titleParsingRegex = new RegExp(
+	"^"
+	+"\\<strong\\>([^\<]+)\\<\\/strong\\> \\- ([^\<]+)\\<br\\/\\>"
+	+ "(.+)\\<br\\/\\>"
+	+ "Učionica\\: ([^\<]+)\\<br\\/\\>"
+	+ "Smjer\\: ([^\<]+)\\<br\\/\\>"
+	+ "(Napomena: [^\<]*\\<br\\/\\>)?"
+	+ "(Grupa: [^\<]*\\<br\\/\\>)?"
+	+ "Broj studenata na kolegiju\\: (\\d+|Nepoznato)"
+	+ "$"
+);
+
 function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod] {
-	const date = apiClassPeriod.start.split("T")[0];
-
-	const titleParsingRegexes = [
-		/^\<strong\>([0-9A-Za-zŠĐČĆŽšđčćž ]+)\<\/strong\> \- ([A-Za-zŠĐČĆŽšđčćž ]+)$/,
-		/^(.+)$/,
-		/^Učionica\: ([0-9A-Za-zŠĐČĆŽšđčćž,.\-\/ ]+)$/,
-		/^Smjer\: ([0-9A-Za-zŠĐČĆŽšđčćž ]+)$/,
-		// TODO: add napomena field here (double-check position)
-		/^Broj studenata na kolegiju\: (\d+|Nepoznato)$/,
-	];
-
-	const parsedTitle = apiClassPeriod.title
-		.split("<br/>")
-		.map((l, i) => titleParsingRegexes[i].exec(l)!);
-
-	const classPeriod = {
+	const t = titleParsingRegex.exec(apiClassPeriod.title)
+	if (!t) {
+		console.log(apiClassPeriod.title);
+	}
+	const titleMatches = t!;
+	
+	const note = titleMatches[6]
+		? /^Napomena: (.*)\<br\/\>$/.exec(titleMatches[6])![1]
+		: null;
+	
+	const group = titleMatches[7]
+		? /^Grupa: (.*)\<br\/\>$/.exec(titleMatches[7])![1]
+		: null;
+	
+	const classPeriod: ClassPeriod = {
 		id: Number(apiClassPeriod.id),
 		apiColor: apiClassPeriod.color,
 
@@ -106,13 +119,15 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod]
 		start: Temporal.PlainTime.from(apiClassPeriod.start),
 		end: Temporal.PlainTime.from(apiClassPeriod.end),
 
-		courseName: parsedTitle[3][1],
-		className: parsedTitle[0][1],
-		professor: parsedTitle[1][1],
-		classType: parsedTitle[0][2],
-		classroom: parsedTitle[2][1],
-		amountOfStudents: parsedTitle[4][1] === "Nepoznato" ? null : Number(parsedTitle[4][1]),
-	} as ClassPeriod;
+		courseName: titleMatches[5],
+		className: titleMatches[1],
+		professor: titleMatches[3],
+		classType: titleMatches[2],
+		classroom: titleMatches[4],
+		amountOfStudents: titleMatches[8] === "Nepoznato" ? null : Number(titleMatches[8]),
+		group,
+		note,
+	};
 
 	return [classPeriod.id, classPeriod];
 }

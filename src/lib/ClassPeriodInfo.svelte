@@ -14,7 +14,13 @@
 	<p>{classPeriod.professor}</p>
 	<p>{classPeriod.classroom}</p>
 	{#if classPeriod.amountOfStudents}
-		<p>{classPeriod.amountOfStudents}</p>
+		<p>{classPeriod.amountOfStudents} upisanih studenata.</p>
+	{/if}
+	{#if classPeriod.group}
+		<p><b>Grupa:</b> {classPeriod.group}</p>
+	{/if}
+	{#if classPeriod.note}
+		<p><b>Napomena:</b> {classPeriod.note}</p>
 	{/if}
 {:else}
 	<slot></slot>
