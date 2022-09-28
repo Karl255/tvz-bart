@@ -8,8 +8,9 @@
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
 
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
-	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
 	import Calendar from "$lib/Calendar.svelte";
+	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
+	import { Tab, Tabs } from "$lib/tabs";
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
 
 	let selectedDepartment: string = supportedDepartments[6];
@@ -91,8 +92,17 @@
 	</div>
 
 	<div class="panel panel--options">
-		<DepartmentPicker bind:departmentCode={selectedDepartment} />
-		<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
+		<Tabs>
+			<Tab title="Schedule Picker">
+				<div class="schedule-picker">
+					<DepartmentPicker bind:departmentCode={selectedDepartment} />
+					<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
+				</div>
+			</Tab>
+			<Tab title="About">
+				About
+			</Tab>
+		</Tabs>
 	</div>
 </div>
 
@@ -143,13 +153,15 @@
 
 	.panel--options {
 		grid-area: options;
-		padding: 1rem;
-
-		display: grid;
-		gap: 1rem;
+		border: none;
 	}
 
 	.description {
 		font-style: italic;
+	}
+
+	.schedule-picker {
+		display: grid;
+		gap: 1rem;
 	}
 </style>
