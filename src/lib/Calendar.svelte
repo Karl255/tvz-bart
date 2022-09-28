@@ -72,23 +72,25 @@
 		<div class="calendar__dashed-line" style="grid-row: {2 + i}"></div>
 	{/each}
 
-	{#each calendarDays as day, i}
-		<div class="calendar__day" style="grid-column: {i + 2}">
-			{#if day}
-				{#if "title" in day}
-					<p class="calendar__holiday">
-						{ dateToStringHR(day.date) }
-						<br />
-						{ day.title }
-					</p>
-				{:else}
-					{#each segregateItems(day) as item}
-						<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
-					{/each}
+	{#key schedule}
+		{#each calendarDays as day, i}
+			<div class="calendar__day" style="grid-column: {i + 2}">
+				{#if day}
+					{#if "title" in day}
+						<p class="calendar__holiday">
+							{ dateToStringHR(day.date) }
+							<br />
+							{ day.title }
+						</p>
+					{:else}
+						{#each segregateItems(day) as item}
+							<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
+						{/each}
+					{/if}
 				{/if}
-			{/if}
-		</div>
-	{/each}
+			</div>
+		{/each}
+	{/key}
 </div>
 
 <style lang="scss">
