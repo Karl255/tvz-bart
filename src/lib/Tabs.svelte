@@ -13,17 +13,17 @@
 				tabs = tabs;
 				selectedTab.update(value => value ?? tab);
 			}
-			
+
 			onDestroy(() => {
 				const i = tabs.indexOf(tab);
 				tabs.splice(i, 1);
-				selectedTab.update(value => value === tab ? tabs[i - 1] ?? tabs[i] ?? null : value);
+				selectedTab.update(value => (value === tab ? tabs[i - 1] ?? tabs[i] ?? null : value));
 			});
 		},
 
-		selectedTab
+		selectedTab,
 	});
-		
+
 	function selectTab(tab: TabData) {
 		selectedTab.set(tab);
 	}
@@ -37,7 +37,7 @@
 	{/each}
 </ul>
 
-<slot></slot>
+<slot />
 
 <style lang="scss">
 	.tab-list {
@@ -52,19 +52,22 @@
 	}
 
 	.tab-button {
-		background-color: var(--clr-bg-1);
-		border: 1px solid var(--clr-panel-border);
+		background-color: transparent; // var(--clr-panel-bg);
+		border: 1px solid transparent; // 1px solid var(--clr-panel-border);
 		border-radius: 0.25rem 0.25rem 0 0;
-		padding: 0.5rem 0.75rem;
+		padding: 0.5rem 1rem;
 
+		font-weight: 600;
 		display: block;
-		
+
 		&:hover {
 			background-color: var(--clr-panel-border);
 		}
-		
+
 		&.selected {
-			border-bottom-color: var(--clr-bg-1);
+			background-color: var(--clr-panel-bg);
+			border-color: var(--clr-panel-border);
+			border-bottom-color: var(--clr-panel-bg);
 			cursor: default;
 			pointer-events: none;
 		}

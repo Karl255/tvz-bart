@@ -35,7 +35,7 @@
 		right: 0;
 
 		z-index: 10;
-		overflow: clip
+		overflow: clip;
 	}
 
 	.timestamp {

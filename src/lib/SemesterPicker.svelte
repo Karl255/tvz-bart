@@ -3,10 +3,10 @@
 
 	export let availableSemesters: Semester[] = [];
 	export let semester: Semester | null;
-	
+
 	function click(e: MouseEvent) {
 		const element = e.currentTarget as HTMLButtonElement;
-		
+
 		if (element.dataset.i) {
 			semester = availableSemesters[Number(element.dataset.i)];
 		}

@@ -5,22 +5,22 @@
 	export let title: string;
 
 	const thisTab: TabData = { title };
-	const { registerTab, selectedTab}  = getContext("tabs") as TabsContext;
+	const { registerTab, selectedTab } = getContext("tabs") as TabsContext;
 
 	registerTab(thisTab);
 </script>
 
 <div class="tab-content" class:selected={$selectedTab === thisTab}>
-	<slot></slot>
+	<slot />
 </div>
 
 <style lang="scss">
 	.tab-content {
-		background-color: var(--clr-bg-1);
+		background-color: var(--clr-panel-bg);
 		border: 1px solid var(--clr-panel-border);
 		border-radius: 0 0.5rem 0.5rem;
 		padding: 1rem;
-		
+
 		display: none;
 
 		&.selected {

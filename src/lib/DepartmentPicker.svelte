@@ -4,17 +4,17 @@
 
 	export let departmentCode: string;
 	let newDepartments: Department[] | null = null;
-	
+
 	if (browser) {
 		loadDepartments();
 	}
-	
+
 	async function loadDepartments() {
 		let deps = await fetchDepartments();
 		newDepartments = parseNewDepartments(deps);
 		console.log(`${newDepartments.length} new departments found`);
 	}
-	
+
 	function click(e: MouseEvent) {
 		const element = e.currentTarget as HTMLButtonElement;
 
@@ -51,7 +51,7 @@
 			<button on:click={click} data-dep="IMEH">IMEH</button>
 		</div>
 	</div>
-	
+
 	<div class="group">
 		<div class="col">
 			<button on:click={click} data-dep="SPECELO1">SPECELO</button>
@@ -74,7 +74,7 @@
 			<button on:click={click} data-dep="ISPECSTRO">ISPECSTRO</button>
 		</div>
 	</div>
-	
+
 	<div class="new-deps">
 		{#if newDepartments}
 			{#each newDepartments as newDepartment}
@@ -90,19 +90,19 @@
 		flex-flow: row wrap;
 		gap: 2rem;
 	}
-	
+
 	.group {
 		display: flex;
 		flex-direction: row;
 		gap: 0.5rem;
 	}
-	
+
 	.col {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
 	}
-	
+
 	.new-deps {
 		display: grid;
 		grid-template-rows: repeat(2, 1fr);

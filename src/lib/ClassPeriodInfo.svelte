@@ -23,7 +23,7 @@
 		<p><b>Napomena:</b> {classPeriod.note}</p>
 	{/if}
 {:else}
-	<slot></slot>
+	<slot />
 {/if}
 
 <style lang="scss">

@@ -67,7 +67,7 @@
 				<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
 
-			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			<button class="date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
 
 			<div class="control-group">
 				<button data-delta="1" on:click={cycleWeek}>&gt;</button>
@@ -99,9 +99,7 @@
 					<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
 				</div>
 			</Tab>
-			<Tab title="About">
-				About
-			</Tab>
+			<Tab title="About">About</Tab>
 		</Tabs>
 	</div>
 </div>
@@ -119,7 +117,7 @@
 	}
 
 	.panel {
-		background-color: var(--clr-bg-1);
+		background-color: var(--clr-panel-bg);
 		border: 1px solid var(--clr-panel-border);
 		border-radius: 0.5rem;
 	}
@@ -141,6 +139,10 @@
 	.control-group {
 		display: flex;
 		gap: 1rem;
+	}
+
+	.date-button {
+		font-weight: 600;
 	}
 
 	.panel--info-selected {

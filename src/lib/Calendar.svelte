@@ -7,7 +7,7 @@
 	const fromHour = 7;
 	const toHour = 22;
 	const hourRange = toHour - fromHour;
-	
+
 	export let selectedPeriod: ClassPeriod | null;
 	export let previewedPeriod: ClassPeriod | null;
 
@@ -78,9 +78,9 @@
 				{#if day}
 					{#if "title" in day}
 						<p class="calendar__holiday">
-							{ dateToStringHR(day.date) }
+							{dateToStringHR(day.date)}
 							<br />
-							{ day.title }
+							{day.title}
 						</p>
 					{:else}
 						{#each segregateItems(day) as item}
@@ -118,9 +118,7 @@
 
 	.calendar__timestamp {
 		grid-column: 1;
-
-		padding-right: 0.2rem;
-
+		padding-right: 0.25rem;
 		text-align: right;
 	}
 
@@ -132,11 +130,11 @@
 	.calendar__day {
 		grid-row: 2 / -1;
 		border-left: 1px solid var(--gridline-color);
-		
+
 		display: grid;
 		grid-auto-columns: 1fr;
 	}
-	
+
 	.calendar__holiday {
 		place-self: center;
 		text-align: center;
