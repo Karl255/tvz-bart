@@ -21,10 +21,10 @@
 		border-radius: 0 0.5rem 0.5rem;
 		padding: 1rem;
 
-		display: none;
+		visibility: hidden;
 
 		&.selected {
-			display: block;
+			visibility: visible;
 		}
 	}
 </style>

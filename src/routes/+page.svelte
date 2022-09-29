@@ -62,17 +62,17 @@
 	<div class="panel panel--calendar">
 		<div class="panel--calendar__controls">
 			<div class="control-group">
-				<button data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
-				<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
-				<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
+				<button class="btn" data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
+				<button class="btn" data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
+				<button class="btn" data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
 
-			<button class="date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			<button class="btn date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
 
 			<div class="control-group">
-				<button data-delta="1" on:click={cycleWeek}>&gt;</button>
-				<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
-				<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+				<button class="btn" data-delta="1" on:click={cycleWeek}>&gt;</button>
+				<button class="btn" data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
+				<button class="btn" data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
 			</div>
 		</div>
 
@@ -94,10 +94,8 @@
 	<div class="panel panel--options">
 		<Tabs>
 			<Tab title="Schedule Picker">
-				<div class="schedule-picker">
-					<DepartmentPicker bind:departmentCode={selectedDepartment} />
-					<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
-				</div>
+				<DepartmentPicker bind:departmentCode={selectedDepartment} />
+				<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
 			</Tab>
 			<Tab title="About">About</Tab>
 		</Tabs>
@@ -159,6 +157,15 @@
 		grid-area: options;
 		background-color: transparent;
 		border: none;
+
+		h2 {
+			font-size: 1.125rem;
+			margin-bottom: 0.5rem;
+		}
+
+		* ~ h2 {
+			margin-top: 1rem;
+		}
 	}
 
 	.description {
