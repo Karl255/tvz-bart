@@ -67,7 +67,7 @@
 				<button class="btn" data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
 
-			<button class="btn date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			<button class="date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
 
 			<div class="control-group">
 				<button class="btn" data-delta="1" on:click={cycleWeek}>&gt;</button>
@@ -140,7 +140,27 @@
 	}
 
 	.date-button {
+		background-color: transparent;
+		border: none;
+
 		font-weight: 600;
+		cursor: pointer;
+		position: relative;
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: auto 0 0 0;
+			height: 0.125rem;
+			border-radius: 100px;
+
+			background-color: var(--clr-element-border);
+			transition: height 100ms ease-out;
+		}
+
+		&:hover::after {
+			height: 0.25rem;
+		}
 	}
 
 	.panel--info-selected {
