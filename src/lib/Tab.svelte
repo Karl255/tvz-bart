@@ -16,8 +16,11 @@
 
 <style lang="scss">
 	.tab-content {
+		background-color: var(--clr-bg-1);
+		border: 1px solid var(--clr-panel-border);
+		border-radius: 0 0.5rem 0.5rem;
 		padding: 1rem;
-		border: 1px solid #444;
+		
 		display: none;
 
 		&.selected {

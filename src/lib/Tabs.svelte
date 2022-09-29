@@ -32,7 +32,7 @@
 <ul class="tab-list">
 	{#each tabs as tab}
 		<li>
-			<button class="tab-button" on:click={() => selectTab(tab)}>{tab.title}</button>
+			<button class="tab-button" class:selected={$selectedTab === tab} on:click={() => selectTab(tab)}>{tab.title}</button>
 		</li>
 	{/each}
 </ul>
@@ -43,7 +43,7 @@
 	.tab-list {
 		display: flex;
 		list-style: none;
-		margin: 0;
+		margin: 0 0 -1px 0;
 		padding: 0;
 
 		> li {
@@ -52,8 +52,21 @@
 	}
 
 	.tab-button {
-		border: 1px solid #8f8f9d;
+		background-color: var(--clr-bg-1);
+		border: 1px solid var(--clr-panel-border);
 		border-radius: 0.25rem 0.25rem 0 0;
-		padding: 0.25rem 0.5rem;
+		padding: 0.5rem 0.75rem;
+
+		display: block;
+		
+		&:hover {
+			background-color: var(--clr-panel-border);
+		}
+		
+		&.selected {
+			border-bottom-color: var(--clr-bg-1);
+			cursor: default;
+			pointer-events: none;
+		}
 	}
 </style>

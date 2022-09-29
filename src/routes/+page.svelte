@@ -119,7 +119,9 @@
 	}
 
 	.panel {
-		border: 1px solid #444;
+		background-color: var(--clr-bg-1);
+		border: 1px solid var(--clr-panel-border);
+		border-radius: 0.5rem;
 	}
 
 	.panel--calendar {
@@ -153,6 +155,7 @@
 
 	.panel--options {
 		grid-area: options;
+		background-color: transparent;
 		border: none;
 	}
 

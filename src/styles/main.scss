@@ -1,16 +1,13 @@
 @charset "UTF-8";
+@use "theme";
 @use "fonts";
 @use "text";
+@use "elements";
 
 *,
 ::before,
 ::after {
 	box-sizing: border-box;
-}
-
-:root {
-	font-family: "Poppins", sans-serif;
-	color-scheme: dark;
 }
 
 html {

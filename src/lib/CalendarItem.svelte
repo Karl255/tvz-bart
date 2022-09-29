@@ -8,33 +8,34 @@
 	let end = classPeriod.end.hour + classPeriod.end.minute / 60;
 </script>
 
-<div class="item" style="--start: {start}; --end: {end}; --color: {c.apiColor}; --column: {c.column}; --width: {c.width};">
-	<div class="item__container" on:click on:mouseenter on:mouseleave data-id={c.id}>
+<div class="item-column" style="--start: {start}; --end: {end}; --color: {c.apiColor}; --column: {c.column}; --width: {c.width};">
+	<div class="item" on:click on:mouseenter on:mouseleave data-id={c.id}>
 		<p class="timestamp">{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}</p>
 		<p class="class-name">{c.className}</p>
 	</div>
 </div>
 
 <style lang="scss">
-	.item {
+	.item-column {
 		grid-column: var(--column) / span var(--width);
 		grid-row: 1;
 		position: relative;
+	}
 
-		&__container {
-			background-color: hsl(240 10% 18%);
-			border: 1px solid var(--color, #0b67a5);
-			padding: 0.2rem;
+	.item {
+		background-color: var(--clr-translucent);
+		border: 1px solid var(--color, #0b67a5);
+		border-radius: 0.5rem;
+		padding: 0.2rem;
 
-			position: absolute;
-			top: calc((var(--start) - var(--from-hour)) / var(--hour-range) * 100%);
-			bottom: calc((var(--to-hour) - var(--end)) / var(--hour-range) * 100%);
-			left: 0;
-			right: 0;
+		position: absolute;
+		top: calc((var(--start) - var(--from-hour)) / var(--hour-range) * 100%);
+		bottom: calc((var(--to-hour) - var(--end)) / var(--hour-range) * 100%);
+		left: 0;
+		right: 0;
 
-			z-index: 10;
-			overflow: clip;
-		}
+		z-index: 10;
+		overflow: clip
 	}
 
 	.timestamp {
