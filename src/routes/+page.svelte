@@ -62,17 +62,17 @@
 	<div class="panel panel--calendar">
 		<div class="panel--calendar__controls">
 			<div class="control-group">
-				<button data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
-				<button data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
-				<button data-delta="-1" on:click={cycleWeek}>&lt;</button>
+				<button class="btn" data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
+				<button class="btn" data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
+				<button class="btn" data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
 
-			<button title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			<button class="date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
 
 			<div class="control-group">
-				<button data-delta="1" on:click={cycleWeek}>&gt;</button>
-				<button data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
-				<button data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+				<button class="btn" data-delta="1" on:click={cycleWeek}>&gt;</button>
+				<button class="btn" data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
+				<button class="btn" data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
 			</div>
 		</div>
 
@@ -94,14 +94,10 @@
 	<div class="panel panel--options">
 		<Tabs>
 			<Tab title="Schedule Picker">
-				<div class="schedule-picker">
-					<DepartmentPicker bind:departmentCode={selectedDepartment} />
-					<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
-				</div>
+				<DepartmentPicker bind:departmentCode={selectedDepartment} />
+				<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
 			</Tab>
-			<Tab title="About">
-				About
-			</Tab>
+			<Tab title="About">About</Tab>
 		</Tabs>
 	</div>
 </div>
@@ -119,7 +115,9 @@
 	}
 
 	.panel {
-		border: 1px solid #444;
+		background-color: var(--clr-panel-bg);
+		border: 1px solid var(--clr-panel-border);
+		border-radius: 0.5rem;
 	}
 
 	.panel--calendar {
@@ -141,6 +139,30 @@
 		gap: 1rem;
 	}
 
+	.date-button {
+		background-color: transparent;
+		border: none;
+
+		font-weight: 600;
+		cursor: pointer;
+		position: relative;
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: auto 0 0 0;
+			height: 0.125rem;
+			border-radius: 100px;
+
+			background-color: var(--clr-element-border);
+			transition: height 100ms ease-out;
+		}
+
+		&:hover::after {
+			height: 0.25rem;
+		}
+	}
+
 	.panel--info-selected {
 		grid-area: info-selected;
 		padding: 1rem;
@@ -153,7 +175,17 @@
 
 	.panel--options {
 		grid-area: options;
+		background-color: transparent;
 		border: none;
+
+		h2 {
+			font-size: 1.125rem;
+			margin-bottom: 0.5rem;
+		}
+
+		* ~ h2 {
+			margin-top: 1rem;
+		}
 	}
 
 	.description {

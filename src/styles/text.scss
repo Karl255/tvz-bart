@@ -1,4 +1,5 @@
 :root {
+	font-family: "Poppins", sans-serif;
 	font-size: 16px;
 	font-weight: 300;
 }
@@ -8,7 +9,9 @@ button {
 }
 
 h1, h2, h3, h4, h5, h6 {
+	font-size: 1rem;
 	font-weight: normal;
+	line-height: 1;
 	margin: 0;
 }
 
@@ -16,6 +19,7 @@ p {
 	margin: 0;
 }
 
-b {
+b,
+strong {
 	font-weight: 600;
 }

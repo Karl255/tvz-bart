@@ -1,4 +1,4 @@
-export function buildURL(base:string, params: Record<string, string | number>): URL {
+export function buildURL(base: string, params: Record<string, string | number>): URL {
 	const url = new URL(base, document.URL);
 
 	for (const key in params) {

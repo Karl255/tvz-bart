@@ -13,17 +13,17 @@
 				tabs = tabs;
 				selectedTab.update(value => value ?? tab);
 			}
-			
+
 			onDestroy(() => {
 				const i = tabs.indexOf(tab);
 				tabs.splice(i, 1);
-				selectedTab.update(value => value === tab ? tabs[i - 1] ?? tabs[i] ?? null : value);
+				selectedTab.update(value => (value === tab ? tabs[i - 1] ?? tabs[i] ?? null : value));
 			});
 		},
 
-		selectedTab
+		selectedTab,
 	});
-		
+
 	function selectTab(tab: TabData) {
 		selectedTab.set(tab);
 	}
@@ -32,19 +32,28 @@
 <ul class="tab-list">
 	{#each tabs as tab}
 		<li>
-			<button class="tab-button" on:click={() => selectTab(tab)}>{tab.title}</button>
+			<button class="tab-button" class:selected={$selectedTab === tab} on:click={() => selectTab(tab)}>{tab.title}</button>
+		</li>
+	{:else}
+		<!-- so content doesn't jump around as the tabs are generated -->
+		<li>
+			<button class="tab-button selected">&nbsp;</button>
 		</li>
 	{/each}
 </ul>
 
-<slot></slot>
+<div class="tab-panels">
+	<slot />
+</div>
 
 <style lang="scss">
 	.tab-list {
 		display: flex;
 		list-style: none;
-		margin: 0;
+		margin: 0 0 -1px 0;
 		padding: 0;
+		position: relative;
+		z-index: 3;
 
 		> li {
 			display: block;
@@ -52,8 +61,36 @@
 	}
 
 	.tab-button {
-		border: 1px solid #8f8f9d;
+		background-color: transparent;
+		border: 1px solid transparent;
 		border-radius: 0.25rem 0.25rem 0 0;
-		padding: 0.25rem 0.5rem;
+		padding: 0.5rem 1rem;
+
+		font-weight: 600;
+		display: block;
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--clr-panel-border);
+		}
+
+		&.selected {
+			background-color: var(--clr-panel-bg);
+			border-color: var(--clr-panel-border);
+			border-bottom-color: var(--clr-panel-bg);
+			cursor: default;
+			pointer-events: none;
+		}
+	}
+
+	.tab-panels {
+		display: grid;
+		position: relative;
+		z-index: 2;
+
+		> :global(*) {
+			grid-column: 1;
+			grid-row: 1;
+		}
 	}
 </style>

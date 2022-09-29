@@ -2,4 +2,4 @@
 	import "$styles/main.scss";
 </script>
 
-<slot></slot>
+<slot />

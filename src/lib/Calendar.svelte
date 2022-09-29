@@ -7,7 +7,7 @@
 	const fromHour = 7;
 	const toHour = 22;
 	const hourRange = toHour - fromHour;
-	
+
 	export let selectedPeriod: ClassPeriod | null;
 	export let previewedPeriod: ClassPeriod | null;
 
@@ -68,8 +68,8 @@
 		</div>
 	{/each}
 
-	{#each [...Array(hourRange).keys()] as i}
-		<div class="calendar__dashed-line" style="grid-row: {2 + i}"></div>
+	{#each [...Array(hourRange - 1).keys()] as i}
+		<div class="calendar__dashed-line" style="grid-row: {3 + i}"></div>
 	{/each}
 
 	{#key schedule}
@@ -78,9 +78,9 @@
 				{#if day}
 					{#if "title" in day}
 						<p class="calendar__holiday">
-							{ dateToStringHR(day.date) }
+							{dateToStringHR(day.date)}
 							<br />
-							{ day.title }
+							{day.title}
 						</p>
 					{:else}
 						{#each segregateItems(day) as item}
@@ -98,41 +98,43 @@
 		display: grid;
 		grid-template-columns: auto repeat(5, 1fr);
 		grid-template-rows: auto repeat(var(--hour-range), minmax(60px, 1fr));
+		--gridline-color: var(--clr-panel-border);
 	}
 
 	.calendar__header {
 		grid-row: 1;
 
 		padding: 0.5rem;
-		border-right: 1px solid #444;
-		border-bottom: 1px solid #444;
+		border-top: 1px solid var(--gridline-color);
+		border-bottom: 1px solid var(--gridline-color);
 
 		text-align: center;
 		font-weight: 600;
+
+		& + & {
+			border-left: 1px solid var(--gridline-color);
+		}
 	}
 
 	.calendar__timestamp {
 		grid-column: 1;
-
-		border-right: 1px solid #444;
-		padding-right: 0.2rem;
-
+		padding-right: 0.25rem;
 		text-align: right;
 	}
 
 	.calendar__dashed-line {
 		grid-column: 1 / -1;
-		border-bottom: 1px dashed #444;
+		border-top: 1px dashed var(--gridline-color);
 	}
 
 	.calendar__day {
 		grid-row: 2 / -1;
-		border-right: 1px solid #444;
-		
+		border-left: 1px solid var(--gridline-color);
+
 		display: grid;
 		grid-auto-columns: 1fr;
 	}
-	
+
 	.calendar__holiday {
 		place-self: center;
 		text-align: center;
