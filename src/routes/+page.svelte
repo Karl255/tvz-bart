@@ -44,6 +44,7 @@
 		if (browser && semester) {
 			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
 			schedule = parseSchedule(res);
+			// TODO: apply overrides HERE
 		}
 	}
 
@@ -52,7 +53,7 @@
 	}
 
 	function cycleWeek(e: MouseEvent) {
-		let element = e.currentTarget as HTMLButtonElement;
+		const element = e.currentTarget as HTMLButtonElement;
 		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
 	}
 
