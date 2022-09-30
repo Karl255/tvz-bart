@@ -1,5 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { buildURL } from "$lib/buildUrl";
+import { getAcademicYear } from "$lib/helpers";
 
 const baseURL = "/.netlify/functions/schedule";
 
@@ -63,8 +64,7 @@ export type Schedule = {
 
 export async function fetchScheduleWeek(department: string, semester: number, from: Temporal.PlainDate): Promise<ApiSchedule> {
 	const to = from.add({ days: 6 });
-	// a requirement by the API; seems like there is a 1-off error
-	const year = from.year - 1;
+	const year = getAcademicYear(from);
 
 	const url = buildURL(baseURL, {
 		department,

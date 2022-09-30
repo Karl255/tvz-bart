@@ -68,5 +68,5 @@ export function getAcademicYear(d: Temporal.PlainDate): number {
 }
 
 export function thisMonday() {
-	return getThisWeeksMonday(Temporal.PlainDate.from("2022-06-09") /*Temporal.Now.plainDateISO()*/);
+	return getThisWeeksMonday(Temporal.PlainDate.from("2022-10-03") /*Temporal.Now.plainDateISO()*/);
 }

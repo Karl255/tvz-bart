@@ -26,5 +26,9 @@
 		&.selected {
 			visibility: visible;
 		}
+		
+		:global(.tab-content) + & {
+			border-radius: 0.5rem;
+		}
 	}
 </style>

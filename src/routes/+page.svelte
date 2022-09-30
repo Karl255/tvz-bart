@@ -4,7 +4,6 @@
 
 	import { type ClassPeriod, type Schedule, fetchScheduleWeek, parseSchedule } from "$lib/api/schedule";
 	import { fetchSemesters, parseSemesters, type Semester } from "$lib/api/semesters";
-	import { supportedDepartments } from "$lib/api/departments";
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
 
 	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
@@ -12,16 +11,24 @@
 	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
 	import { Tab, Tabs } from "$lib/tabs";
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
+	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
-	let selectedDepartment: string = supportedDepartments[6];
-	let selectedSemester: Semester | null = null;
+	let currentSettings: Settings = browser ? loadSettings() : defaultSettings;
+	let autoSavePrevious = currentSettings.autoSave;
+
+	$: {
+		if (browser && (currentSettings.autoSave || autoSavePrevious)) {
+			saveSettings(currentSettings);
+			autoSavePrevious = currentSettings.autoSave;
+		}
+	}
 
 	let availableSemesters: Semester[] = [];
 	let schedule: Schedule | null = null;
 	let currentMonday = thisMonday();
 
-	$: loadSemesters(selectedDepartment);
-	$: loadSchedule(currentMonday, selectedSemester);
+	$: loadSemesters(currentSettings.departmentCode);
+	$: loadSchedule(currentMonday, currentSettings.semester);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -30,10 +37,6 @@
 		if (browser) {
 			const res = await fetchSemesters(departmentCode, getAcademicYear(currentMonday));
 			availableSemesters = parseSemesters(res);
-
-			if (selectedSemester === null) {
-				selectedSemester = availableSemesters[1];
-			}
 		}
 	}
 
@@ -51,6 +54,14 @@
 	function cycleWeek(e: MouseEvent) {
 		let element = e.currentTarget as HTMLButtonElement;
 		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
+	}
+
+	function resetSettings() {
+		currentSettings = defaultSettings;
+	}
+
+	function manualSave() {
+		saveSettings(currentSettings);
 	}
 </script>
 
@@ -94,9 +105,22 @@
 	<div class="panel panel--options">
 		<Tabs>
 			<Tab title="Schedule Picker">
-				<DepartmentPicker bind:departmentCode={selectedDepartment} />
-				<SemesterPicker {availableSemesters} bind:semester={selectedSemester} />
+				<DepartmentPicker bind:departmentCode={currentSettings.departmentCode} />
+				<SemesterPicker {availableSemesters} bind:semester={currentSettings.semester} />
 			</Tab>
+
+			<Tab title="Settings">
+				<div class="settings-controls">
+					<p>Settings include the selected department and semester as well as user-set overrides (added in a future version).</p>
+					<div>
+						<input type="checkbox" name="autosave" bind:checked={currentSettings.autoSave}>
+						<label for="autosave">Auto-save</label>
+					</div>
+					<button class="btn" on:click={manualSave}>Save settings</button>
+					<button class="btn" on:click={resetSettings}>Reset settings</button>
+				</div>
+			</Tab>
+
 			<Tab title="About">About</Tab>
 		</Tabs>
 	</div>
@@ -177,23 +201,16 @@
 		grid-area: options;
 		background-color: transparent;
 		border: none;
-
-		h2 {
-			font-size: 1.125rem;
-			margin-bottom: 0.5rem;
-		}
-
-		* ~ h2 {
-			margin-top: 1rem;
-		}
 	}
 
 	.description {
 		font-style: italic;
 	}
 
-	.schedule-picker {
-		display: grid;
+	.settings-controls {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
 		gap: 1rem;
 	}
 </style>
