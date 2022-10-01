@@ -13,8 +13,8 @@
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
-	import { default as allOverrides } from "$overrides/all";
 	import { applyOverrides } from "$lib/overrides";
+	import allOverrides from "$overrides/all";
 
 	let currentSettings: Settings = browser ? loadSettings() : defaultSettings;
 	let autoSavePrevious = currentSettings.autoSave;

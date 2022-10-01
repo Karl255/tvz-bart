@@ -6,14 +6,14 @@ export type ClassPeriodOverride = {
 	start: string;
 	end: string;
 
-	courseName: string | "~";
-	className: string | "~";
-	professor: string | "~";
-	classType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe" | "~";
-	classroom: string | "~";
-	group: string | "~";
-	note: string | "~";
-}
+	courseName?: string;
+	className?: string;
+	professor?: string;
+	classType?: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe";
+	classroom?: string;
+	group?: string | null;
+	note?: string | null;
+};
 
 export type Override = {
 	forEvent: {
@@ -54,7 +54,7 @@ function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]):
 	return overrides.map(o => {
 		// for once javascript's shortcommings actually help
 		idIncrement += 0.01;
-		const id = original.id + idIncrement
+		const id = original.id + idIncrement;
 
 		return [
 			id,
@@ -66,15 +66,15 @@ function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]):
 				start: Temporal.PlainTime.from(o.start),
 				end: Temporal.PlainTime.from(o.end),
 
-				courseName: o.courseName === "~" ? original.courseName : o.courseName,
-				className: o.courseName === "~" ? original.className : o.className,
-				professor: o.professor === "~" ? original.professor : o.professor,
-				classType: o.classType === "~" ? original.classType : o.classType,
-				classroom: o.classroom === "~" ? original.classroom : o.classroom,
-				group: o.group === "~" ? original.group : o.group,
-				note: o.note === "~" ? original.note : o.note,
-				amountOfStudents: original.amountOfStudents
-			}
+				courseName: o.courseName ?? original.courseName,
+				className: o.courseName ?? original.className,
+				professor: o.professor ?? original.professor,
+				classType: o.classType ?? original.classType,
+				classroom: o.classroom ?? original.classroom,
+				group: o.group === undefined ? original.group : o.group,
+				note: o.note === undefined ? original.note : o.note,
+				amountOfStudents: original.amountOfStudents,
+			},
 		];
 	});
 }
@@ -97,9 +97,8 @@ export function applyOverrides(schedule: Schedule, academicYear: number, semeste
 				: applyOverride(c, override.replacements);
 		});
 
-	console.log(`mapped ${schedule.workdays.size} to ${classesKV.length}`);
 	return {
 		holidays: schedule.holidays,
-		workdays: new Map<number, ClassPeriod>(classesKV)
+		workdays: new Map<number, ClassPeriod>(classesKV),
 	};
 }
