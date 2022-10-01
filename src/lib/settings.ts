@@ -1,5 +1,5 @@
 import { supportedDepartments } from "$lib/api/departments";
-import type { Semester } from "./api/semesters";
+import type { Semester } from "$lib/api/semesters";
 
 export type Settings = {
 	autoSave: boolean;

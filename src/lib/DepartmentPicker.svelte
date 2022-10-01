@@ -12,7 +12,6 @@
 	async function loadDepartments() {
 		let deps = await fetchDepartments();
 		newDepartments = parseNewDepartments(deps);
-		console.log(`${newDepartments.length} new departments found`);
 	}
 
 	function click(e: MouseEvent) {

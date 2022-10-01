@@ -138,8 +138,9 @@ export function parseSchedule(apiSchedule: ApiSchedule): Schedule {
 		.map(parseHoliday)
 		.map(h => [h.date.toString({ calendarName: "never" }), h] as [StringPlainDate, Holiday]);
 
-	let workdaysKV = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
-		return Temporal.PlainTime.compare(a[1].start, b[1].start);
+	const workdaysKV = apiClassPeriods.map(parseClassPeriod).sort((a, b) => {
+		return Temporal.PlainTime.compare(a[1].start, b[1].start)
+			|| Temporal.PlainTime.compare(b[1].end, a[1].end);
 	});
 
 	return {
