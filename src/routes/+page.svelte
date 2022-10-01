@@ -13,6 +13,9 @@
 	import SemesterPicker from "$lib/SemesterPicker.svelte";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
+	import { default as allOverrides } from "$overrides/all";
+	import { applyOverrides } from "$lib/overrides";
+
 	let currentSettings: Settings = browser ? loadSettings() : defaultSettings;
 	let autoSavePrevious = currentSettings.autoSave;
 
@@ -43,8 +46,8 @@
 	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null) {
 		if (browser && semester) {
 			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
-			schedule = parseSchedule(res);
-			// TODO: apply overrides HERE
+			const scheduleTemp = parseSchedule(res);
+			schedule = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, allOverrides);
 		}
 	}
 

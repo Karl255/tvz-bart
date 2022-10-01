@@ -33,8 +33,8 @@ export type Override = {
 function doesOverrideMatch(c: ClassPeriod, e: Override["forEvent"]): boolean {
 	return c.className === e.className
 		&& c.classroom === e.classroom
-		&& c.start === e.start
-		&& c.end === e.end
+		&& c.start.equals(e.start)
+		&& c.end.equals(e.end)
 		&& c.date.dayOfWeek === e.dayOfWeek;
 }
 
@@ -48,29 +48,34 @@ function findOverride(classPeriod: ClassPeriod, overrides: Override[]): Override
 	return null;
 }
 
-function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]): ClassPeriod[] {
+function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]): [number, ClassPeriod][] {
 	let idIncrement = 0;
 
 	return overrides.map(o => {
+		// for once javascript's shortcommings actually help
 		idIncrement += 0.01;
+		const id = original.id + idIncrement
 
-		return {
-			id: original.id + idIncrement,
-			apiColor: original.apiColor,
+		return [
+			id,
+			{
+				id,
+				apiColor: original.apiColor,
 
-			date: original.date,
-			start: Temporal.PlainTime.from(o.start),
-			end: Temporal.PlainTime.from(o.end),
+				date: original.date,
+				start: Temporal.PlainTime.from(o.start),
+				end: Temporal.PlainTime.from(o.end),
 
-			courseName: o.courseName === "~" ? original.courseName : o.courseName,
-			className: o.courseName === "~" ? original.className : o.className,
-			professor: o.professor === "~" ? original.professor : o.professor,
-			classType: o.classType === "~" ? original.classType : o.classType,
-			classroom: o.classroom === "~" ? original.classroom : o.classroom,
-			group: o.group === "~" ? original.group : o.group,
-			note: o.note === "~" ? original.note : o.note,
-			amountOfStudents: original.amountOfStudents
-		} as ClassPeriod;
+				courseName: o.courseName === "~" ? original.courseName : o.courseName,
+				className: o.courseName === "~" ? original.className : o.className,
+				professor: o.professor === "~" ? original.professor : o.professor,
+				classType: o.classType === "~" ? original.classType : o.classType,
+				classroom: o.classroom === "~" ? original.classroom : o.classroom,
+				group: o.group === "~" ? original.group : o.group,
+				note: o.note === "~" ? original.note : o.note,
+				amountOfStudents: original.amountOfStudents
+			}
+		];
 	});
 }
 
@@ -83,14 +88,18 @@ export function applyOverrides(schedule: Schedule, academicYear: number, semeste
 				&& e.academicYear === academicYear;
 		});
 
-	const classes = [...schedule.workdays.values()]
-		.flatMap(c => {
+	const classesKV = [...schedule.workdays.values()]
+		.flatMap<[number, ClassPeriod]>(c => {
 			const override = findOverride(c, overrides);
 
 			return override === null
-				? [c]
+				? [[c.id, c]]
 				: applyOverride(c, override.replacements);
 		});
 
-	return schedule;
+	console.log(`mapped ${schedule.workdays.size} to ${classesKV.length}`);
+	return {
+		holidays: schedule.holidays,
+		workdays: new Map<number, ClassPeriod>(classesKV)
+	};
 }

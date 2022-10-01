@@ -14,6 +14,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$styles: "src/styles",
+			$overrides: "src/overrides",
 		},
 	},
 };
