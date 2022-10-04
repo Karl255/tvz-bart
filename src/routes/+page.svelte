@@ -14,7 +14,7 @@
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
 	import { applyOverrides } from "$lib/overrides";
-	import allOverrides from "$overrides/all";
+	import builtinOverrides from "$overrides/all";
 
 	let currentSettings: Settings = browser ? loadSettings() : defaultSettings;
 	let autoSavePrevious = currentSettings.autoSave;
@@ -31,7 +31,7 @@
 	let currentMonday = thisMonday();
 
 	$: loadSemesters(currentSettings.departmentCode);
-	$: loadSchedule(currentMonday, currentSettings.semester);
+	$: loadSchedule(currentMonday, currentSettings.semester, currentSettings.useBuiltinOverrides);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -43,11 +43,17 @@
 		}
 	}
 
-	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null) {
+	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null, useBuiltinOverrides: boolean) {
 		if (browser && semester) {
 			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
-			const scheduleTemp = parseSchedule(res);
-			schedule = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, allOverrides);
+
+			let scheduleTemp = parseSchedule(res);
+
+			if (useBuiltinOverrides) {
+				scheduleTemp = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, builtinOverrides);
+			}
+
+			schedule = scheduleTemp;
 		}
 	}
 
@@ -115,13 +121,17 @@
 
 			<Tab title="Settings">
 				<div class="settings-controls">
-					<p>Settings include the selected department and semester as well as user-set overrides (added in a future version).</p>
+					<div>
+						<input type="checkbox" name="use-builtin-overrides" bind:checked={currentSettings.useBuiltinOverrides}>
+						<label for="use-builtin-overrides">Use built-in overrides</label>
+					</div>
 					<div>
 						<input type="checkbox" name="autosave" bind:checked={currentSettings.autoSave}>
 						<label for="autosave">Auto-save</label>
 					</div>
 					<button class="btn" on:click={manualSave}>Save settings</button>
 					<button class="btn" on:click={resetSettings}>Reset settings</button>
+					<p>Settings include the selected department and semester as well as user-set overrides (added in a future version).</p>
 				</div>
 			</Tab>
 
