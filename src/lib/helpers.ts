@@ -1,5 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/api/schedule";
+import { dev } from "$app/environment";
 
 export function leading0(x: number, digits: number): string {
 	return x.toString().padStart(digits, "0");
@@ -9,30 +10,47 @@ export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDat
 	return [...schedule.workdays.values()].filter(c => date.equals(c.date));
 }
 
-function intersects(p1: ClassPeriod, p2: ClassPeriod): boolean {
-	const cmp = Temporal.PlainTime.compare;
+function timeIsBetween(t: Temporal.PlainTime, start: Temporal.PlainTime, end: Temporal.PlainTime): boolean {
+	return Temporal.PlainTime.compare(t, start) >= 0 && Temporal.PlainTime.compare(t, end) < 0;
+}
 
-	return cmp(p1.start, p2.end) < 0 && cmp(p1.end, p2.start) > 0;
+function periodsIntersect(p1: ClassPeriod, p2: ClassPeriod): boolean {
+	return timeIsBetween(p1.start, p2.start, p2.end)
+		|| timeIsBetween(p2.start, p1.start, p1.end);
 }
 
 export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[] {
 	const segregated = periods.map(p => ({ ...p, column: 1, width: 1 } as ClassPeriodSegregated));
 
 	// segregate into columns
-	let isSegregated: boolean;
+	let overlaps: boolean;
 
 	do {
-		isSegregated = true;
+		overlaps = false;
 
 		for (let i = 0; i < periods.length - 1; i++) {
+			// move self into free place (elements before i are already "locked in")
+			for (let j = 0; j < i; j++) {
+				if (segregated[i].column === segregated[j].column && periodsIntersect(segregated[i], segregated[j])) {
+					segregated[i].column++;
+					overlaps = true;
+				}
+			}
+
+			// push others into next column
 			for (let j = i + 1; j < periods.length; j++) {
-				if (segregated[i].column === segregated[j].column && intersects(segregated[i], segregated[j])) {
+				if (segregated[i].column === segregated[j].column && periodsIntersect(segregated[i], segregated[j])) {
 					segregated[j].column++;
-					isSegregated = false;
+					overlaps = true;
+
+					if (segregated[j].id === 10537070) {
+						console.log(`pushed into next column by [${segregated[i].start.toJSON()} - ${segregated[i].end.toJSON()}] in column ${segregated[i].column}`);
+						console.log(`${segregated[j].id} is now in column ${segregated[j].column}`);
+					}
 				}
 			}
 		}
-	} while (false && !isSegregated);
+	} while (overlaps);
 
 	const maxColumn = segregated.reduce<number>((a, p) => Math.max(a, p.column), 1);
 
@@ -40,7 +58,7 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 	for (let i = 0; i < periods.length; i++) {
 		let isUnobstructed = true;
 		for (let j = 0; j < periods.length; j++) {
-			if (i !== j && segregated[i].column < segregated[j].column && intersects(segregated[i], segregated[j])) {
+			if (i !== j && segregated[i].column < segregated[j].column && periodsIntersect(segregated[i], segregated[j])) {
 				isUnobstructed = false;
 				break;
 			}
@@ -68,5 +86,5 @@ export function getAcademicYear(d: Temporal.PlainDate): number {
 }
 
 export function thisMonday() {
-	return getThisWeeksMonday(Temporal.PlainDate.from("2022-10-03") /*Temporal.Now.plainDateISO()*/);
+	return getThisWeeksMonday(dev ? Temporal.PlainDate.from("2023-01-23") : Temporal.Now.plainDateISO());
 }

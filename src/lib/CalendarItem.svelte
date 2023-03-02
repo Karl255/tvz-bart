@@ -10,6 +10,7 @@
 
 <div class="item-column" style="--start: {start}; --end: {end}; --color: {c.apiColor}; --column: {c.column}; --width: {c.width};">
 	<div class="item" on:click on:mouseenter on:mouseleave data-id={c.id}>
+		<p class="hidden">id = {c.id}</p>
 		<p class="timestamp">{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}</p>
 		<p class="class-name">{c.className}</p>
 	</div>
@@ -47,5 +48,9 @@
 	.class-name {
 		font-size: 0.875rem;
 		font-weight: 600;
+	}
+	
+	.hidden {
+		display: none;
 	}
 </style>

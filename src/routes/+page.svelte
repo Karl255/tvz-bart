@@ -114,7 +114,7 @@
 
 	<div class="panel panel--options">
 		<Tabs>
-			<Tab title="Schedule Picker">
+			<Tab title="Schedule picker">
 				<DepartmentPicker bind:departmentCode={currentSettings.departmentCode} />
 				<SemesterPicker {availableSemesters} bind:semester={currentSettings.semester} />
 			</Tab>
@@ -142,11 +142,11 @@
 
 <style lang="scss">
 	.container {
-		max-width: 1280px;
+		max-width: 1600px;
 		margin: 0 auto;
 
 		display: grid;
-		grid-template-columns: 3fr 1fr;
+		grid-template-columns: 4fr 1fr;
 		grid-auto-rows: 1fr 1fr auto;
 		grid-template-areas: "calendar info-preview" "calendar info-selected" "options options";
 		gap: 1rem;
