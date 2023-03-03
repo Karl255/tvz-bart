@@ -29,6 +29,19 @@ export type ApiHoliday = {
 
 export type ApiSchedule = (ApiClassPeriod | ApiHoliday)[];
 
+export enum ClassType {
+	Lecture = "Predavanja",
+	AuditoryExercises = "Auditorne vježbe",
+	Lab = "Laboratorijske vježbe",
+	Other = "Ostalo"
+};
+
+function parseClassType(s: string): ClassType {
+	const entry = Object.entries(ClassType).filter(entry => entry[1] === s)[0];
+
+	return (entry ?? [null, ClassType.Other])[1];
+}
+
 export type ClassPeriod = {
 	id: number;
 	apiColor: string | null;
@@ -40,7 +53,7 @@ export type ClassPeriod = {
 	courseName: string;
 	className: string;
 	professor: string;
-	classType: "Predavanja" | "Auditorne vježbe" | "Laboratorijske vježbe" | string;
+	classType: ClassType;
 	classroom: string;
 	amountOfStudents: number | null;
 	group: string | null;
@@ -122,7 +135,7 @@ function parseClassPeriod(apiClassPeriod: ApiClassPeriod): [number, ClassPeriod]
 		courseName: titleMatches[5],
 		className: titleMatches[1],
 		professor: titleMatches[3],
-		classType: titleMatches[2],
+		classType: parseClassType(titleMatches[2]),
 		classroom: titleMatches[4],
 		amountOfStudents: titleMatches[8] === "Nepoznato" ? null : Number(titleMatches[8]),
 		group,

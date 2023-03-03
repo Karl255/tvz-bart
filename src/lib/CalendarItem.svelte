@@ -1,14 +1,29 @@
 <script lang="ts">
-	import type { ClassPeriodSegregated } from "$lib/api/schedule";
+	import { ClassType, type ClassPeriodSegregated } from "$lib/api/schedule";
 
 	export let classPeriod: ClassPeriodSegregated;
 	$: c = classPeriod;
 
-	let start = classPeriod.start.hour + classPeriod.start.minute / 60;
-	let end = classPeriod.end.hour + classPeriod.end.minute / 60;
+	const start = classPeriod.start.hour + classPeriod.start.minute / 60;
+	const end = classPeriod.end.hour + classPeriod.end.minute / 60;
+
+	function classTypeToStyleClass(type: ClassType): string {
+		let r: string = "other";
+
+		switch (type) {
+			case ClassType.Lecture:           r = "lecture"; break;
+			case ClassType.AuditoryExercises: r = "auditory"; break;
+			case ClassType.Lab:               r = "lab"; break;
+			default:                          r = "other"; break;
+		}
+		
+		return r;
+	}
 </script>
 
-<div class="item-column" style="--start: {start}; --end: {end}; --color: {c.apiColor}; --column: {c.column}; --width: {c.width};">
+<div class="item-column type-{classTypeToStyleClass(c.classType)}" style="--start: {start}; --end: {end}; --column: {c.column}; --width: {c.width};">
+	<!-- TODO: v -->
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div class="item" on:click on:mouseenter on:mouseleave data-id={c.id}>
 		<p class="hidden">id = {c.id}</p>
 		<p class="timestamp">{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}</p>
@@ -24,8 +39,8 @@
 	}
 
 	.item {
-		background-color: var(--clr-translucent);
-		border: 1px solid var(--color, #0b67a5);
+		background-color: var(--background-color);
+		border: 1px solid var(--border-color);
 		border-radius: 0.5rem;
 		padding: 0.2rem;
 
@@ -52,5 +67,25 @@
 	
 	.hidden {
 		display: none;
+	}
+	
+	.type-lecture {
+		--background-color: var(--clr-lecture-background);
+		--border-color: var(--clr-lecture-border);
+	}
+	
+	.type-auditory {
+		--background-color: var(--clr-auditory-background);
+		--border-color: var(--clr-auditory-border);
+	}
+	
+	.type-lab {
+		--background-color: var(--clr-lab-background);
+		--border-color: var(--clr-lab-border);
+	}
+	
+	.type-other {
+		--background-color: var(--clr-other-background);
+		--border-color: var(--clr-other-border);
 	}
 </style>
