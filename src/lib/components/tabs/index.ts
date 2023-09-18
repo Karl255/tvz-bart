@@ -1,7 +1,7 @@
 import type { Writable } from "svelte/store";
 
-export { default as Tabs } from "$lib/Tabs.svelte";
-export { default as Tab } from "$lib/Tab.svelte";
+export { default as Tabs } from "$lib/components/tabs/Tabs.svelte";
+export { default as Tab } from "$lib/components/tabs/Tab.svelte";
 
 export type TabData = {
 	title: string;

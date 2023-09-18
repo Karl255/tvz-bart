@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from "svelte";
-	import type { TabData, TabsContext } from "$lib/tabs";
+	import type { TabData, TabsContext } from "$lib/components/tabs/";
 
 	export let title: string;
 

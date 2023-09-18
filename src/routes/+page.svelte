@@ -4,13 +4,13 @@
 
 	import { type ClassPeriod, type Schedule, fetchScheduleWeek, parseSchedule } from "$lib/api/schedule";
 	import { fetchSemesters, parseSemesters, type Semester } from "$lib/api/semesters";
-	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/helpers";
+	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
 
-	import ClassPeriodInfo from "$lib/ClassPeriodInfo.svelte";
-	import Calendar from "$lib/Calendar.svelte";
-	import DepartmentPicker from "$lib/DepartmentPicker.svelte";
-	import { Tab, Tabs } from "$lib/tabs";
-	import SemesterPicker from "$lib/SemesterPicker.svelte";
+	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
+	import Calendar from "$lib/components/Calendar.svelte";
+	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
+	import { Tab, Tabs } from "$lib/components/tabs/";
+	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
 	import { applyOverrides } from "$lib/overrides";

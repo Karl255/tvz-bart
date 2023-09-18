@@ -74,7 +74,7 @@ function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]):
 				group: o.group === undefined ? original.group : o.group,
 				note: o.note === undefined ? original.note : o.note,
 				amountOfStudents: original.amountOfStudents,
-			},
+			} as ClassPeriod,
 		];
 	});
 }

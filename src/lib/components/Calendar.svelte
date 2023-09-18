@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Temporal } from "@js-temporal/polyfill";
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/api/schedule";
-	import CalendarItem from "$lib/CalendarItem.svelte";
-	import { dateToStringHR, segregatePeriods as segregateItems, workdaysFilterByDate } from "$lib/helpers";
+	import CalendarItem from "$lib/components/CalendarItem.svelte";
+	import { dateToStringHR, segregatePeriods as segregateItems, workdaysFilterByDate } from "$lib/util/helpers";
 
 	const fromHour = 7;
 	const toHour = 22;

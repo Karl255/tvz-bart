@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy, setContext } from "svelte";
 	import { writable, type Writable } from "svelte/store";
-	import type { TabData, TabsContext } from "$lib/tabs";
+	import type { TabData, TabsContext } from "$lib/components/tabs/";
 
 	let tabs: TabData[] = [];
 	const selectedTab = writable<TabData | null>(null);

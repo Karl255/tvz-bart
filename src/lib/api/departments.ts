@@ -1,4 +1,4 @@
-const baseURL = "/.netlify/functions/departments";
+const baseURL = "/.netlify/functions/util/departments";
 
 export type ApiDepartment = {
 	Code: string;

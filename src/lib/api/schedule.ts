@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { buildURL } from "$lib/buildUrl";
-import { getAcademicYear } from "$lib/helpers";
+import { buildURL } from "$lib/util/buildUrl";
+import { getAcademicYear } from "$lib/util/helpers";
 
 const baseURL = "/.netlify/functions/schedule";
 

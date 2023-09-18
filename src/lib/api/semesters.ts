@@ -1,4 +1,4 @@
-import { buildURL } from "$lib/buildUrl";
+import { buildURL } from "$lib/util/buildUrl";
 
 const baseURL = "/.netlify/functions/semesters";
 
