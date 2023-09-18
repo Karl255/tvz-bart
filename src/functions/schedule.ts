@@ -1,5 +1,4 @@
 import type { Handler } from "@netlify/functions";
-import fetch from "node-fetch";
 
 const baseURL = "https://homer.tvz.hr/CalendarJson";
 
