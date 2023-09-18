@@ -2,8 +2,7 @@
 	import type { Temporal } from "@js-temporal/polyfill";
 	import { browser } from "$app/environment";
 
-	import { type ClassPeriod, type Schedule, fetchScheduleWeek, parseSchedule } from "$lib/api/schedule";
-	import { fetchSemesters, parseSemesters, type Semester } from "$lib/api/semesters";
+	import { fetchScheduleWeek, parseSchedule, fetchSemesters, parseSemesters, type Semester, type Schedule, type ClassPeriod } from "$lib/api";
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { type Department, fetchDepartments, parseNewDepartments } from "$lib/api/departments";
+	import { fetchDepartments, parseNewDepartments, type Department } from "$lib/api";
 
 	export let departmentCode: string;
 	let newDepartments: Department[] | null = null;

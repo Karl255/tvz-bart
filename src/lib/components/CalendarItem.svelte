@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ClassType, type ClassPeriodSegregated } from "$lib/api/schedule";
+	import { ClassType, type ClassPeriodSegregated } from "$lib/api";
 
 	export let classPeriod: ClassPeriodSegregated;
 	$: c = classPeriod;
