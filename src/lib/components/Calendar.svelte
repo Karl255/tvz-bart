@@ -55,6 +55,7 @@
 	}
 </script>
 
+<!-- prettier-ignore -->
 <div class="calendar" style="--from-hour: {fromHour}; --to-hour: {toHour}; --hour-range: {hourRange}">
 	{#each ["Time", "Pon", "Uto", "Sri", "Čet", "Pet"] as title}
 		<div class="calendar__header">
@@ -84,7 +85,12 @@
 						</p>
 					{:else}
 						{#each segregateItems(day) as item}
-							<CalendarItem classPeriod={item} on:click={onPeriodSelect} on:mouseenter={onPeriodPreview} on:mouseleave={onPeriodPreviewNone} />
+							<CalendarItem
+								classPeriod={item}
+								on:click={onPeriodSelect}
+								on:mouseenter={onPeriodPreview}
+								on:mouseleave={onPeriodPreviewNone}
+							/>
 						{/each}
 					{/if}
 				{/if}

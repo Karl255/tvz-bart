@@ -17,7 +17,12 @@
 	<h2>Select semester:</h2>
 	<div class="group">
 		{#each availableSemesters as semester, i}
-			<button class="btn" style="grid-column: {semester.semester};" data-i={i} on:click={click}>{semester.subdepartment} - {semester.semester}</button>
+			<button
+				class="btn"
+				style="grid-column: {semester.semester};"
+				data-i={i}
+				on:click={click}>{semester.subdepartment} - {semester.semester}</button
+			>
 		{/each}
 	</div>
 {/if}

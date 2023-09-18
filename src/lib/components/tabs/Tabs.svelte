@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, setContext } from "svelte";
-	import { writable, type Writable } from "svelte/store";
+	import { writable } from "svelte/store";
 	import type { TabData, TabsContext } from "$lib/components/tabs/";
 
 	let tabs: TabData[] = [];
@@ -32,7 +32,11 @@
 <ul class="tab-list">
 	{#each tabs as tab}
 		<li>
-			<button class="tab-button" class:selected={$selectedTab === tab} on:click={() => selectTab(tab)}>{tab.title}</button>
+			<button
+				class="tab-button"
+				class:selected={$selectedTab === tab}
+				on:click={() => selectTab(tab)}>{tab.title}</button
+			>
 		</li>
 	{:else}
 		<!-- so content doesn't jump around as the tabs are generated -->

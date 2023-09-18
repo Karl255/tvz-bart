@@ -50,7 +50,11 @@
 		}
 	}
 
-	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester | null, useBuiltinOverrides: boolean) {
+	async function loadSchedule(
+		weekStart: Temporal.PlainDate,
+		semester: Semester | null,
+		useBuiltinOverrides: boolean,
+	) {
 		if (browser && semester) {
 			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
 
@@ -89,14 +93,22 @@
 <div class="container">
 	<div class="panel panel--calendar">
 		<div class="panel--calendar__controls">
+			<!-- prettier-ignore -->
 			<div class="control-group">
 				<button class="btn" data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
 				<button class="btn" data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
 				<button class="btn" data-delta="-1" on:click={cycleWeek}>&lt;</button>
 			</div>
 
-			<button class="date-button" title="Go back to current week" on:click={resetWeek}>{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}</button>
+			<button
+				class="date-button"
+				title="Go back to current week"
+				on:click={resetWeek}
+			>
+				{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}
+			</button>
 
+			<!-- prettier-ignore -->
 			<div class="control-group">
 				<button class="btn" data-delta="1" on:click={cycleWeek}>&gt;</button>
 				<button class="btn" data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
@@ -104,18 +116,27 @@
 			</div>
 		</div>
 
-		<Calendar {schedule} from={currentMonday} bind:selectedPeriod bind:previewedPeriod />
+		<Calendar
+			{schedule}
+			from={currentMonday}
+			bind:selectedPeriod
+			bind:previewedPeriod
+		/>
 	</div>
 
 	<div class="panel panel--info-preview">
 		<ClassPeriodInfo classPeriod={previewedPeriod}>
-			<p class="description">Put your mouse over an item in the calendar and details about it will appear here.</p>
+			<p class="description">
+				Put your mouse over an item in the calendar and details about it will appear here.
+			</p>
 		</ClassPeriodInfo>
 	</div>
 
 	<div class="panel panel--info-selected">
 		<ClassPeriodInfo classPeriod={selectedPeriod}>
-			<p class="description">Click on an item in the calendar to select it and details about it will show in here.</p>
+			<p class="description">
+				Click on an item in the calendar to select it and details about it will show in here.
+			</p>
 		</ClassPeriodInfo>
 	</div>
 
@@ -123,22 +144,41 @@
 		<Tabs>
 			<Tab title="Schedule picker">
 				<DepartmentPicker bind:departmentCode={currentSettings.departmentCode} />
-				<SemesterPicker {availableSemesters} bind:semester={currentSettings.semester} />
+				<SemesterPicker
+					{availableSemesters}
+					bind:semester={currentSettings.semester}
+				/>
 			</Tab>
 
 			<Tab title="Settings">
 				<div class="settings-controls">
 					<div>
-						<input type="checkbox" name="use-builtin-overrides" bind:checked={currentSettings.useBuiltinOverrides}>
+						<input
+							type="checkbox"
+							name="use-builtin-overrides"
+							bind:checked={currentSettings.useBuiltinOverrides}
+						/>
 						<label for="use-builtin-overrides">Use built-in overrides</label>
 					</div>
+
 					<div>
-						<input type="checkbox" name="autosave" bind:checked={currentSettings.autoSave}>
+						<input
+							type="checkbox"
+							name="autosave"
+							bind:checked={currentSettings.autoSave}
+						/>
 						<label for="autosave">Auto-save</label>
 					</div>
+
+					<!-- prettier-ignore -->
 					<button class="btn" on:click={manualSave}>Save settings</button>
+					<!-- prettier-ignore -->
 					<button class="btn" on:click={resetSettings}>Reset settings</button>
-					<p>Settings include the selected department and semester as well as user-set overrides (added in a future version).</p>
+
+					<p>
+						Settings include the selected department and semester as well as user-set overrides (added in a
+						future version).
+					</p>
 				</div>
 			</Tab>
 

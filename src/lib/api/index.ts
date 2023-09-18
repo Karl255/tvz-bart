@@ -40,14 +40,14 @@ export const supportedDepartments = [
 ];
 
 export async function fetchDepartments(): Promise<UnparsedDepartment[]> {
-	let res = await fetch(new URL(endpoints.departments, document.URL));
+	const res = await fetch(new URL(endpoints.departments, document.URL));
 	return await res.json();
 }
 
 export function parseNewDepartments(apiDepartments: UnparsedDepartment[]): Department[] {
 	// remove known departments
 	supportedDepartments.forEach(supported => {
-		let i = apiDepartments.findIndex(fromApi => {
+		const i = apiDepartments.findIndex(fromApi => {
 			return fromApi.Code === supported;
 		});
 
@@ -153,9 +153,9 @@ function parseClassPeriod(apiClassPeriod: UnparsedClassPeriod): [number, ClassPe
 	}
 	const titleMatches = t!;
 
-	const note = titleMatches[6] ? /^Napomena: (.*)\<br\/\>$/.exec(titleMatches[6])![1] : null;
+	const note = titleMatches[6] ? /^Napomena: (.*)<br\/>$/.exec(titleMatches[6])![1] : null;
 
-	const group = titleMatches[7] ? /^Grupa: (.*)\<br\/\>$/.exec(titleMatches[7])![1] : null;
+	const group = titleMatches[7] ? /^Grupa: (.*)<br\/>$/.exec(titleMatches[7])![1] : null;
 
 	const classPeriod: ClassPeriod = {
 		id: Number(apiClassPeriod.id),

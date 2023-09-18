@@ -5,15 +5,18 @@
 </script>
 
 {#if classPeriod}
-	<!-- <p><b>ID:</b> {classPeriod.id}</p> -->
-	<!-- <p><b>Color:</b> {classPeriod.apiColor}</p> -->
-	<p>{classPeriod.start.toString({ smallestUnit: "minutes" })} - {classPeriod.end.toString({ smallestUnit: "minutes" })}</p>
+	<p>
+		{classPeriod.start.toString({ smallestUnit: "minutes" })} - {classPeriod.end.toString({
+			smallestUnit: "minutes",
+		})}
+	</p>
+
 	<p><strong>{classPeriod.className}</strong></p>
 	<p>{classPeriod.classType}</p>
 	<p>{classPeriod.classroom}</p>
 
 	{#if classPeriod.group || classPeriod.note}
-		<br>
+		<br />
 	{/if}
 
 	{#if classPeriod.group}
@@ -24,7 +27,7 @@
 		<p><b>Napomena:</b> {classPeriod.note}</p>
 	{/if}
 
-	<br>
+	<br />
 
 	<p>{classPeriod.professor}</p>
 	<p><strong>{classPeriod.courseName}</strong></p>

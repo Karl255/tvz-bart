@@ -10,6 +10,7 @@
 	registerTab(thisTab);
 </script>
 
+<!-- prettier-ignore -->
 <div class="tab-content" class:selected={$selectedTab === thisTab}>
 	<slot />
 </div>
@@ -26,7 +27,7 @@
 		&.selected {
 			visibility: visible;
 		}
-		
+
 		:global(.tab-content) + & {
 			border-radius: 0.5rem;
 		}

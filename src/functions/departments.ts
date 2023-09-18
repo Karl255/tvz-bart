@@ -1,7 +1,7 @@
 import type { Handler } from "@netlify/functions";
-import { makeForwardHandler } from "../functions-lib/functions-helpers";
+import { makeForwardingHandler } from "../functions-lib/functions-helpers";
 import endpoints from "../functions-lib/endpoints";
 
-const handler: Handler = makeForwardHandler(endpoints.departments);
+const handler: Handler = makeForwardingHandler(endpoints.departments);
 
 export { handler };

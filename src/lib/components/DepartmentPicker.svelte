@@ -24,6 +24,7 @@
 </script>
 
 <h2>Select department:</h2>
+<!-- prettier-ignore -->
 <div class="groups">
 	<div class="group">
 		<div class="col">
@@ -78,7 +79,12 @@
 	<div class="new-deps">
 		{#if newDepartments}
 			{#each newDepartments as newDepartment}
-				<button class="btn" on:click={click} data-dep={newDepartment.code} title={newDepartment.name}>{newDepartment.code}</button>
+				<button
+					class="btn"
+					on:click={click}
+					data-dep={newDepartment.code}
+					title={newDepartment.name}>{newDepartment.code}</button
+				>
 			{/each}
 		{/if}
 	</div>
