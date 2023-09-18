@@ -61,7 +61,7 @@ export function parseNewDepartments(apiDepartments: UnparsedDepartment[]): Depar
 			({
 				code: d.Code,
 				name: d.Name,
-			} as Department)
+			}) as Department,
 	);
 }
 
@@ -83,7 +83,7 @@ export function parseSemesters(apiSemesters: UnparsedSemester[]): Semester[] {
 			({
 				semester: Number(s.SemesterNumber),
 				subdepartment: s.Department,
-			} as Semester)
+			}) as Semester,
 	);
 }
 
@@ -103,7 +103,7 @@ import {
 export async function fetchScheduleWeek(
 	department: string,
 	semester: number,
-	from: Temporal.PlainDate
+	from: Temporal.PlainDate,
 ): Promise<UnparsedSchedule> {
 	const to = from.add({ days: 6 });
 	const year = getAcademicYear(from);
@@ -143,7 +143,7 @@ const titleParsingRegex = new RegExp(
 		"(Grupa: [^<]*\\<br\\/\\>)?",
 		"Broj studenata na kolegiju\\: (\\d+|Nepoznato)",
 		"$",
-	].join("")
+	].join(""),
 );
 
 function parseClassPeriod(apiClassPeriod: UnparsedClassPeriod): [number, ClassPeriod] {

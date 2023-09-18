@@ -47,8 +47,8 @@ export enum ClassType {
 	Lecture = "Predavanja",
 	AuditoryExercises = "Auditorne vježbe",
 	Lab = "Laboratorijske vježbe",
-	Other = "Ostalo"
-};
+	Other = "Ostalo",
+}
 
 export type ClassPeriod = {
 	id: number;

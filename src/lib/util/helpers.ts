@@ -15,12 +15,11 @@ function timeIsBetween(t: Temporal.PlainTime, start: Temporal.PlainTime, end: Te
 }
 
 function periodsIntersect(p1: ClassPeriod, p2: ClassPeriod): boolean {
-	return timeIsBetween(p1.start, p2.start, p2.end)
-		|| timeIsBetween(p2.start, p1.start, p1.end);
+	return timeIsBetween(p1.start, p2.start, p2.end) || timeIsBetween(p2.start, p1.start, p1.end);
 }
 
 export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[] {
-	const segregated = periods.map(p => ({ ...p, column: 1, width: 1 } as ClassPeriodSegregated));
+	const segregated = periods.map(p => ({ ...p, column: 1, width: 1 }) as ClassPeriodSegregated);
 
 	// segregate into columns
 	let overlaps: boolean;
@@ -44,7 +43,11 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 					overlaps = true;
 
 					if (segregated[j].id === 10537070) {
-						console.log(`pushed into next column by [${segregated[i].start.toJSON()} - ${segregated[i].end.toJSON()}] in column ${segregated[i].column}`);
+						console.log(
+							`pushed into next column by [${segregated[i].start.toJSON()} - ${segregated[
+								i
+							].end.toJSON()}] in column ${segregated[i].column}`,
+						);
 						console.log(`${segregated[j].id} is now in column ${segregated[j].column}`);
 					}
 				}
@@ -58,7 +61,11 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 	for (let i = 0; i < periods.length; i++) {
 		let isUnobstructed = true;
 		for (let j = 0; j < periods.length; j++) {
-			if (i !== j && segregated[i].column < segregated[j].column && periodsIntersect(segregated[i], segregated[j])) {
+			if (
+				i !== j &&
+				segregated[i].column < segregated[j].column &&
+				periodsIntersect(segregated[i], segregated[j])
+			) {
 				isUnobstructed = false;
 				break;
 			}

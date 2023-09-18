@@ -31,11 +31,13 @@ export type Override = {
 };
 
 function doesOverrideMatch(c: ClassPeriod, e: Override["forEvent"]): boolean {
-	return c.className === e.className
-		&& c.classroom === e.classroom
-		&& c.start.equals(e.start)
-		&& c.end.equals(e.end)
-		&& c.date.dayOfWeek === e.dayOfWeek;
+	return (
+		c.className === e.className &&
+		c.classroom === e.classroom &&
+		c.start.equals(e.start) &&
+		c.end.equals(e.end) &&
+		c.date.dayOfWeek === e.dayOfWeek
+	);
 }
 
 function findOverride(classPeriod: ClassPeriod, overrides: Override[]): Override | null {
@@ -79,23 +81,26 @@ function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]):
 	});
 }
 
-export function applyOverrides(schedule: Schedule, academicYear: number, semester: Semester, overrides: Override[]): Schedule {
-	overrides = overrides
-		.filter(o => {
-			const e = o.forEvent;
-			return e.subdepartment === semester.subdepartment
-				&& e.semester === semester.semester
-				&& e.academicYear === academicYear;
-		});
+export function applyOverrides(
+	schedule: Schedule,
+	academicYear: number,
+	semester: Semester,
+	overrides: Override[],
+): Schedule {
+	overrides = overrides.filter(o => {
+		const e = o.forEvent;
+		return (
+			e.subdepartment === semester.subdepartment &&
+			e.semester === semester.semester &&
+			e.academicYear === academicYear
+		);
+	});
 
-	const classesKV = [...schedule.workdays.values()]
-		.flatMap<[number, ClassPeriod]>(c => {
-			const override = findOverride(c, overrides);
+	const classesKV = [...schedule.workdays.values()].flatMap<[number, ClassPeriod]>(c => {
+		const override = findOverride(c, overrides);
 
-			return override === null
-				? [[c.id, c]]
-				: applyOverride(c, override.replacements);
-		});
+		return override === null ? [[c.id, c]] : applyOverride(c, override.replacements);
+	});
 
 	return {
 		holidays: schedule.holidays,
