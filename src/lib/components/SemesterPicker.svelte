@@ -2,13 +2,13 @@
 	import type { Semester } from "$lib/api";
 
 	export let availableSemesters: Semester[] = [];
-	export let semester: Semester | null;
+	export let selectedSemester: Semester | null;
 
 	function click(e: MouseEvent) {
 		const element = e.currentTarget as HTMLButtonElement;
 
 		if (element.dataset.i) {
-			semester = availableSemesters[Number(element.dataset.i)];
+			selectedSemester = availableSemesters[Number(element.dataset.i)];
 		}
 	}
 </script>

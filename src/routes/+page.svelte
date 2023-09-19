@@ -2,7 +2,15 @@
 	import { browser } from "$app/environment";
 	import type { Temporal } from "@js-temporal/polyfill";
 
-	import { getSemesters, getWeekSchedule, type ClassPeriod, type Schedule, type Semester } from "$lib/api";
+	import {
+		getDepartments,
+		getSemesters,
+		getWeekSchedule,
+		type ClassPeriod,
+		type Department,
+		type Schedule,
+		type Semester,
+	} from "$lib/api";
 	import { dateToStringHr, getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
@@ -25,15 +33,23 @@
 		}
 	}
 
+	let availableDepartments: Department[] = [];
 	let availableSemesters: Semester[] = [];
 	let schedule: Schedule | null = null;
 	let currentMonday = thisMonday();
 
+	$: loadDepartments();
 	$: loadSemesters(currentSettings.departmentCode);
 	$: loadSchedule(currentMonday, currentSettings.semester, currentSettings.useBuiltinOverrides);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
+
+	async function loadDepartments() {
+		if (browser) {
+			availableDepartments = await getDepartments();
+		}
+	}
 
 	async function loadSemesters(departmentCode: string) {
 		if (browser) {
@@ -132,10 +148,13 @@
 	<div class="panel panel--options">
 		<Tabs>
 			<Tab title="Schedule picker">
-				<DepartmentPicker bind:departmentCode={currentSettings.departmentCode} />
+				<DepartmentPicker
+					departments={availableDepartments}
+					bind:selectedDepartmentCode={currentSettings.departmentCode}
+				/>
 				<SemesterPicker
 					{availableSemesters}
-					bind:semester={currentSettings.semester}
+					bind:selectedSemester={currentSettings.semester}
 				/>
 			</Tab>
 

@@ -1,22 +1,15 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-	import { getDepartments, type Department } from "$lib/api";
+	import type { Department } from "$lib/api";
 	import { groupBy, partition } from "$lib/util/array-util";
 
-	export let departmentCode: string;
-	let departments: Department[] | null = null;
-
-	if (browser) {
-		(async () => {
-			departments = await getDepartments();
-		})();
-	}
+	export let departments: Department[];
+	export let selectedDepartmentCode: string;
 
 	function click(e: MouseEvent) {
 		const element = e.currentTarget as HTMLButtonElement;
 
 		if (element.dataset.dep) {
-			departmentCode = element.dataset.dep;
+			selectedDepartmentCode = element.dataset.dep;
 		}
 	}
 
