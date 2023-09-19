@@ -1,5 +1,5 @@
-export function buildUrl(base: string, params: Record<string, string | number>): URL {
-	const url = new URL(base, document.URL);
+export function buildUrl(endpoint: string, base: string | undefined, params: Record<string, string | number>): URL {
+	const url = new URL(endpoint, base);
 
 	for (const key in params) {
 		url.searchParams.append(key, params[key].toString());

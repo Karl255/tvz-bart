@@ -42,7 +42,7 @@ export async function fetchScheduleWeek(
 	const to = from.add({ days: 6 });
 	const year = getAcademicYear(from);
 
-	const url = buildUrl(localEndpoints.schedule, {
+	const url = buildUrl(localEndpoints.schedule, document.URL, {
 		department,
 		semester,
 		year,

@@ -8,7 +8,7 @@ type UnparsedSemester = {
 };
 
 export async function fetchSemesters(department: string, year: number): Promise<UnparsedSemester[]> {
-	const url = buildUrl(localEndpoints.semesters, {
+	const url = buildUrl(localEndpoints.semesters, document.URL, {
 		department,
 		year,
 	});

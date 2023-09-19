@@ -5,7 +5,7 @@ export function makeForwardingHandler(forwardToUrl: string): Handler {
 	return async event => {
 		const { queryStringParameters } = event;
 
-		const url = buildUrl(forwardToUrl, queryStringParameters as Record<string, string | number>);
+		const url = buildUrl(forwardToUrl, undefined, queryStringParameters as Record<string, string | number>);
 		const result = await fetch(url.toString());
 
 		return {
