@@ -2,7 +2,7 @@
 	import { Temporal } from "@js-temporal/polyfill";
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/api";
 	import { dateToStringHR, segregatePeriods as segregateItems, workdaysFilterByDate } from "$lib/util/helpers";
-	import CalendarItem from "./CalendarItem.svelte";
+	import CalendarItem from "./TimetableItem.svelte";
 
 	const fromHour = 7;
 	const toHour = 22;

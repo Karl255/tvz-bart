@@ -8,7 +8,7 @@
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
-	import { Calendar } from "$lib/components/calendar";
+	import { Calendar } from "$lib/components/timetable";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
