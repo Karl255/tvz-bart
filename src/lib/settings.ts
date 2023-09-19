@@ -1,4 +1,3 @@
-import { supportedDepartments } from "$lib/api";
 import type { Semester } from "$lib/api";
 
 export type Settings = {
@@ -10,7 +9,7 @@ export type Settings = {
 
 export const defaultSettings: Settings = {
 	autoSave: true,
-	departmentCode: supportedDepartments[6],
+	departmentCode: "RAC",
 	semester: {
 		semester: 3,
 		subdepartment: "PRIN",
