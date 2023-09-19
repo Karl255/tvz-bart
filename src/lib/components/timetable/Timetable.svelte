@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Temporal } from "@js-temporal/polyfill";
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/api";
-	import { dateToStringHR, segregatePeriods as segregateItems, workdaysFilterByDate } from "$lib/util/helpers";
+	import { dateToStringHr } from "$lib/util/datetime-helpers";
+	import { segregatePeriods, workdaysFilterByDate } from "$lib/util/timetable-helpers";
+	import { Temporal } from "@js-temporal/polyfill";
 	import CalendarItem from "./TimetableItem.svelte";
 
 	const fromHour = 7;
@@ -79,12 +80,12 @@
 				{#if day}
 					{#if "title" in day}
 						<p class="calendar__holiday">
-							{dateToStringHR(day.date)}
+							{dateToStringHr(day.date)}
 							<br />
 							{day.title}
 						</p>
 					{:else}
-						{#each segregateItems(day) as item}
+						{#each segregatePeriods(day) as item}
 							<CalendarItem
 								classPeriod={item}
 								on:click={onPeriodSelect}

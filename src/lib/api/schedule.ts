@@ -1,4 +1,4 @@
-import { buildUrl } from "$lib/util/url";
+import { buildUrl } from "$lib/util/url-util";
 import {
 	ClassType,
 	type ClassPeriod,
@@ -9,9 +9,9 @@ import {
 } from "./model";
 
 import { localEndpoints } from "$lib/const/api";
-import { getAcademicYear } from "$lib/util/helpers";
+import { partition } from "$lib/util/array-util";
+import { getAcademicYear } from "$lib/util/datetime-helpers";
 import { Temporal } from "@js-temporal/polyfill";
-import { partition } from "$lib/util/array";
 
 type UnparsedClassPeriod = {
 	id: number;

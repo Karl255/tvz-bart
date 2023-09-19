@@ -62,7 +62,6 @@ function applyOverride(original: ClassPeriod, overrides: ClassPeriodOverride[]):
 			id,
 			{
 				id,
-				apiColor: original.apiColor,
 
 				date: original.date,
 				start: Temporal.PlainTime.from(o.start),

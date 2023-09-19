@@ -3,13 +3,13 @@
 	import type { Temporal } from "@js-temporal/polyfill";
 
 	import { getSemesters, getWeekSchedule, type ClassPeriod, type Schedule, type Semester } from "$lib/api";
-	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
+	import { dateToStringHr, getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
-	import { Calendar } from "$lib/components/timetable";
 	import { Tab, Tabs } from "$lib/components/tabs/";
+	import { Timetable } from "$lib/components/timetable";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
 	import { applyOverrides } from "$lib/overrides";
@@ -94,7 +94,7 @@
 				title="Go back to current week"
 				on:click={resetWeek}
 			>
-				{dateToStringHR(currentMonday)} - {dateToStringHR(currentMonday.add({ days: 4 }))}
+				{dateToStringHr(currentMonday)} - {dateToStringHr(currentMonday.add({ days: 4 }))}
 			</button>
 
 			<!-- prettier-ignore -->
@@ -105,7 +105,7 @@
 			</div>
 		</div>
 
-		<Calendar
+		<Timetable
 			{schedule}
 			from={currentMonday}
 			bind:selectedPeriod

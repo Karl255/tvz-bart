@@ -1,21 +1,8 @@
-import { dev } from "$app/environment";
 import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/api/model";
 import { Temporal } from "@js-temporal/polyfill";
 
-export function leading0(x: number, digits: number): string {
-	return x.toString().padStart(digits, "0");
-}
-
 export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDate): ClassPeriod[] {
 	return [...schedule.workdays.values()].filter(c => date.equals(c.date));
-}
-
-function timeIsBetween(t: Temporal.PlainTime, start: Temporal.PlainTime, end: Temporal.PlainTime): boolean {
-	return Temporal.PlainTime.compare(t, start) >= 0 && Temporal.PlainTime.compare(t, end) < 0;
-}
-
-function periodsIntersect(p1: ClassPeriod, p2: ClassPeriod): boolean {
-	return timeIsBetween(p1.start, p2.start, p2.end) || timeIsBetween(p2.start, p1.start, p1.end);
 }
 
 export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[] {
@@ -79,19 +66,10 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 	return segregated;
 }
 
-export function getThisWeeksMonday(day: Temporal.PlainDate): Temporal.PlainDate {
-	return day.subtract({ days: day.dayOfWeek - 1 });
+function periodsIntersect(p1: ClassPeriod, p2: ClassPeriod): boolean {
+	return timeIsBetween(p1.start, p2.start, p2.end) || timeIsBetween(p2.start, p1.start, p1.end);
 }
 
-export function dateToStringHR(date: Temporal.PlainDate): string {
-	return `${leading0(date.day, 2)}.${leading0(date.month, 2)}.${leading0(date.year, 4)}.`;
-}
-
-export function getAcademicYear(d: Temporal.PlainDate): number {
-	// starts October, ends September
-	return d.month >= 10 ? d.year : d.year - 1;
-}
-
-export function thisMonday() {
-	return getThisWeeksMonday(dev ? Temporal.PlainDate.from("2023-03-06") : Temporal.Now.plainDateISO());
+function timeIsBetween(t: Temporal.PlainTime, start: Temporal.PlainTime, end: Temporal.PlainTime): boolean {
+	return Temporal.PlainTime.compare(t, start) >= 0 && Temporal.PlainTime.compare(t, end) < 0;
 }

@@ -1,5 +1,5 @@
 import { localEndpoints } from "$lib/const/api";
-import { buildUrl } from "$lib/util/url";
+import { buildUrl } from "$lib/util/url-util";
 import type { Semester } from "./model";
 
 type UnparsedSemester = {

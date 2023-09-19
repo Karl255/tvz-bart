@@ -1,1 +1,1 @@
-export { default as Calendar } from "./Timetable.svelte";
+export { default as Timetable } from "./Timetable.svelte";

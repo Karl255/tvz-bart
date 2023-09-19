@@ -1,4 +1,4 @@
-import { buildUrl } from "$lib/util/url";
+import { buildUrl } from "$lib/util/url-util";
 import type { Handler } from "@netlify/functions";
 
 export function makeForwardingHandler(forwardToUrl: string): Handler {
