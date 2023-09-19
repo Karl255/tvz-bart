@@ -1,5 +1,5 @@
 [dev]
-	command = "npm run dev -- --open"
+	command = "npx vite dev"
 	framework = "svelte-kit"
 
 [functions]
