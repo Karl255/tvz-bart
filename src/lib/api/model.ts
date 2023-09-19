@@ -22,7 +22,6 @@ export enum ClassType {
 
 export type ClassPeriod = {
 	id: number;
-	apiColor: string | null;
 
 	date: Temporal.PlainDate;
 	start: Temporal.PlainTime;
