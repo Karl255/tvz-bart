@@ -14,7 +14,7 @@
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
-	import Calendar from "$lib/components/Calendar.svelte";
+	import { Calendar } from "$lib/components/calendar";
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";

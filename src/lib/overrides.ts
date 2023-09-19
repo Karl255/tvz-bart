@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
-import type { ClassPeriod, Schedule } from "$lib/api/schedule";
-import type { Semester } from "$lib/api/semesters";
+import type { ClassPeriod, Schedule } from "$lib/api";
+import type { Semester } from "$lib/api";
 
 export type ClassPeriodOverride = {
 	start: string;
