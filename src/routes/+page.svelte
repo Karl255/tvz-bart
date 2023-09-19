@@ -2,15 +2,7 @@
 	import { browser } from "$app/environment";
 	import type { Temporal } from "@js-temporal/polyfill";
 
-	import {
-		fetchScheduleWeek,
-		fetchSemesters,
-		parseSchedule,
-		parseSemesters,
-		type ClassPeriod,
-		type Schedule,
-		type Semester,
-	} from "$lib/api";
+	import { getSemesters, getWeekSchedule, type ClassPeriod, type Schedule, type Semester } from "$lib/api";
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
@@ -45,8 +37,7 @@
 
 	async function loadSemesters(departmentCode: string) {
 		if (browser) {
-			const res = await fetchSemesters(departmentCode, getAcademicYear(currentMonday));
-			availableSemesters = parseSemesters(res);
+			availableSemesters = await getSemesters(departmentCode, getAcademicYear(currentMonday));
 		}
 	}
 
@@ -56,9 +47,7 @@
 		useBuiltinOverrides: boolean,
 	) {
 		if (browser && semester) {
-			const res = await fetchScheduleWeek(semester.subdepartment, semester.semester, weekStart);
-
-			let scheduleTemp = parseSchedule(res);
+			let scheduleTemp = await getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
 
 			if (useBuiltinOverrides) {
 				scheduleTemp = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, builtinOverrides);

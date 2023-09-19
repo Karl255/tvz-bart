@@ -34,25 +34,6 @@ type UnparsedHoliday = {
 
 type UnparsedSchedule = (UnparsedClassPeriod | UnparsedHoliday)[];
 
-export async function fetchScheduleWeek(
-	department: string,
-	semester: number,
-	from: Temporal.PlainDate,
-): Promise<UnparsedSchedule> {
-	const to = from.add({ days: 6 });
-	const year = getAcademicYear(from);
-
-	const url = buildUrl(localEndpoints.schedule, document.URL, {
-		department,
-		semester,
-		year,
-		start: from.toString({ calendarName: "never" }),
-		end: to.toString({ calendarName: "never" }),
-	});
-
-	return await (await fetch(url)).json();
-}
-
 function parseClassType(s: string): ClassType {
 	const entry = Object.entries(ClassType).filter(entry => entry[1] === s)[0];
 
@@ -106,7 +87,7 @@ function parseClassPeriod(apiClassPeriod: UnparsedClassPeriod): [number, ClassPe
 	return [classPeriod.id, classPeriod];
 }
 
-export function parseSchedule(apiSchedule: UnparsedSchedule): Schedule {
+function parseSchedule(apiSchedule: UnparsedSchedule): Schedule {
 	const apiClassPeriods = apiSchedule.filter(x => x.id !== null) as UnparsedClassPeriod[];
 	const apiHolidaysKV = (apiSchedule.filter(x => x.id === null) as UnparsedHoliday[])
 		.map(parseHoliday)
@@ -120,4 +101,23 @@ export function parseSchedule(apiSchedule: UnparsedSchedule): Schedule {
 		holidays: new Map<StringPlainDate, Holiday>(apiHolidaysKV),
 		workdays: new Map<number, ClassPeriod>(workdaysKV),
 	};
+}
+
+export async function getWeekSchedule(
+	department: string,
+	semester: number,
+	from: Temporal.PlainDate,
+): Promise<Schedule> {
+	const url = buildUrl(localEndpoints.schedule, document.URL, {
+		department,
+		semester,
+		year: getAcademicYear(from),
+		start: from.toString({ calendarName: "never" }),
+		end: from.add({ days: 6 }).toString({ calendarName: "never" }),
+	});
+
+	const response = await fetch(url);
+	const unparsedSchedule: UnparsedSchedule = await response.json();
+
+	return parseSchedule(unparsedSchedule);
 }

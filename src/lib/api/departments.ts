@@ -38,28 +38,16 @@ export const supportedDepartments = [
 	"ISPECSIGEN",
 ];
 
-export async function fetchDepartments(): Promise<UnparsedDepartment[]> {
-	const res = await fetch(new URL(localEndpoints.departments, document.URL));
-	return await res.json();
+function parseDepartment(unparsedDepartment: UnparsedDepartment): Department {
+	return {
+		code: unparsedDepartment.Code,
+		name: unparsedDepartment.Name,
+	};
 }
 
-export function parseNewDepartments(apiDepartments: UnparsedDepartment[]): Department[] {
-	// remove known departments
-	supportedDepartments.forEach(supported => {
-		const i = apiDepartments.findIndex(fromApi => {
-			return fromApi.Code === supported;
-		});
+export async function getNewDepartments(): Promise<Department[]> {
+	const response = await fetch(new URL(localEndpoints.departments, document.URL));
+	const unparsedDepartments: UnparsedDepartment[] = await response.json();
 
-		if (i !== -1) {
-			apiDepartments.splice(i, 1);
-		}
-	});
-
-	return apiDepartments.map(
-		d =>
-			({
-				code: d.Code,
-				name: d.Name,
-			}) as Department,
-	);
+	return unparsedDepartments.map(parseDepartment).filter(d => !supportedDepartments.includes(d.code));
 }

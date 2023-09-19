@@ -1,17 +1,14 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { fetchDepartments, parseNewDepartments, type Department } from "$lib/api";
+	import { getNewDepartments, type Department } from "$lib/api";
 
 	export let departmentCode: string;
 	let newDepartments: Department[] | null = null;
 
 	if (browser) {
-		loadDepartments();
-	}
-
-	async function loadDepartments() {
-		let deps = await fetchDepartments();
-		newDepartments = parseNewDepartments(deps);
+		(async () => {
+			newDepartments = await getNewDepartments();
+		})();
 	}
 
 	function click(e: MouseEvent) {

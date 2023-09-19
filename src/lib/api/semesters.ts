@@ -7,21 +7,21 @@ type UnparsedSemester = {
 	Department: string;
 };
 
-export async function fetchSemesters(department: string, year: number): Promise<UnparsedSemester[]> {
+function parseSemester(unparsedSemester: UnparsedSemester): Semester {
+	return {
+		semester: Number(unparsedSemester.SemesterNumber),
+		subdepartment: unparsedSemester.Department,
+	};
+}
+
+export async function getSemesters(department: string, year: number): Promise<Semester[]> {
 	const url = buildUrl(localEndpoints.semesters, document.URL, {
 		department,
 		year,
 	});
 
-	return await (await fetch(url)).json();
-}
+	const response = await fetch(url);
+	const unparsedSemesters: UnparsedSemester[] = await response.json();
 
-export function parseSemesters(apiSemesters: UnparsedSemester[]): Semester[] {
-	return apiSemesters.map(
-		s =>
-			({
-				semester: Number(s.SemesterNumber),
-				subdepartment: s.Department,
-			}) as Semester,
-	);
+	return unparsedSemesters.map(parseSemester);
 }
