@@ -12,3 +12,13 @@ export function partition<T1, T2>(items: (T1 | T2)[], predicate: (item: T1 | T2)
 		[[], []],
 	);
 }
+
+export function groupBy<T>(items: T[], keyExtractor: (item: T) => string): { [key: string]: T[] } {
+	return items.reduce<{ [key: string]: T[] }>((groups, item) => {
+		const key = keyExtractor(item);
+
+		(groups[key] = groups[key] || []).push(item);
+
+		return groups;
+	}, {});
+}
