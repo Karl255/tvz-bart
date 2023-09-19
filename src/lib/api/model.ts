@@ -1,47 +1,17 @@
 import type { Temporal } from "@js-temporal/polyfill";
 
-export type UnparsedDepartment = {
-	Code: string;
-	Name: string;
-};
+export type StringPlainDate = string;
+export type StringPlainDateTime = string;
 
 export type Department = {
 	code: string;
 	name: string;
-};
-export type UnparsedSemester = {
-	SemesterNumber: string;
-	Department: string;
 };
 
 export type Semester = {
 	semester: number;
 	subdepartment: string;
 };
-export type StringPlainDate = string;
-export type StringPlainDateTime = string;
-
-export type UnparsedClassPeriod = {
-	id: number;
-	title: string;
-	start: StringPlainDateTime;
-	end: StringPlainDateTime;
-	allDay: false;
-	color: string | null;
-	editable: false;
-};
-
-export type UnparsedHoliday = {
-	id: null;
-	title: "nedjelja" | string;
-	start: StringPlainDate;
-	end: null;
-	allDay: true;
-	color: "Red";
-	editable: false;
-};
-
-export type UnparsedSchedule = (UnparsedClassPeriod | UnparsedHoliday)[];
 
 export enum ClassType {
 	Lecture = "Predavanja",

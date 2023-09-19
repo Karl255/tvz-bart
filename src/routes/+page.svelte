@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { Temporal } from "@js-temporal/polyfill";
 	import { browser } from "$app/environment";
+	import type { Temporal } from "@js-temporal/polyfill";
 
 	import {
 		fetchScheduleWeek,
-		parseSchedule,
 		fetchSemesters,
+		parseSchedule,
 		parseSemesters,
-		type Semester,
-		type Schedule,
 		type ClassPeriod,
+		type Schedule,
+		type Semester,
 	} from "$lib/api";
 	import { dateToStringHR, getAcademicYear, thisMonday } from "$lib/util/helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
-	import { Calendar } from "$lib/components/calendar";
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
-	import { Tab, Tabs } from "$lib/components/tabs/";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
+	import { Calendar } from "$lib/components/calendar";
+	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
 	import { applyOverrides } from "$lib/overrides";
