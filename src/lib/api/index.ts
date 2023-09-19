@@ -1,11 +1,22 @@
-import type { UnparsedDepartment, Department } from "./model";
+import type { Department, UnparsedDepartment } from "./model";
 export * from "./model";
 
-const endpoints = {
-	departments: "/.netlify/functions/departments",
-	semesters: "/.netlify/functions/semesters",
-	schedule: "/.netlify/functions/schedule",
-};
+import { buildUrl } from "$lib/util/url";
+import type { Semester, UnparsedSemester } from "./model";
+
+import { localEndpoints } from "$lib/const/api";
+import { getAcademicYear } from "$lib/util/helpers";
+import { Temporal } from "@js-temporal/polyfill";
+import {
+	ClassType,
+	type ClassPeriod,
+	type Holiday,
+	type Schedule,
+	type StringPlainDate,
+	type UnparsedClassPeriod,
+	type UnparsedHoliday,
+	type UnparsedSchedule,
+} from "./model";
 
 // to detect new departments
 export const supportedDepartments = [
@@ -40,7 +51,7 @@ export const supportedDepartments = [
 ];
 
 export async function fetchDepartments(): Promise<UnparsedDepartment[]> {
-	const res = await fetch(new URL(endpoints.departments, document.URL));
+	const res = await fetch(new URL(localEndpoints.departments, document.URL));
 	return await res.json();
 }
 
@@ -65,11 +76,8 @@ export function parseNewDepartments(apiDepartments: UnparsedDepartment[]): Depar
 	);
 }
 
-import { buildURL } from "$lib/util/buildUrl";
-import type { UnparsedSemester, Semester } from "./model";
-
 export async function fetchSemesters(department: string, year: number): Promise<UnparsedSemester[]> {
-	const url = buildURL(endpoints.semesters, {
+	const url = buildUrl(localEndpoints.semesters, {
 		department,
 		year,
 	});
@@ -87,19 +95,6 @@ export function parseSemesters(apiSemesters: UnparsedSemester[]): Semester[] {
 	);
 }
 
-import { Temporal } from "@js-temporal/polyfill";
-import { getAcademicYear } from "$lib/util/helpers";
-import {
-	ClassType,
-	type UnparsedClassPeriod,
-	type UnparsedHoliday,
-	type UnparsedSchedule,
-	type ClassPeriod,
-	type Holiday,
-	type Schedule,
-	type StringPlainDate,
-} from "./model";
-
 export async function fetchScheduleWeek(
 	department: string,
 	semester: number,
@@ -108,7 +103,7 @@ export async function fetchScheduleWeek(
 	const to = from.add({ days: 6 });
 	const year = getAcademicYear(from);
 
-	const url = buildURL(endpoints.schedule, {
+	const url = buildUrl(localEndpoints.schedule, {
 		department,
 		semester,
 		year,

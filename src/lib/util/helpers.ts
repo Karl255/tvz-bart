@@ -1,6 +1,6 @@
-import { Temporal } from "@js-temporal/polyfill";
-import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/api/model";
 import { dev } from "$app/environment";
+import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/api/model";
+import { Temporal } from "@js-temporal/polyfill";
 
 export function leading0(x: number, digits: number): string {
 	return x.toString().padStart(digits, "0");

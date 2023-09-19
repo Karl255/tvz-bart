@@ -1,7 +1,7 @@
+import { remoteEndpoints } from "$lib/const/api";
 import type { Handler } from "@netlify/functions";
-import { makeForwardingHandler } from "../functions-lib/functions-helpers";
-import endpoints from "../functions-lib/endpoints";
+import { makeForwardingHandler } from "$lib/util/serverless-helpers";
 
-const handler: Handler = makeForwardingHandler(endpoints.departments);
+const handler: Handler = makeForwardingHandler(remoteEndpoints.departments);
 
 export { handler };

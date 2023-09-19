@@ -1,16 +1,5 @@
+import { buildUrl } from "$lib/util/url";
 import type { Handler } from "@netlify/functions";
-
-function buildUrl(baseUrl: string, params: Record<string, string | number>): URL {
-	const url = new URL(baseUrl);
-
-	for (const key in params) {
-		url.searchParams.append(key, params[key].toString());
-	}
-
-	url.searchParams.append("_", Date.now().toString());
-
-	return url;
-}
 
 export function makeForwardingHandler(forwardToUrl: string): Handler {
 	return async event => {
