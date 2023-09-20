@@ -1,31 +1,33 @@
 <script lang="ts">
 	import type { Semester } from "$lib/api";
 
-	export let availableSemesters: Semester[] = [];
+	export let promisedSemesters: Promise<Semester[]>;
 	export let selectedSemester: Semester | null;
 
-	function click(e: MouseEvent) {
-		const element = e.currentTarget as HTMLButtonElement;
+	let semesters: Semester[] = [];
 
-		if (element.dataset.i) {
-			selectedSemester = availableSemesters[Number(element.dataset.i)];
-		}
+	$: promisedSemesters.then(retrievedSemesters => {
+		semesters = retrievedSemesters;
+	});
+
+	function pickSemester(semester: Semester) {
+		selectedSemester = semester;
 	}
 </script>
 
-{#if availableSemesters.length > 0}
-	<h2>Select semester:</h2>
-	<div class="group">
-		{#each availableSemesters as semester, i}
-			<button
-				class="btn"
-				style:grid-column={semester.semester}
-				data-i={i}
-				on:click={click}>{semester.subdepartment} - {semester.semester}</button
-			>
-		{/each}
-	</div>
-{/if}
+<h2>Select semester:</h2>
+
+<div class="group">
+	{#each semesters as semester}
+		<button
+			class="btn"
+			style:grid-column={semester.semester}
+			on:click={() => pickSemester(semester)}
+		>
+			{semester.subdepartment} - {semester.semester}
+		</button>
+	{/each}
+</div>
 
 <style lang="scss">
 	.group {

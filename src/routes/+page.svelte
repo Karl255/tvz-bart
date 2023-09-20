@@ -27,26 +27,39 @@
 	let currentSettings: Settings = loadSettings();
 	let autoSavePrevious = currentSettings.autoSave;
 
+	let currentMonday = thisMonday();
+	let availableDepartments: Department[] = data.departments;
+
+	let promisedSemesters: Promise<Semester[]> = getSemesters(
+		currentSettings.departmentCode,
+		getAcademicYear(currentMonday),
+	);
+
+	let schedule: Schedule | null = null;
+
+	let selectedPeriod: ClassPeriod | null = null;
+	let previewedPeriod: ClassPeriod | null = null;
+
+	$: ({
+		autoSave: settingsAutoSave,
+		departmentCode: settingsDepartmentCode,
+		semester: settingsSemester,
+		useBuiltinOverrides: settingsUseBuiltinOverrides,
+	} = currentSettings);
+
 	$: {
-		if (currentSettings.autoSave || autoSavePrevious) {
+		if (settingsAutoSave || autoSavePrevious) {
 			saveSettings(currentSettings);
 			autoSavePrevious = currentSettings.autoSave;
 		}
 	}
 
-	let availableDepartments: Department[] = data.departments;
-	let availableSemesters: Semester[] = [];
-	let schedule: Schedule | null = null;
-	let currentMonday = thisMonday();
+	$: currentAcademicYear = getAcademicYear(currentMonday);
+	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
+	$: loadSchedule(currentMonday, settingsSemester, settingsUseBuiltinOverrides);
 
-	$: loadSemesters(currentSettings.departmentCode);
-	$: loadSchedule(currentMonday, currentSettings.semester, currentSettings.useBuiltinOverrides);
-
-	let selectedPeriod: ClassPeriod | null = null;
-	let previewedPeriod: ClassPeriod | null = null;
-
-	async function loadSemesters(departmentCode: string) {
-		availableSemesters = await getSemesters(departmentCode, getAcademicYear(currentMonday));
+	async function loadSemesters(departmentCode: string, academicYear: number) {
+		promisedSemesters = getSemesters(departmentCode, academicYear);
 	}
 
 	async function loadSchedule(
@@ -145,7 +158,7 @@
 					bind:selectedDepartmentCode={currentSettings.departmentCode}
 				/>
 				<SemesterPicker
-					{availableSemesters}
+					{promisedSemesters}
 					bind:selectedSemester={currentSettings.semester}
 				/>
 			</Tab>
