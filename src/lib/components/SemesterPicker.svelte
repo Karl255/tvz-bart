@@ -19,7 +19,7 @@
 		{#each availableSemesters as semester, i}
 			<button
 				class="btn"
-				style="grid-column: {semester.semester};"
+				style:grid-column={semester.semester}
 				data-i={i}
 				on:click={click}>{semester.subdepartment} - {semester.semester}</button
 			>

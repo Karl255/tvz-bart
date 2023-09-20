@@ -3,7 +3,7 @@
 	import { dateToStringHr } from "$lib/util/datetime-helpers";
 	import { segregatePeriods, workdaysFilterByDate } from "$lib/util/timetable-helpers";
 	import { Temporal } from "@js-temporal/polyfill";
-	import CalendarItem from "./TimetableItem.svelte";
+	import TimetableItem from "./TimetableItem.svelte";
 
 	const fromHour = 7;
 	const toHour = 22;
@@ -14,7 +14,7 @@
 
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
-	let calendarDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
+	let timetableDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
 
 	$: {
 		if (schedule) {
@@ -33,7 +33,7 @@
 				d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day
 			}
 
-			calendarDays = newDays;
+			timetableDays = newDays;
 		}
 	}
 
@@ -57,36 +57,41 @@
 </script>
 
 <!-- prettier-ignore -->
-<div class="calendar" style="--from-hour: {fromHour}; --to-hour: {toHour}; --hour-range: {hourRange}">
+<div
+	class="timetable"
+	style:--from-hour={fromHour}
+	style:--to-hour={toHour}
+	style:--hour-range={hourRange}
+>
 	{#each ["Time", "Pon", "Uto", "Sri", "Čet", "Pet"] as title}
-		<div class="calendar__header">
+		<div class="timetable__header">
 			{title}
 		</div>
 	{/each}
 
 	{#each [...Array(hourRange).keys()].map(x => x) as i}
-		<div class="calendar__timestamp" style="grid-row: {2 + i}">
+		<div class="timetable__timestamp" style:grid-row={2 + i}>
 			{i + 7}:00
 		</div>
 	{/each}
 
 	{#each [...Array(hourRange - 1).keys()] as i}
-		<div class="calendar__dashed-line" style="grid-row: {3 + i}"></div>
+		<div class="timetable__dashed-line" style:grid-row={3 + i}></div>
 	{/each}
 
 	{#key schedule}
-		{#each calendarDays as day, i}
-			<div class="calendar__day" style="grid-column: {i + 2}">
+		{#each timetableDays as day, i}
+			<div class="timetable__day" style:grid-column={i + 2}>
 				{#if day}
 					{#if "title" in day}
-						<p class="calendar__holiday">
+						<p class="timetable__holiday">
 							{dateToStringHr(day.date)}
 							<br />
 							{day.title}
 						</p>
 					{:else}
 						{#each segregatePeriods(day) as item}
-							<CalendarItem
+							<TimetableItem
 								classPeriod={item}
 								on:click={onPeriodSelect}
 								on:mouseenter={onPeriodPreview}
@@ -101,14 +106,14 @@
 </div>
 
 <style lang="scss">
-	.calendar {
+	.timetable {
 		display: grid;
 		grid-template-columns: auto repeat(5, 1fr);
 		grid-template-rows: auto repeat(var(--hour-range), minmax(60px, 1fr));
 		--gridline-color: var(--clr-panel-border);
 	}
 
-	.calendar__header {
+	.timetable__header {
 		grid-row: 1;
 
 		padding: 0.5rem;
@@ -123,18 +128,18 @@
 		}
 	}
 
-	.calendar__timestamp {
+	.timetable__timestamp {
 		grid-column: 1;
 		padding-right: 0.25rem;
 		text-align: right;
 	}
 
-	.calendar__dashed-line {
+	.timetable__dashed-line {
 		grid-column: 1 / -1;
 		border-top: 1px dashed var(--gridline-color);
 	}
 
-	.calendar__day {
+	.timetable__day {
 		grid-row: 2 / -1;
 		border-left: 1px solid var(--gridline-color);
 
@@ -142,7 +147,7 @@
 		grid-auto-columns: 1fr;
 	}
 
-	.calendar__holiday {
+	.timetable__holiday {
 		place-self: center;
 		text-align: center;
 		font-weight: 600;

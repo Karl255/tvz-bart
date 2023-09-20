@@ -24,9 +24,12 @@
 
 <div
 	class="item-column type-{classTypeToStyleClass(c.classType)}"
-	style="--start: {start}; --end: {end}; --column: {c.column}; --width: {c.width};"
+	style:--start={start}
+	style:--end={end}
+	style:--column={c.column}
+	style:--width={c.width}
 >
-	<!-- TODO: v -->
+	<!-- TODO: fix problem below -->
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- prettier-ignore -->
 	<div class="item" on:click on:mouseenter on:mouseleave data-id={c.id} role="button" tabindex="0">
