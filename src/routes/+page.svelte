@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
 	import type { Temporal } from "@js-temporal/polyfill";
 
 	import {
-		getDepartments,
 		getSemesters,
 		getWeekSchedule,
 		type ClassPeriod,
@@ -22,39 +20,33 @@
 
 	import { applyOverrides } from "$lib/overrides";
 	import builtinOverrides from "$overrides/all";
+	import type { LoadedData } from "./+page";
 
-	let currentSettings: Settings = browser ? loadSettings() : defaultSettings;
+	export let data: LoadedData;
+
+	let currentSettings: Settings = loadSettings();
 	let autoSavePrevious = currentSettings.autoSave;
 
 	$: {
-		if (browser && (currentSettings.autoSave || autoSavePrevious)) {
+		if (currentSettings.autoSave || autoSavePrevious) {
 			saveSettings(currentSettings);
 			autoSavePrevious = currentSettings.autoSave;
 		}
 	}
 
-	let availableDepartments: Department[] = [];
+	let availableDepartments: Department[] = data.departments;
 	let availableSemesters: Semester[] = [];
 	let schedule: Schedule | null = null;
 	let currentMonday = thisMonday();
 
-	$: loadDepartments();
 	$: loadSemesters(currentSettings.departmentCode);
 	$: loadSchedule(currentMonday, currentSettings.semester, currentSettings.useBuiltinOverrides);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
 
-	async function loadDepartments() {
-		if (browser) {
-			availableDepartments = await getDepartments();
-		}
-	}
-
 	async function loadSemesters(departmentCode: string) {
-		if (browser) {
-			availableSemesters = await getSemesters(departmentCode, getAcademicYear(currentMonday));
-		}
+		availableSemesters = await getSemesters(departmentCode, getAcademicYear(currentMonday));
 	}
 
 	async function loadSchedule(
@@ -62,7 +54,7 @@
 		semester: Semester | null,
 		useBuiltinOverrides: boolean,
 	) {
-		if (browser && semester) {
+		if (semester) {
 			let scheduleTemp = await getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
 
 			if (useBuiltinOverrides) {
