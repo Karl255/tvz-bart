@@ -54,28 +54,26 @@
 		}
 	}
 
+	let loadingSemesters = false;
+
 	$: currentAcademicYear = getAcademicYear(currentMonday);
 	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
 	$: loadSchedule(currentMonday, settingsSemester, settingsUseBuiltinOverrides);
 
 	async function loadSemesters(departmentCode: string, academicYear: number) {
+		loadingSemesters = true;
 		promisedSemesters = getSemesters(departmentCode, academicYear);
+		promisedSemesters.then(() => (loadingSemesters = false));
 	}
 
-	async function loadSchedule(
-		weekStart: Temporal.PlainDate,
-		semester: Semester | null,
-		useBuiltinOverrides: boolean,
-	) {
-		if (semester) {
-			let scheduleTemp = await getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
+	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester, useBuiltinOverrides: boolean) {
+		let scheduleTemp = await getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
 
-			if (useBuiltinOverrides) {
-				scheduleTemp = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, builtinOverrides);
-			}
-
-			schedule = scheduleTemp;
+		if (useBuiltinOverrides) {
+			scheduleTemp = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, builtinOverrides);
 		}
+
+		schedule = scheduleTemp;
 	}
 
 	function resetWeek() {
@@ -156,6 +154,7 @@
 				<DepartmentPicker
 					departments={availableDepartments}
 					bind:selectedDepartmentCode={currentSettings.departmentCode}
+					disabled={loadingSemesters}
 				/>
 				<SemesterPicker
 					{promisedSemesters}

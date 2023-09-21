@@ -4,6 +4,7 @@
 
 	export let departments: Department[];
 	export let selectedDepartmentCode: string;
+	export let disabled: boolean;
 
 	function click(e: MouseEvent) {
 		const element = e.currentTarget as HTMLButtonElement;
@@ -54,6 +55,7 @@
 								on:click={click}
 								data-dep={department.code}
 								title={department.name}
+								{disabled}
 							>
 								{normalizeDepartmentCode(department.code)}
 							</button>

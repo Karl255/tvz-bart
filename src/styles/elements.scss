@@ -12,7 +12,12 @@ button {
 	cursor: pointer;
 	transition: background-color 50ms ease-out;
 
-	&:hover {
+	&:enabled:hover {
 		background-color: var(--clr-element-border);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.75;
 	}
 }
