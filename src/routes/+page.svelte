@@ -55,6 +55,7 @@
 	}
 
 	let loadingSemesters = false;
+	let loadingSchedule = false;
 
 	$: currentAcademicYear = getAcademicYear(currentMonday);
 	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
@@ -67,22 +68,27 @@
 	}
 
 	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester, useBuiltinOverrides: boolean) {
-		let scheduleTemp = await getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
+		loadingSchedule = true;
+		let promise = getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
 
 		if (useBuiltinOverrides) {
-			scheduleTemp = applyOverrides(scheduleTemp, getAcademicYear(weekStart), semester, builtinOverrides);
+			promise = promise.then(fetchedSchedule =>
+				Promise.resolve(
+					applyOverrides(fetchedSchedule, getAcademicYear(weekStart), semester, builtinOverrides),
+				),
+			);
 		}
 
-		schedule = scheduleTemp;
+		promise.then(() => (loadingSchedule = false));
+		schedule = await promise;
 	}
 
 	function resetWeek() {
 		currentMonday = thisMonday();
 	}
 
-	function cycleWeek(e: MouseEvent) {
-		const element = e.currentTarget as HTMLButtonElement;
-		currentMonday = currentMonday.add({ days: Number(element.dataset.delta) * 7 });
+	function cycleWeek(delta: number) {
+		currentMonday = currentMonday.add({ days: delta * 7 });
 	}
 
 	function resetSettings() {
@@ -103,24 +109,25 @@
 		<div class="panel--calendar__controls">
 			<!-- prettier-ignore -->
 			<div class="control-group">
-				<button class="btn" data-delta="-3" on:click={cycleWeek}>&lt;&lt;&lt;</button>
-				<button class="btn" data-delta="-2" on:click={cycleWeek}>&lt;&lt;</button>
-				<button class="btn" data-delta="-1" on:click={cycleWeek}>&lt;</button>
+				<button class="btn" on:click={() => cycleWeek(-3)} disabled={loadingSchedule}>&lt;&lt;&lt;</button>
+				<button class="btn" on:click={() => cycleWeek(-2)} disabled={loadingSchedule}>&lt;&lt;</button>
+				<button class="btn" on:click={() => cycleWeek(-1)} disabled={loadingSchedule}>&lt;</button>
 			</div>
 
 			<button
 				class="date-button"
 				title="Go back to current week"
 				on:click={resetWeek}
+				disabled={loadingSchedule}
 			>
 				{dateToStringHr(currentMonday)} - {dateToStringHr(currentMonday.add({ days: 4 }))}
 			</button>
 
 			<!-- prettier-ignore -->
 			<div class="control-group">
-				<button class="btn" data-delta="1" on:click={cycleWeek}>&gt;</button>
-				<button class="btn" data-delta="2" on:click={cycleWeek}>&gt;&gt;</button>
-				<button class="btn" data-delta="3" on:click={cycleWeek}>&gt;&gt;&gt;</button>
+				<button class="btn" on:click={() => cycleWeek(1)} disabled={loadingSchedule}>&gt;</button>
+				<button class="btn" on:click={() => cycleWeek(2)} disabled={loadingSchedule}>&gt;&gt;</button>
+				<button class="btn" on:click={() => cycleWeek(3)} disabled={loadingSchedule}>&gt;&gt;&gt;</button>
 			</div>
 		</div>
 
@@ -159,6 +166,7 @@
 				<SemesterPicker
 					{promisedSemesters}
 					bind:selectedSemester={currentSettings.semester}
+					disabled={loadingSchedule}
 				/>
 			</Tab>
 
@@ -169,6 +177,7 @@
 							type="checkbox"
 							name="use-builtin-overrides"
 							bind:checked={currentSettings.useBuiltinOverrides}
+							disabled={loadingSchedule}
 						/>
 						<label for="use-builtin-overrides">Use built-in overrides</label>
 					</div>
@@ -255,7 +264,11 @@
 			transition: height 100ms ease-out;
 		}
 
-		&:hover::after {
+		&:disabled::after {
+			opacity: 0.75;
+		}
+
+		&:enabled:hover::after {
 			height: 0.25rem;
 		}
 	}

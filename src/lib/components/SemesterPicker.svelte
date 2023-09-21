@@ -3,6 +3,7 @@
 
 	export let promisedSemesters: Promise<Semester[]>;
 	export let selectedSemester: Semester | null;
+	export let disabled: boolean;
 
 	let semesters: Semester[] = [];
 
@@ -23,6 +24,7 @@
 			class="btn"
 			style:grid-column={semester.semester}
 			on:click={() => pickSemester(semester)}
+			{disabled}
 		>
 			{semester.subdepartment} - {semester.semester}
 		</button>
