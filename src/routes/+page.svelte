@@ -139,19 +139,11 @@
 		/>
 	</div>
 
-	<div class="panel panel--info-preview">
-		<ClassPeriodInfo classPeriod={previewedPeriod}>
-			<p class="description">
-				Put your mouse over an item in the calendar and details about it will appear here.
-			</p>
-		</ClassPeriodInfo>
-	</div>
+	<div class="panel panel--info-preview"></div>
 
 	<div class="panel panel--info-selected">
-		<ClassPeriodInfo classPeriod={selectedPeriod}>
-			<p class="description">
-				Click on an item in the calendar to select it and details about it will show in here.
-			</p>
+		<ClassPeriodInfo classPeriod={selectedPeriod ?? previewedPeriod}>
+			<p class="description">Hover over an item or click on it. Details about it items will appear here.</p>
 		</ClassPeriodInfo>
 	</div>
 

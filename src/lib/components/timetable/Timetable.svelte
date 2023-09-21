@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/api";
+	import { segregatePeriods, workdaysFilterByDate } from "$lib/components/timetable/timetable";
 	import { dateToStringHr } from "$lib/util/datetime-helpers";
-	import { segregatePeriods, workdaysFilterByDate } from "$lib/util/timetable-helpers";
 	import { Temporal } from "@js-temporal/polyfill";
 	import TimetableItem from "./TimetableItem.svelte";
 
@@ -9,8 +9,8 @@
 	const toHour = 22;
 	const hourRange = toHour - fromHour;
 
-	export let selectedPeriod: ClassPeriod | null;
-	export let previewedPeriod: ClassPeriod | null;
+	export let selectedPeriod: ClassPeriod | null = null;
+	export let previewedPeriod: ClassPeriod | null = null;
 
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
@@ -37,22 +37,12 @@
 		}
 	}
 
-	function onPeriodSelect(e: MouseEvent) {
-		if (schedule) {
-			let element = e.currentTarget as HTMLDivElement;
-			selectedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
-		}
+	function selectPeriod(classPeriod: ClassPeriod | null) {
+		selectedPeriod = classPeriod;
 	}
 
-	function onPeriodPreview(e: MouseEvent) {
-		if (schedule) {
-			let element = e.currentTarget as HTMLDivElement;
-			previewedPeriod = schedule.workdays.get(Number(element.dataset.id))!;
-		}
-	}
-
-	function onPeriodPreviewNone() {
-		previewedPeriod = null;
+	function previewPeriod(classPeriod: ClassPeriod | null) {
+		previewedPeriod = classPeriod;
 	}
 </script>
 
@@ -93,9 +83,10 @@
 						{#each segregatePeriods(day) as item}
 							<TimetableItem
 								classPeriod={item}
-								on:click={onPeriodSelect}
-								on:mouseenter={onPeriodPreview}
-								on:mouseleave={onPeriodPreviewNone}
+								on:focus={() => selectPeriod(item)}
+								on:blur={() => selectPeriod(null)}
+								on:mouseenter={() => previewPeriod(item)}
+								on:mouseleave={() => previewPeriod(null)}
 							/>
 						{/each}
 					{/if}

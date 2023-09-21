@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { ClassType, type ClassPeriodSegregated } from "$lib/api";
+	import { ClassType } from "$lib/api";
+	import type { ClassPeriodSegregated } from "$lib/components/timetable/timetable";
 
 	export let classPeriod: ClassPeriodSegregated;
 	$: c = classPeriod;
@@ -29,10 +30,8 @@
 	style:--column={c.column}
 	style:--width={c.width}
 >
-	<!-- TODO: fix problem below -->
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- prettier-ignore -->
-	<div class="item" on:click on:mouseenter on:mouseleave data-id={c.id} role="button" tabindex="0">
+	<div class="item" on:focus on:blur on:mouseenter on:mouseleave role="button" tabindex="0">
 		<p class="hidden">id = {c.id}</p>
 		<p class="timestamp">
 			{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}
@@ -62,6 +61,10 @@
 
 		z-index: 10;
 		overflow: clip;
+
+		&:focus {
+			filter: brightness(1.25) saturate(1.25);
+		}
 	}
 
 	.timestamp {

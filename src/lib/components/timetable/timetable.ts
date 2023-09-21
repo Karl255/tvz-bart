@@ -1,5 +1,10 @@
-import type { ClassPeriod, ClassPeriodSegregated, Schedule } from "$lib/api/model";
+import type { ClassPeriod, Schedule } from "$lib/api/model";
 import { Temporal } from "@js-temporal/polyfill";
+
+export type ClassPeriodSegregated = ClassPeriod & {
+	column: number;
+	width: number;
+};
 
 export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDate): ClassPeriod[] {
 	return [...schedule.workdays.values()].filter(c => date.equals(c.date));
