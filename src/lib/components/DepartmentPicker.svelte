@@ -50,12 +50,14 @@
 				{#each groupedByProgram(departmentsInLevel) as departmentsInProgram}
 					<div class="program">
 						{#each departmentsInProgram as department}
+							{@const selected = department.code === selectedDepartmentCode}
 							<button
 								class="btn {isIzvanredni(department.code) ? 'izvanredni' : 'redovni'}"
+								class:btn--pushed-down={selected}
 								on:click={click}
 								data-dep={department.code}
 								title={department.name}
-								{disabled}
+								disabled={disabled || selected}
 							>
 								{normalizeDepartmentCode(department.code)}
 							</button>

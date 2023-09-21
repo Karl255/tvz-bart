@@ -2,7 +2,7 @@
 	import type { Semester } from "$lib/api";
 
 	export let promisedSemesters: Promise<Semester[]>;
-	export let selectedSemester: Semester | null;
+	export let selectedSemester: Semester;
 	export let disabled: boolean;
 
 	let semesters: Semester[] = [];
@@ -20,11 +20,16 @@
 
 <div class="group">
 	{#each semesters as semester}
+		{@const selected =
+			semester.subdepartment === selectedSemester.subdepartment &&
+			semester.semester === selectedSemester.semester}
+
 		<button
 			class="btn"
+			class:btn--pushed-down={selected}
 			style:grid-column={semester.semester}
 			on:click={() => pickSemester(semester)}
-			{disabled}
+			disabled={disabled || selected}
 		>
 			{semester.subdepartment} - {semester.semester}
 		</button>

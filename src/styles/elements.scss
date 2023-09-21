@@ -10,7 +10,7 @@ button {
 	line-height: 1;
 
 	cursor: pointer;
-	transition: background-color 50ms ease-out;
+	transition: background-color 100ms ease-out;
 
 	&:enabled:hover {
 		background-color: var(--clr-element-border);
@@ -20,4 +20,13 @@ button {
 		cursor: not-allowed;
 		opacity: 0.75;
 	}
+}
+
+.btn.btn--pushed-down {
+	background-color: var(--clr-panel-bg);
+	border-color: var(--clr-panel-border);
+	opacity: 1;
+
+	font-weight: 700;
+	cursor: default;
 }
