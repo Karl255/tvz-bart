@@ -1,7 +1,7 @@
-import { buildUrl } from "$lib/util/url-util";
 import { ClassType, type ClassPeriod, type Holiday, type Schedule } from "$lib/models/api";
+import { buildUrl } from "$lib/util/url-util";
+import { localEndpoints } from "./endpoints";
 
-import { localEndpoints } from "$lib/const/api";
 import type { StringPlainDate, StringPlainDateTime } from "$lib/models/temporal";
 import { partition } from "$lib/util/array-util";
 import { getAcademicYear } from "$lib/util/datetime-helpers";

@@ -1,6 +1,7 @@
 import type { PageLoad } from "./$types";
 
-import { getDepartments, type Department } from "$lib/api";
+import { getDepartments } from "$lib/api";
+import type { Department } from "$lib/models/api";
 
 export interface LoadedData {
 	departments: Department[];

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ClassPeriod } from "$lib/api";
+	import type { ClassPeriod } from "$lib/models/api";
 
 	export let classPeriod: ClassPeriod | null = null;
 

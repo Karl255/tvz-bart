@@ -1,14 +1,8 @@
 <script lang="ts">
+	import { getSemesters, getWeekSchedule } from "$lib/api";
 	import type { Temporal } from "@js-temporal/polyfill";
 
-	import {
-		getSemesters,
-		getWeekSchedule,
-		type ClassPeriod,
-		type Department,
-		type Schedule,
-		type Semester,
-	} from "$lib/api";
+	import type { ClassPeriod, Department, Schedule, Semester } from "$lib/models/api";
 	import { dateToStringHr, getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";

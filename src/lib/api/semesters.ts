@@ -1,6 +1,6 @@
-import { localEndpoints } from "$lib/const/api";
-import { buildUrl } from "$lib/util/url-util";
 import type { Semester } from "$lib/models/api";
+import { buildUrl } from "$lib/util/url-util";
+import { localEndpoints } from "./endpoints";
 
 type UnparsedSemester = {
 	SemesterNumber: string;

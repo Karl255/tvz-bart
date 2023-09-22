@@ -1,4 +1,4 @@
-import type { ClassPeriod, Semester } from "$lib/api";
+import type { ClassPeriod, Semester } from "$lib/models/api";
 import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 import { normalizeDepartment } from "$lib/util/other";
 

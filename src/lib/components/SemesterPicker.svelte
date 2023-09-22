@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Semester } from "$lib/api";
+	import type { Semester } from "$lib/models/api";
 
 	export let promisedSemesters: Promise<Semester[]>;
 	export let selectedSemester: Semester;

@@ -1,4 +1,4 @@
-import type { ClassType, Semester } from "$lib/api";
+import type { ClassType, Semester } from "$lib/models/api";
 import type { StringPlainTime } from "./temporal";
 
 export interface ClassPeriodIdentifier {

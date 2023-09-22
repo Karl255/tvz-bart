@@ -1,5 +1,5 @@
-import { localEndpoints } from "$lib/const/api";
 import type { Department } from "$lib/models/api";
+import { localEndpoints } from "./endpoints";
 
 type UnparsedDepartment = {
 	Code: string;

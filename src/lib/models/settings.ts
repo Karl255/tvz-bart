@@ -1,4 +1,4 @@
-import type { Semester } from "$lib/api";
+import type { Semester } from "$lib/models/api";
 
 export interface Settings {
 	autoSave: boolean;

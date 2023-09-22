@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Department } from "$lib/api";
+	import type { Department } from "$lib/models/api";
 	import { groupBy, partition } from "$lib/util/array-util";
 	import { normalizeDepartment } from "$lib/util/other";
 

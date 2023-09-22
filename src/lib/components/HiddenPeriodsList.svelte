@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ClassType } from "$lib/api";
+	import { ClassType } from "$lib/models/api";
 	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import type { StringPlainTime } from "$lib/models/temporal";
 	import { Temporal } from "@js-temporal/polyfill";

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ClassPeriod, Holiday, Schedule } from "$lib/api";
 	import { segregatePeriods, workdaysFilterByDate } from "$lib/components/timetable/timetable";
+	import type { ClassPeriod, Holiday, Schedule } from "$lib/models/api";
 	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import { doesPeriodIdentifierMatch as doesPeriodMatchIdentifier } from "$lib/services/scheduleFiltering";
 	import { dateToStringHr } from "$lib/util/datetime-helpers";

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ClassType, type ClassPeriod } from "$lib/api";
 	import type { ClassPeriodSegregated } from "$lib/components/timetable/timetable";
+	import { ClassType, type ClassPeriod } from "$lib/models/api";
 
 	export let classPeriod: ClassPeriodSegregated;
 	$: c = classPeriod;
