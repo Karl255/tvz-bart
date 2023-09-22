@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/api";
 	import { segregatePeriods, workdaysFilterByDate } from "$lib/components/timetable/timetable";
+	import {
+		doesPeriodIdentifierMatch as doesPeriodMatchIdentifier,
+		type ClassPeriodIdentifier,
+	} from "$lib/services/scheduleFiltering";
 	import { dateToStringHr } from "$lib/util/datetime-helpers";
 	import { Temporal } from "@js-temporal/polyfill";
 	import TimetableItem from "./TimetableItem.svelte";
@@ -13,28 +17,46 @@
 	export let previewedPeriod: ClassPeriod | null = null;
 
 	export let schedule: Schedule | null;
+	export let hiddenPeriods: ClassPeriodIdentifier[];
 	export let from: Temporal.PlainDate;
 	let timetableDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
 
+	$: filteredSchedule = schedule ? filterSchedule(schedule, hiddenPeriods) : null;
+
 	$: {
-		if (schedule) {
-			createDays(schedule);
+		if (filteredSchedule) {
+			createDays(filteredSchedule);
 		} else {
 			timetableDays = [null, null, null, null, null];
 		}
 	}
 
-	function createDays(schedule: Schedule) {
+	function filterSchedule(schedule: Schedule, hidden: ClassPeriodIdentifier[]): Schedule {
+		// prettier-ignore
+		const filteredPeriodPairs = [...schedule.periods.entries()]
+			.filter(([_, classPeriod]) => !matchesAnyIdentifier(classPeriod, hidden));
+
+		return {
+			periods: new Map(filteredPeriodPairs),
+			holidays: schedule.holidays,
+		};
+	}
+
+	function matchesAnyIdentifier(classPeriod: ClassPeriod, identifiers: ClassPeriodIdentifier[]): boolean {
+		return identifiers.some(identifier => doesPeriodMatchIdentifier(classPeriod, identifier));
+	}
+
+	function createDays(s: Schedule) {
 		let newDays: (ClassPeriod[] | Holiday | null)[] = [];
 		let d = from;
 
 		for (let i = 0; i < 5; i++) {
 			const ds = d.toString({ calendarName: "never" });
 
-			if (schedule.holidays.has(ds)) {
-				newDays.push(schedule.holidays.get(ds)!);
+			if (s.holidays.has(ds)) {
+				newDays.push(s.holidays.get(ds)!);
 			} else {
-				newDays.push(workdaysFilterByDate(schedule, d));
+				newDays.push(workdaysFilterByDate(s, d));
 			}
 
 			d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day

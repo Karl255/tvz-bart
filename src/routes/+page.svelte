@@ -131,6 +131,7 @@
 
 		<Timetable
 			{schedule}
+			{hiddenPeriods}
 			from={currentMonday}
 			bind:selectedPeriod
 			bind:previewedPeriod

@@ -1,5 +1,4 @@
 import type { ClassPeriod, Semester, StringPlainDateTime } from "$lib/api";
-import { Temporal } from "@js-temporal/polyfill";
 
 export interface ClassPeriodIdentifier {
 	semester: Semester;
@@ -31,7 +30,7 @@ export function doesPeriodIdentifierMatch(classPeriod: ClassPeriod, identifier: 
 	return (
 		classPeriod.className === identifier.className &&
 		classPeriod.date.dayOfWeek === identifier.dayOfWeek &&
-		classPeriod.start === Temporal.PlainTime.from(identifier.start) &&
-		classPeriod.end === Temporal.PlainTime.from(identifier.end)
+		classPeriod.start.equals(identifier.start) &&
+		classPeriod.end.equals(identifier.end)
 	);
 }
