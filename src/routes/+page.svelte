@@ -21,6 +21,7 @@
 	import type { LoadedData } from "./+page";
 	import { toIdentifier, type ClassPeriodIdentifier, identifierEquals } from "$lib/services/scheduleFiltering";
 	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
+	import { normalizeDepartment } from "$lib/util/other";
 
 	export let data: LoadedData;
 
@@ -36,7 +37,7 @@
 	);
 
 	let schedule: Schedule | null = null;
-	let hiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
+	let allHiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -92,17 +93,31 @@
 		saveSettings(currentSettings);
 	}
 
+	function filterHiddenPeriods(
+		items: ClassPeriodIdentifier[],
+		subdepartment: string,
+		academicYear: number,
+	): ClassPeriodIdentifier[] {
+		return items.filter(
+			items =>
+				items.semester.subdepartment === normalizeDepartment(subdepartment) &&
+				items.academicYear === academicYear,
+		);
+	}
+
 	function hidePeriod(classPeriod: ClassPeriod) {
 		if (selectedPeriod === classPeriod) {
 			selectedPeriod = null;
 		}
 
-		hiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
-		hiddenPeriods = hiddenPeriods;
+		allHiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
+		allHiddenPeriods = allHiddenPeriods;
+		console.log("hidden", allHiddenPeriods);
 	}
 
 	function unhidePeriod(toUnhide: ClassPeriodIdentifier) {
-		hiddenPeriods = hiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
+		allHiddenPeriods = allHiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
+		console.log("unhidden", allHiddenPeriods);
 	}
 </script>
 
@@ -139,7 +154,11 @@
 
 		<Timetable
 			{schedule}
-			{hiddenPeriods}
+			hiddenPeriods={filterHiddenPeriods(
+				allHiddenPeriods,
+				currentSettings.semester.subdepartment,
+				currentAcademicYear,
+			)}
 			from={currentMonday}
 			bind:selectedPeriod
 			bind:previewedPeriod
@@ -197,7 +216,7 @@
 
 			<Tab title="Hidden items">
 				<HiddenPeriodsList
-					hiddenItems={hiddenPeriods}
+					hiddenItems={allHiddenPeriods}
 					onUnhideItem={unhidePeriod}
 				/>
 			</Tab>

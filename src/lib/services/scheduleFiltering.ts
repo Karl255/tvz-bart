@@ -1,4 +1,5 @@
 import type { ClassPeriod, ClassType, Semester, StringPlainTime } from "$lib/api";
+import { normalizeDepartment } from "$lib/util/other";
 
 export interface ClassPeriodIdentifier {
 	semester: Semester;
@@ -17,7 +18,10 @@ export function toIdentifier(
 	academicYear: number,
 ): ClassPeriodIdentifier {
 	return {
-		semester,
+		semester: {
+			subdepartment: normalizeDepartment(semester.subdepartment),
+			semester: semester.semester,
+		},
 		academicYear,
 
 		className: classPeriod.className,

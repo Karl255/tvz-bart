@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Department } from "$lib/api";
 	import { groupBy, partition } from "$lib/util/array-util";
+	import { normalizeDepartment } from "$lib/util/other";
 
 	export let departments: Department[];
 	export let selectedDepartmentCode: string;
@@ -20,7 +21,7 @@
 
 	function groupedByProgram(departments: Department[]): Department[][] {
 		const programGroups = groupBy(departments, d => {
-			return d.code.slice(isIzvanredni(d.code) ? 1 : 0);
+			return normalizeDepartment(d.code);
 		});
 
 		return Object.entries(programGroups)
@@ -32,12 +33,12 @@
 			.map(tuple => tuple[1]);
 	}
 
-	function isIzvanredni(departmentCode: string): boolean {
-		return departmentCode.startsWith("I") && departmentCode !== "INF";
+	function isRedovni(departmentCode: string): boolean {
+		return normalizeDepartment(departmentCode) === departmentCode;
 	}
 
-	function normalizeDepartmentCode(departmentCode: string): string {
-		return departmentCode.replaceAll(/\d/g, "");
+	function removeDigits(str: string): string {
+		return str.replaceAll(/\d/g, "");
 	}
 </script>
 
@@ -52,14 +53,14 @@
 						{#each departmentsInProgram as department}
 							{@const selected = department.code === selectedDepartmentCode}
 							<button
-								class="btn {isIzvanredni(department.code) ? 'izvanredni' : 'redovni'}"
+								class="btn {isRedovni(department.code) ? 'redovni' : 'izvanredni'}"
 								class:btn--pushed-down={selected}
 								on:click={click}
 								data-dep={department.code}
 								title={department.name}
 								disabled={disabled || selected}
 							>
-								{normalizeDepartmentCode(department.code)}
+								{removeDigits(department.code)}
 							</button>
 						{/each}
 					</div>
