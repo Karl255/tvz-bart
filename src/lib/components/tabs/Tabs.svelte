@@ -21,6 +21,10 @@
 			});
 		},
 
+		refreshTabData: () => {
+			tabs = tabs;
+		},
+
 		selectedTab,
 	});
 

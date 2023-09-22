@@ -5,9 +5,14 @@
 	export let title: string;
 
 	const thisTab: TabData = { title };
-	const { registerTab, selectedTab } = getContext("tabs") as TabsContext;
+	const { registerTab, refreshTabData, selectedTab } = getContext("tabs") as TabsContext;
 
 	registerTab(thisTab);
+
+	$: {
+		thisTab.title = title;
+		refreshTabData();
+	}
 </script>
 
 <!-- prettier-ignore -->

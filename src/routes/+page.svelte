@@ -67,6 +67,8 @@
 	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
 	$: loadSchedule(currentMonday, settingsSemester);
 
+	$: hiddenItemsTitleHint = filteredHiddenPeriods.length > 0 ? ` (${filteredHiddenPeriods.length})` : "";
+
 	async function loadSemesters(departmentCode: string, academicYear: number) {
 		loadingSemesters = true;
 		promisedSemesters = getSemesters(departmentCode, academicYear);
@@ -118,12 +120,10 @@
 
 		allHiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
 		allHiddenPeriods = allHiddenPeriods;
-		console.log("hidden", allHiddenPeriods);
 	}
 
 	function unhidePeriod(toUnhide: ClassPeriodIdentifier) {
 		allHiddenPeriods = allHiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
-		console.log("unhidden", allHiddenPeriods);
 	}
 </script>
 
@@ -216,7 +216,7 @@
 				</div>
 			</Tab>
 
-			<Tab title="Hidden items">
+			<Tab title="Hidden items {hiddenItemsTitleHint}">
 				<HiddenPeriodsList
 					hiddenItems={filteredHiddenPeriods}
 					onUnhideItem={unhidePeriod}

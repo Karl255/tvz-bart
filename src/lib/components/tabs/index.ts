@@ -9,5 +9,6 @@ export interface TabData {
 
 export interface TabsContext {
 	registerTab: (tab: TabData) => void;
+	refreshTabData: () => void;
 	selectedTab: Writable<TabData | null>;
 }
