@@ -1,5 +1,7 @@
+const depsStartingWithI = ["INF", "ID", "IRSIM"];
+
 export function normalizeDepartment(department: string): string {
-	if (department === "INF") {
+	if (depsStartingWithI.includes(department)) {
 		return department;
 	}
 

@@ -38,6 +38,11 @@
 
 	let schedule: Schedule | null = null;
 	let allHiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
+	$: filteredHiddenPeriods = filterHiddenPeriods(
+		allHiddenPeriods,
+		currentSettings.semester.subdepartment,
+		currentAcademicYear,
+	);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -75,6 +80,7 @@
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;
+		selectedPeriod = null;
 	}
 
 	function resetWeek() {
@@ -154,11 +160,7 @@
 
 		<Timetable
 			{schedule}
-			hiddenPeriods={filterHiddenPeriods(
-				allHiddenPeriods,
-				currentSettings.semester.subdepartment,
-				currentAcademicYear,
-			)}
+			hiddenPeriods={filteredHiddenPeriods}
 			from={currentMonday}
 			bind:selectedPeriod
 			bind:previewedPeriod
@@ -216,7 +218,7 @@
 
 			<Tab title="Hidden items">
 				<HiddenPeriodsList
-					hiddenItems={allHiddenPeriods}
+					hiddenItems={filteredHiddenPeriods}
 					onUnhideItem={unhidePeriod}
 				/>
 			</Tab>
