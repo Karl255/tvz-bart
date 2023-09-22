@@ -52,12 +52,15 @@
 	}
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- prettier-ignore -->
 <div
 	class="timetable"
 	style:--from-hour={fromHour}
 	style:--to-hour={toHour}
 	style:--hour-range={hourRange}
+	on:click={() => selectPeriod(null)}
 >
 	{#each ["Time", "Pon", "Uto", "Sri", "Čet", "Pet"] as title}
 		<div class="timetable__header">
@@ -89,8 +92,8 @@
 						{#each segregatePeriods(day) as item}
 							<TimetableItem
 								classPeriod={item}
-								on:focus={() => selectPeriod(item)}
-								on:blur={() => selectPeriod(null)}
+								onSelect={() => selectPeriod(item)}
+								selected={item.id === selectedPeriod?.id}
 								on:mouseenter={() => previewPeriod(item)}
 								on:mouseleave={() => previewPeriod(null)}
 							/>

@@ -2,6 +2,8 @@
 	import type { ClassPeriod } from "$lib/api";
 
 	export let classPeriod: ClassPeriod | null = null;
+
+	export let hide: (classPeriod: ClassPeriod) => void;
 </script>
 
 {#if classPeriod}
@@ -31,6 +33,11 @@
 
 	<p>{classPeriod.professor}</p>
 	<p><strong>{classPeriod.courseName}</strong></p>
+
+	<!-- prettier-ignore -->
+	<button class="btn" on:click={() => classPeriod && hide(classPeriod)}>
+		Hide
+	</button>
 {:else}
 	<slot />
 {/if}

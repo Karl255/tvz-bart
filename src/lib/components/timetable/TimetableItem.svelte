@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { ClassType } from "$lib/api";
+	import { ClassType, type ClassPeriod } from "$lib/api";
 	import type { ClassPeriodSegregated } from "$lib/components/timetable/timetable";
 
 	export let classPeriod: ClassPeriodSegregated;
 	$: c = classPeriod;
+
+	export let onSelect: (classPeriod: ClassPeriod) => void;
+	export let selected: boolean;
 
 	const start = classPeriod.start.hour + classPeriod.start.minute / 60;
 	const end = classPeriod.end.hour + classPeriod.end.minute / 60;
@@ -30,8 +33,16 @@
 	style:--column={c.column}
 	style:--width={c.width}
 >
-	<!-- prettier-ignore -->
-	<div class="item" on:focus on:blur on:mouseenter on:mouseleave role="button" tabindex="0">
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<div
+		class="item"
+		class:item--selected={selected}
+		on:click|stopPropagation={() => onSelect(classPeriod)}
+		on:mouseenter
+		on:mouseleave
+		role="button"
+		tabindex="0"
+	>
 		<p class="hidden">id = {c.id}</p>
 		<p class="timestamp">
 			{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}
@@ -62,7 +73,7 @@
 		z-index: 10;
 		overflow: clip;
 
-		&:focus {
+		&--selected {
 			filter: brightness(1.25) saturate(1.25);
 		}
 	}

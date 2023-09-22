@@ -19,6 +19,7 @@
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/services/settings";
 
 	import type { LoadedData } from "./+page";
+	import { toIdentifier, type ClassPeriodIdentifier } from "$lib/services/scheduleFiltering";
 
 	export let data: LoadedData;
 
@@ -34,6 +35,7 @@
 	);
 
 	let schedule: Schedule | null = null;
+	let hiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -88,6 +90,12 @@
 	function manualSave() {
 		saveSettings(currentSettings);
 	}
+
+	function hidePeriod(classPeriod: ClassPeriod) {
+		hiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
+		hiddenPeriods = hiddenPeriods;
+		console.log("hidden periods", hiddenPeriods);
+	}
 </script>
 
 <svelte:head>
@@ -132,7 +140,10 @@
 	<div class="panel panel--info-preview"></div>
 
 	<div class="panel panel--info-selected">
-		<ClassPeriodInfo classPeriod={selectedPeriod ?? previewedPeriod}>
+		<ClassPeriodInfo
+			classPeriod={selectedPeriod ?? previewedPeriod}
+			hide={hidePeriod}
+		>
 			<p class="description">Hover over an item or click on it. Details about it items will appear here.</p>
 		</ClassPeriodInfo>
 	</div>
