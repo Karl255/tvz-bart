@@ -1,12 +1,12 @@
 import { localEndpoints } from "$lib/const/api";
-import type { Department } from "./model";
+import type { Department } from "$lib/models/api";
 
 type UnparsedDepartment = {
 	Code: string;
 	Name: string;
 };
 
-export const obsoleteDepartments = ["SPECELO", "SPECGRA", "SPECINF"];
+const obsoleteDepartments = ["SPECELO", "SPECGRA", "SPECINF"];
 
 function parseDepartment(unparsedDepartment: UnparsedDepartment): Department {
 	return {

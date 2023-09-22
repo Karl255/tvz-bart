@@ -1,4 +1,4 @@
-import type { ClassPeriod, Schedule } from "$lib/api/model";
+import type { ClassPeriod, Schedule } from "$lib/models/api";
 import { Temporal } from "@js-temporal/polyfill";
 
 export interface ClassPeriodSegregated extends ClassPeriod {
@@ -33,15 +33,6 @@ export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[
 				if (segregated[i].column === segregated[j].column && periodsIntersect(segregated[i], segregated[j])) {
 					segregated[j].column++;
 					overlaps = true;
-
-					if (segregated[j].id === 10537070) {
-						console.log(
-							`pushed into next column by [${segregated[i].start.toJSON()} - ${segregated[
-								i
-							].end.toJSON()}] in column ${segregated[i].column}`,
-						);
-						console.log(`${segregated[j].id} is now in column ${segregated[j].column}`);
-					}
 				}
 			}
 		}

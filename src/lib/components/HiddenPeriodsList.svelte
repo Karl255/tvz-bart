@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { ClassType, type StringPlainTime } from "$lib/api";
-	import type { ClassPeriodIdentifier } from "$lib/services/scheduleFiltering";
+	import { ClassType } from "$lib/api";
+	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
+	import type { StringPlainTime } from "$lib/models/temporal";
 	import { Temporal } from "@js-temporal/polyfill";
 
 	export let hiddenItems: ClassPeriodIdentifier[];

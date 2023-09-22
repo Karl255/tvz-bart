@@ -1,14 +1,8 @@
 import { buildUrl } from "$lib/util/url-util";
-import {
-	ClassType,
-	type ClassPeriod,
-	type Holiday,
-	type Schedule,
-	type StringPlainDate,
-	type StringPlainDateTime,
-} from "./model";
+import { ClassType, type ClassPeriod, type Holiday, type Schedule } from "$lib/models/api";
 
 import { localEndpoints } from "$lib/const/api";
+import type { StringPlainDate, StringPlainDateTime } from "$lib/models/temporal";
 import { partition } from "$lib/util/array-util";
 import { getAcademicYear } from "$lib/util/datetime-helpers";
 import { Temporal } from "@js-temporal/polyfill";

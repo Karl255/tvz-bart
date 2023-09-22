@@ -1,19 +1,4 @@
-import type { Semester } from "$lib/api";
-
-export interface Settings {
-	autoSave: boolean;
-	departmentCode: string;
-	semester: Semester;
-}
-
-export const defaultSettings: Settings = {
-	autoSave: true,
-	departmentCode: "RAC",
-	semester: {
-		semester: 3,
-		subdepartment: "PRIN",
-	},
-};
+import { defaultSettings, type Settings } from "$lib/models/settings";
 
 const localStorageSettingsKey = "SETTINGS";
 
@@ -24,8 +9,6 @@ export function loadSettings(): Settings {
 		try {
 			return JSON.parse(serializedSettings) as Settings;
 		} catch {
-			// TODO: notify user
-			// TODO: implement upgrading of old settings
 			resetSettings();
 			return defaultSettings;
 		}
@@ -37,7 +20,6 @@ export function loadSettings(): Settings {
 
 export function saveSettings(settings: Settings) {
 	localStorage.setItem(localStorageSettingsKey, JSON.stringify(settings));
-	console.log("SETTINGS: saved", settings);
 }
 
 function resetSettings() {

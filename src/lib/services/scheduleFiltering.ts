@@ -1,16 +1,6 @@
-import type { ClassPeriod, ClassType, Semester, StringPlainTime } from "$lib/api";
+import type { ClassPeriod, Semester } from "$lib/api";
+import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 import { normalizeDepartment } from "$lib/util/other";
-
-export interface ClassPeriodIdentifier {
-	semester: Semester;
-	academicYear: number;
-
-	className: string;
-	classType: ClassType;
-	dayOfWeek: number;
-	start: StringPlainTime;
-	end: StringPlainTime;
-}
 
 export function toIdentifier(
 	classPeriod: ClassPeriod,

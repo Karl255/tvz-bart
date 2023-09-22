@@ -16,12 +16,14 @@
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { Timetable } from "$lib/components/timetable";
-	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/services/settings";
+	import { loadSettings, saveSettings } from "$lib/services/settings";
 
-	import type { LoadedData } from "./+page";
-	import { toIdentifier, type ClassPeriodIdentifier, identifierEquals } from "$lib/services/scheduleFiltering";
 	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
+	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
+	import { defaultSettings, type Settings } from "$lib/models/settings";
+	import { identifierEquals, toIdentifier } from "$lib/services/scheduleFiltering";
 	import { normalizeDepartment } from "$lib/util/other";
+	import type { LoadedData } from "./+page";
 
 	export let data: LoadedData;
 
