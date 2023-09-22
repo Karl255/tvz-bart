@@ -4,7 +4,6 @@ export type Settings = {
 	autoSave: boolean;
 	departmentCode: string;
 	semester: Semester;
-	useBuiltinOverrides: boolean;
 };
 
 export const defaultSettings: Settings = {
@@ -14,7 +13,6 @@ export const defaultSettings: Settings = {
 		semester: 3,
 		subdepartment: "PRIN",
 	},
-	useBuiltinOverrides: true,
 };
 
 const localStorageSettingsKey = "SETTINGS";

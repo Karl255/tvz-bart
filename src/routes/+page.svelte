@@ -18,8 +18,6 @@
 	import { Timetable } from "$lib/components/timetable";
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
 
-	import { applyOverrides } from "$lib/overrides";
-	import builtinOverrides from "$overrides/all";
 	import type { LoadedData } from "./+page";
 
 	export let data: LoadedData;
@@ -44,7 +42,6 @@
 		autoSave: settingsAutoSave,
 		departmentCode: settingsDepartmentCode,
 		semester: settingsSemester,
-		useBuiltinOverrides: settingsUseBuiltinOverrides,
 	} = currentSettings);
 
 	$: {
@@ -59,7 +56,7 @@
 
 	$: currentAcademicYear = getAcademicYear(currentMonday);
 	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
-	$: loadSchedule(currentMonday, settingsSemester, settingsUseBuiltinOverrides);
+	$: loadSchedule(currentMonday, settingsSemester);
 
 	async function loadSemesters(departmentCode: string, academicYear: number) {
 		loadingSemesters = true;
@@ -67,19 +64,12 @@
 		promisedSemesters.then(() => (loadingSemesters = false));
 	}
 
-	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester, useBuiltinOverrides: boolean) {
+	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester) {
 		loadingSchedule = true;
+
 		let promise = getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
-
-		if (useBuiltinOverrides) {
-			promise = promise.then(fetchedSchedule =>
-				Promise.resolve(
-					applyOverrides(fetchedSchedule, getAcademicYear(weekStart), semester, builtinOverrides),
-				),
-			);
-		}
-
 		promise.then(() => (loadingSchedule = false));
+
 		schedule = await promise;
 	}
 
@@ -164,16 +154,6 @@
 
 			<Tab title="Settings">
 				<div class="settings-controls">
-					<div>
-						<input
-							type="checkbox"
-							name="use-builtin-overrides"
-							bind:checked={currentSettings.useBuiltinOverrides}
-							disabled={loadingSchedule}
-						/>
-						<label for="use-builtin-overrides">Use built-in overrides</label>
-					</div>
-
 					<div>
 						<input
 							type="checkbox"
