@@ -43,7 +43,6 @@
 		role="button"
 		tabindex="0"
 	>
-		<p class="hidden">id = {c.id}</p>
 		<p class="timestamp">
 			{c.start.toString({ smallestUnit: "minutes" })} - {c.end.toString({ smallestUnit: "minutes" })}
 		</p>
@@ -87,10 +86,6 @@
 	.class-name {
 		font-size: 0.875rem;
 		font-weight: 600;
-	}
-
-	.hidden {
-		display: none;
 	}
 
 	.type-lecture {

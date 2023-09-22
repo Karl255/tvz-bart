@@ -1,7 +1,10 @@
 import type { Temporal } from "@js-temporal/polyfill";
 
+// TODO: move these to a different model file
+// TODO: improve name: eg. PlainDateString
 export type StringPlainDate = string;
 export type StringPlainDateTime = string;
+export type StringPlainTime = string;
 
 export interface Department {
 	code: string;

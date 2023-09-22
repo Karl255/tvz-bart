@@ -1,4 +1,4 @@
-import type { ClassPeriod, ClassType, Semester, StringPlainDateTime } from "$lib/api";
+import type { ClassPeriod, ClassType, Semester, StringPlainTime } from "$lib/api";
 
 export interface ClassPeriodIdentifier {
 	semester: Semester;
@@ -7,8 +7,8 @@ export interface ClassPeriodIdentifier {
 	className: string;
 	classType: ClassType;
 	dayOfWeek: number;
-	start: StringPlainDateTime;
-	end: StringPlainDateTime;
+	start: StringPlainTime;
+	end: StringPlainTime;
 }
 
 export function toIdentifier(
