@@ -111,7 +111,7 @@
 							{day.title}
 						</p>
 					{:else}
-						{#each segregatePeriods(day) as item}
+						{#each segregatePeriods(day) as item (item)}
 							<TimetableItem
 								classPeriod={item}
 								onSelect={() => selectPeriod(item)}

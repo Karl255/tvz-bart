@@ -1,10 +1,11 @@
-import type { ClassPeriod, Semester, StringPlainDateTime } from "$lib/api";
+import type { ClassPeriod, ClassType, Semester, StringPlainDateTime } from "$lib/api";
 
 export interface ClassPeriodIdentifier {
 	semester: Semester;
 	academicYear: number;
 
 	className: string;
+	classType: ClassType;
 	dayOfWeek: number;
 	start: StringPlainDateTime;
 	end: StringPlainDateTime;
@@ -20,6 +21,7 @@ export function toIdentifier(
 		academicYear,
 
 		className: classPeriod.className,
+		classType: classPeriod.classType,
 		dayOfWeek: classPeriod.date.dayOfWeek,
 		start: classPeriod.start.toString(),
 		end: classPeriod.end.toString(),
@@ -32,5 +34,18 @@ export function doesPeriodIdentifierMatch(classPeriod: ClassPeriod, identifier: 
 		classPeriod.date.dayOfWeek === identifier.dayOfWeek &&
 		classPeriod.start.equals(identifier.start) &&
 		classPeriod.end.equals(identifier.end)
+	);
+}
+
+export function identifierEquals(first: ClassPeriodIdentifier, second: ClassPeriodIdentifier) {
+	return (
+		first.semester.subdepartment === second.semester.subdepartment &&
+		first.semester.semester === second.semester.semester &&
+		first.academicYear === second.academicYear &&
+		first.className === second.className &&
+		first.classType === second.classType &&
+		first.dayOfWeek === second.dayOfWeek &&
+		first.start === second.start &&
+		first.end === second.end
 	);
 }

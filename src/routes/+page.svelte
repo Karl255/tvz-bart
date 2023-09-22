@@ -19,7 +19,8 @@
 	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/services/settings";
 
 	import type { LoadedData } from "./+page";
-	import { toIdentifier, type ClassPeriodIdentifier } from "$lib/services/scheduleFiltering";
+	import { toIdentifier, type ClassPeriodIdentifier, identifierEquals } from "$lib/services/scheduleFiltering";
+	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
 
 	export let data: LoadedData;
 
@@ -92,9 +93,16 @@
 	}
 
 	function hidePeriod(classPeriod: ClassPeriod) {
+		if (selectedPeriod === classPeriod) {
+			selectedPeriod = null;
+		}
+
 		hiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
 		hiddenPeriods = hiddenPeriods;
-		console.log("hidden periods", hiddenPeriods);
+	}
+
+	function unhidePeriod(toUnhide: ClassPeriodIdentifier) {
+		hiddenPeriods = hiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
 	}
 </script>
 
@@ -185,6 +193,13 @@
 						future version).
 					</p>
 				</div>
+			</Tab>
+
+			<Tab title="Hidden items">
+				<HiddenPeriodsList
+					hiddenItems={hiddenPeriods}
+					onUnhideItem={unhidePeriod}
+				/>
 			</Tab>
 
 			<Tab title="About">About</Tab>
