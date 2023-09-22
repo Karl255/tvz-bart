@@ -3,15 +3,15 @@ import type { Temporal } from "@js-temporal/polyfill";
 export type StringPlainDate = string;
 export type StringPlainDateTime = string;
 
-export type Department = {
+export interface Department {
 	code: string;
 	name: string;
-};
+}
 
-export type Semester = {
+export interface Semester {
 	semester: number;
 	subdepartment: string;
-};
+}
 
 export enum ClassType {
 	Lecture = "Predavanja",
@@ -20,7 +20,7 @@ export enum ClassType {
 	Other = "Ostalo",
 }
 
-export type ClassPeriod = {
+export interface ClassPeriod {
 	id: number;
 
 	date: Temporal.PlainDate;
@@ -35,14 +35,14 @@ export type ClassPeriod = {
 	amountOfStudents: number | null;
 	group: string | null;
 	note: string | null;
-};
+}
 
-export type Holiday = {
+export interface Holiday {
 	date: Temporal.PlainDate;
 	title: string;
-};
+}
 
-export type Schedule = {
+export interface Schedule {
 	workdays: Map<number, ClassPeriod>;
 	holidays: Map<StringPlainDate, Holiday>;
-};
+}

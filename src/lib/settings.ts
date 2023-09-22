@@ -1,10 +1,10 @@
 import type { Semester } from "$lib/api";
 
-export type Settings = {
+export interface Settings {
 	autoSave: boolean;
 	departmentCode: string;
 	semester: Semester;
-};
+}
 
 export const defaultSettings: Settings = {
 	autoSave: true,

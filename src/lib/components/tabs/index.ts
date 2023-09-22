@@ -3,11 +3,11 @@ import type { Writable } from "svelte/store";
 export { default as Tabs } from "$lib/components/tabs/Tabs.svelte";
 export { default as Tab } from "$lib/components/tabs/Tab.svelte";
 
-export type TabData = {
+export interface TabData {
 	title: string;
-};
+}
 
-export type TabsContext = {
+export interface TabsContext {
 	registerTab: (tab: TabData) => void;
 	selectedTab: Writable<TabData | null>;
-};
+}
