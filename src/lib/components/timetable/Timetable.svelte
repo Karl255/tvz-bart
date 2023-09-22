@@ -18,23 +18,29 @@
 
 	$: {
 		if (schedule) {
-			let newDays: (ClassPeriod[] | Holiday | null)[] = [];
-			let d = from;
+			createDays(schedule);
+		} else {
+			timetableDays = [null, null, null, null, null];
+		}
+	}
 
-			for (let i = 0; i < 5; i++) {
-				const ds = d.toString({ calendarName: "never" });
+	function createDays(schedule: Schedule) {
+		let newDays: (ClassPeriod[] | Holiday | null)[] = [];
+		let d = from;
 
-				if (schedule.holidays.has(ds)) {
-					newDays.push(schedule.holidays.get(ds)!);
-				} else {
-					newDays.push(workdaysFilterByDate(schedule, d));
-				}
+		for (let i = 0; i < 5; i++) {
+			const ds = d.toString({ calendarName: "never" });
 
-				d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day
+			if (schedule.holidays.has(ds)) {
+				newDays.push(schedule.holidays.get(ds)!);
+			} else {
+				newDays.push(workdaysFilterByDate(schedule, d));
 			}
 
-			timetableDays = newDays;
+			d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day
 		}
+
+		timetableDays = newDays;
 	}
 
 	function selectPeriod(classPeriod: ClassPeriod | null) {

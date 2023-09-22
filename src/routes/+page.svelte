@@ -16,7 +16,7 @@
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { Timetable } from "$lib/components/timetable";
-	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/settings";
+	import { defaultSettings, loadSettings, saveSettings, type Settings } from "$lib/services/settings";
 
 	import type { LoadedData } from "./+page";
 

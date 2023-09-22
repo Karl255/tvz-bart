@@ -43,6 +43,6 @@ export interface Holiday {
 }
 
 export interface Schedule {
-	workdays: Map<number, ClassPeriod>;
+	periods: Map<number, ClassPeriod>;
 	holidays: Map<StringPlainDate, Holiday>;
 }

@@ -7,7 +7,7 @@ export interface ClassPeriodSegregated extends ClassPeriod {
 }
 
 export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDate): ClassPeriod[] {
-	return [...schedule.workdays.values()].filter(c => date.equals(c.date));
+	return [...schedule.periods.values()].filter(c => date.equals(c.date));
 }
 
 export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[] {

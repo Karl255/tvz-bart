@@ -78,17 +78,17 @@ function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
 		.map(parseHoliday)
 		.map(h => [h.date.toString({ calendarName: "never" }), h] as [StringPlainDate, Holiday]);
 
-	const workdayPairs = unparsedClassPeriods.map(parseClassPeriod).sort((a, b) => {
+	const workdayPairs = unparsedClassPeriods.map(parseClassPeriodPair).sort((a, b) => {
 		return Temporal.PlainTime.compare(a[1].start, b[1].start) || Temporal.PlainTime.compare(b[1].end, a[1].end);
 	});
 
 	return {
+		periods: new Map<number, ClassPeriod>(workdayPairs),
 		holidays: new Map<StringPlainDate, Holiday>(holidayPairs),
-		workdays: new Map<number, ClassPeriod>(workdayPairs),
 	};
 }
 
-function parseClassPeriod(unparsedClassPeriod: UnparsedClassPeriod): [number, ClassPeriod] {
+function parseClassPeriodPair(unparsedClassPeriod: UnparsedClassPeriod): [number, ClassPeriod] {
 	const titleParts = titleParsingRegex.exec(unparsedClassPeriod.title)!;
 	const note = titleParts[6] ? /^Napomena: (.*)<br\/>$/.exec(titleParts[6])![1] : null;
 	const group = titleParts[7] ? /^Grupa: (.*)<br\/>$/.exec(titleParts[7])![1] : null;
