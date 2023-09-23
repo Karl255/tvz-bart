@@ -2,8 +2,17 @@
 	import { getBlankSchedule, getSemesterSchedule, getSemesters } from "$lib/api";
 	import CalendarViewer, { type ScheduleFilter, type ScheduleLoader } from "$lib/components/CalendarViewer.svelte";
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
+	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
-	import type { BaseScheduleSource, ClassPeriod, Department, Schedule, Semester, SemesterScheduleSource } from "$lib/models/api";
+	import Tab from "$lib/components/tabs/Tab.svelte";
+	import type {
+		BaseScheduleSource,
+		ClassPeriod,
+		Department,
+		Schedule,
+		Semester,
+		SemesterScheduleSource,
+	} from "$lib/models/api";
 	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import { persistent } from "$lib/services/persistence";
 	import { doesPeriodIdentifierMatch, identifierEquals, toIdentifier } from "$lib/services/scheduleFiltering";
@@ -11,8 +20,6 @@
 	import { normalizeDepartment, normalizeSemester } from "$lib/util/other";
 	import type { Temporal } from "@js-temporal/polyfill";
 	import type { LoadedData } from "./+page";
-	import Tab from "$lib/components/tabs/Tab.svelte";
-	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
 
 	export let data: LoadedData;
 
