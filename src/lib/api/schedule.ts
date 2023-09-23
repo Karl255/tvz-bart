@@ -1,4 +1,12 @@
-import { ClassType, type ClassPeriod, type Holiday, type Schedule, type Semester } from "$lib/models/api";
+import {
+	ClassType,
+	type ClassPeriod,
+	type Holiday,
+	type Schedule,
+	type Semester,
+	type SemesterScheduleSource,
+	type SourcedSchedule,
+} from "$lib/models/api";
 import { buildUrl } from "$lib/util/url-util";
 import { localEndpoints } from "./endpoints";
 
@@ -43,7 +51,10 @@ const titleParsingRegex = new RegExp(
 	].join(""),
 );
 
-export async function getWeekSchedule(semester: Semester, from: Temporal.PlainDate): Promise<Schedule> {
+export async function getSemesterWeekSchedule(
+	semester: Semester,
+	from: Temporal.PlainDate,
+): Promise<SourcedSchedule<SemesterScheduleSource>> {
 	const url = buildUrl(localEndpoints.schedule, document.URL, {
 		department: semester.subdepartment,
 		semester: semester.semester,
@@ -55,10 +66,16 @@ export async function getWeekSchedule(semester: Semester, from: Temporal.PlainDa
 	const response = await fetch(url);
 	const unparsedSchedule: UnparsedSchedule = await response.json();
 
-	return parseSchedule(unparsedSchedule, semester, from);
+	return {
+		...parseSchedule(unparsedSchedule),
+		for: {
+			semester,
+			weekStart: from,
+		},
+	};
 }
 
-function parseSchedule(unparsedSchedule: UnparsedSchedule, semester: Semester, from: Temporal.PlainDate): Schedule {
+function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
 	const [unparsedClassPeriods, unparsedHolidays] = partition<UnparsedClassPeriod, UnparsedHoliday>(
 		unparsedSchedule,
 		item => item.id === null,
@@ -75,10 +92,6 @@ function parseSchedule(unparsedSchedule: UnparsedSchedule, semester: Semester, f
 	return {
 		periods: new Map<number, ClassPeriod>(workdayPairs),
 		holidays: new Map<StringPlainDate, Holiday>(holidayPairs),
-		for: {
-			semester,
-			weekStart: from,
-		},
 	};
 }
 

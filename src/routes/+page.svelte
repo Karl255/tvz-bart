@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { getSemesters, getWeekSchedule } from "$lib/api";
+	import { getSemesters, getSemesterWeekSchedule } from "$lib/api";
 	import type { Temporal } from "@js-temporal/polyfill";
 
-	import type { ClassPeriod, Department, Schedule, Semester } from "$lib/models/api";
+	import type { ClassPeriod, Department, Semester, SemesterScheduleSource, SourcedSchedule } from "$lib/models/api";
 	import { dateToStringHr, getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
@@ -19,6 +19,8 @@
 	import { normalizeDepartment } from "$lib/util/other";
 	import type { LoadedData } from "./+page";
 
+	type PageSchedule = SourcedSchedule<SemesterScheduleSource>;
+
 	export let data: LoadedData;
 
 	let currentSettings: Settings = loadSettings();
@@ -32,7 +34,7 @@
 		getAcademicYear(currentMonday),
 	);
 
-	let schedule: Schedule | null = null;
+	let schedule: PageSchedule | null = null;
 	let allHiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
 	$: filteredHiddenPeriods = filterHiddenPeriods(
 		allHiddenPeriods,
@@ -78,14 +80,14 @@
 
 		loadingSchedule = true;
 
-		let promise = getWeekSchedule(semester, weekStart);
+		let promise = getSemesterWeekSchedule(semester, weekStart);
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;
 		selectedPeriod = null;
 	}
 
-	function scheduleIsFor(schedule: Schedule, semester: Semester, weekStart: Temporal.PlainDate): boolean {
+	function scheduleIsFor(schedule: PageSchedule, semester: Semester, weekStart: Temporal.PlainDate): boolean {
 		return (
 			schedule.for.semester.subdepartment === semester.subdepartment &&
 			schedule.for.semester.semester === semester.semester &&

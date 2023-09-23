@@ -6,6 +6,7 @@ export interface ClassPeriodSegregated extends ClassPeriod {
 	width: number;
 }
 
+// TODO: remove dependency on whole Schedule type
 export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDate): ClassPeriod[] {
 	return [...schedule.periods.values()].filter(c => date.equals(c.date));
 }
