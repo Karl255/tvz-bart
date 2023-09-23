@@ -232,7 +232,7 @@
 			<Tab title="Hidden items {hiddenItemsTitleHint}">
 				<HiddenPeriodsList
 					hiddenItems={filteredHiddenPeriods}
-					onUnhideItem={unhidePeriod}
+					onUnhideIdentifier={unhidePeriod}
 				/>
 			</Tab>
 

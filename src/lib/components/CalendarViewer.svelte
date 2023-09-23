@@ -17,8 +17,6 @@
 	import { Timetable } from "$lib/components/timetable";
 	import { loadSettings, saveSettings } from "$lib/services/settings";
 
-	// import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
-	// import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import { defaultSettings, type Settings } from "$lib/models/settings";
 
 	export let scheduleLoader: ScheduleLoader;
@@ -50,8 +48,6 @@
 	export let loadingSchedule = false;
 
 	$: loadSchedule(scheduleLoader, currentMonday);
-
-	// $: hiddenItemsTitleHint = filteredHiddenPeriods.length > 0 ? ` (${filteredHiddenPeriods.length})` : "";
 
 	async function loadSchedule(scheduleLoader: ScheduleLoader, weekStart: Temporal.PlainDate) {
 		loadingSchedule = true;
@@ -131,9 +127,11 @@
 		/>
 	</div>
 
-	<div class="panel panel--info-preview"></div>
+	<div class="panel panel--aside">
+		<slot name="aside" />
+	</div>
 
-	<div class="panel panel--info-selected">
+	<div class="panel panel--info">
 		<ClassPeriodInfo
 			classPeriod={selectedPeriod ?? previewedPeriod}
 			hide={hidePeriod}
@@ -145,7 +143,7 @@
 	<div class="panel panel--options">
 		<Tabs>
 			<Tab title="Schedule picker">
-				<slot />
+				<slot name="schedule-picker" />
 			</Tab>
 
 			<Tab title="Settings">
@@ -170,16 +168,8 @@
 					</p>
 				</div>
 			</Tab>
-			<!-- TODO: move out of component, use slot -->
-			<!-- 
-			<Tab title="Hidden items {hiddenItemsTitleHint}">
-				<HiddenPeriodsList
-					hiddenItems={filteredHiddenPeriods}
-					onUnhideItem={unhidePeriod}
-				/>
-			</Tab> -->
 
-			<Tab title="About">About</Tab>
+			<slot name="tabs" />
 		</Tabs>
 	</div>
 </div>
@@ -249,13 +239,13 @@
 		}
 	}
 
-	.panel--info-selected {
-		grid-area: info-selected;
+	.panel--aside {
+		grid-area: info-preview;
 		padding: 1rem;
 	}
 
-	.panel--info-preview {
-		grid-area: info-preview;
+	.panel--info {
+		grid-area: info-selected;
 		padding: 1rem;
 	}
 

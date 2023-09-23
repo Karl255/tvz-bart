@@ -7,7 +7,7 @@
 	type Identifier = ClassPeriodIdentifier<BaseScheduleSource>;
 
 	export let hiddenItems: Identifier[];
-	export let onUnhideItem: (identifier: Identifier) => void;
+	export let onUnhideIdentifier: (identifier: Identifier) => void;
 
 	function classTypeToStyleClass(type: ClassType): string {
 		let r: string = "other";
@@ -51,7 +51,7 @@
 			class="item type-{classTypeToStyleClass(item.classType)}"
 			role="button"
 			tabindex="0"
-			on:click={() => onUnhideItem(item)}
+			on:click={() => onUnhideIdentifier(item)}
 		>
 			<p class="timestamp">
 				<span>{formatTime(item.start)} - {formatTime(item.end)}</span>
