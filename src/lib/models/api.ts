@@ -57,5 +57,8 @@ export type ScheduleSourceAdditions<TSource extends BaseScheduleSource> = Omit<T
 
 export interface SemesterScheduleSource extends BaseScheduleSource {
 	semester: Semester;
-	weekStart: Temporal.PlainDate;
+}
+
+export interface CustomScheduleSource extends BaseScheduleSource {
+	scheduleQuery: string;
 }

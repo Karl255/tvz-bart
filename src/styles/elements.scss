@@ -30,3 +30,13 @@ button {
 	font-weight: 700;
 	cursor: default;
 }
+
+textarea {
+	color: inherit;
+	font-size: inherit;
+
+	background-color: var(--clr-element);
+	border: 1px solid var(--clr-element-border);
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+}

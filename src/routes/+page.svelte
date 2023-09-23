@@ -51,7 +51,7 @@
 
 	let scheduleLoader: ScheduleLoader;
 	$: scheduleLoader = (weekStart: Temporal.PlainDate) => {
-		return $semester ? getSemesterSchedule($semester, weekStart) : getBlankSchedule(weekStart);
+		return $semester ? getSemesterSchedule($semester, weekStart) : getBlankSchedule();
 	};
 
 	let scheduleFilter: ScheduleFilter;
