@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { segregatePeriods, workdaysFilterByDate } from "$lib/components/timetable/timetable";
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/models/api";
-	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
-	import { doesPeriodIdentifierMatch as doesPeriodMatchIdentifier } from "$lib/services/scheduleFiltering";
 	import { dateToStringHr } from "$lib/util/datetime-helpers";
 	import { Temporal } from "@js-temporal/polyfill";
 	import TimetableItem from "./TimetableItem.svelte";
@@ -15,33 +13,15 @@
 	export let previewedPeriod: ClassPeriod | null = null;
 
 	export let schedule: Schedule | null;
-	export let hiddenPeriods: ClassPeriodIdentifier[];
 	export let from: Temporal.PlainDate;
 	let timetableDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
 
-	$: filteredSchedule = schedule ? filterSchedule(schedule, hiddenPeriods) : null;
-
 	$: {
-		if (filteredSchedule) {
-			createDays(filteredSchedule);
+		if (schedule) {
+			createDays(schedule);
 		} else {
 			timetableDays = [null, null, null, null, null];
 		}
-	}
-
-	function filterSchedule(schedule: Schedule, hidden: ClassPeriodIdentifier[]): Schedule {
-		// prettier-ignore
-		const filteredPeriodPairs = [...schedule.periods.entries()]
-			.filter(([_, classPeriod]) => !matchesAnyIdentifier(classPeriod, hidden));
-
-		return {
-			periods: new Map(filteredPeriodPairs),
-			holidays: schedule.holidays,
-		};
-	}
-
-	function matchesAnyIdentifier(classPeriod: ClassPeriod, identifiers: ClassPeriodIdentifier[]): boolean {
-		return identifiers.some(identifier => doesPeriodMatchIdentifier(classPeriod, identifier));
 	}
 
 	function createDays(s: Schedule) {

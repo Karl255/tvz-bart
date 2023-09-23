@@ -1,18 +1,16 @@
-import type { ClassPeriod, Semester } from "$lib/models/api";
+import type { BaseScheduleSource, ClassPeriod, ScheduleSourceAdditions } from "$lib/models/api";
 import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
-import { normalizeDepartment } from "$lib/util/other";
 
-export function toIdentifier(
+export function toIdentifier<TSource extends BaseScheduleSource>(
 	classPeriod: ClassPeriod,
-	semester: Semester,
 	academicYear: number,
-): ClassPeriodIdentifier {
+	source: ScheduleSourceAdditions<TSource>,
+): ClassPeriodIdentifier<TSource> {
 	return {
-		semester: {
-			subdepartment: normalizeDepartment(semester.subdepartment),
-			semester: semester.semester,
+		for: {
+			...source,
+			academicYear,
 		},
-		academicYear,
 
 		className: classPeriod.className,
 		classType: classPeriod.classType,
@@ -22,7 +20,10 @@ export function toIdentifier(
 	};
 }
 
-export function doesPeriodIdentifierMatch(classPeriod: ClassPeriod, identifier: ClassPeriodIdentifier) {
+export function doesPeriodIdentifierMatch<TSource extends BaseScheduleSource>(
+	classPeriod: ClassPeriod,
+	identifier: ClassPeriodIdentifier<TSource>,
+) {
 	return (
 		classPeriod.className === identifier.className &&
 		classPeriod.date.dayOfWeek === identifier.dayOfWeek &&
@@ -31,15 +32,9 @@ export function doesPeriodIdentifierMatch(classPeriod: ClassPeriod, identifier: 
 	);
 }
 
-export function identifierEquals(first: ClassPeriodIdentifier, second: ClassPeriodIdentifier) {
-	return (
-		first.semester.subdepartment === second.semester.subdepartment &&
-		first.semester.semester === second.semester.semester &&
-		first.academicYear === second.academicYear &&
-		first.className === second.className &&
-		first.classType === second.classType &&
-		first.dayOfWeek === second.dayOfWeek &&
-		first.start === second.start &&
-		first.end === second.end
-	);
+export function identifierEquals<TSource extends BaseScheduleSource>(
+	first: ClassPeriodIdentifier<TSource>,
+	second: ClassPeriodIdentifier<TSource>,
+) {
+	return JSON.stringify(first) === JSON.stringify(second);
 }

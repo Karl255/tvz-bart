@@ -4,6 +4,7 @@ import {
 	type ClassPeriod,
 	type Holiday,
 	type Schedule,
+	type ScheduleSourceAdditions,
 	type Semester,
 	type SemesterScheduleSource,
 	type SourcedSchedule,
@@ -61,9 +62,7 @@ const blankSchedule: SourcedSchedule<BaseScheduleSource> = {
 };
 
 export async function getBlankSchedule(_weekStart: Temporal.PlainDate): Promise<SourcedSchedule<BaseScheduleSource>> {
-	const r = Promise.resolve(blankSchedule);
-	console.log(r);
-	return r;
+	return Promise.resolve(blankSchedule);
 }
 
 export async function getSemesterSchedule(
@@ -86,7 +85,7 @@ export async function getSemesterSchedule(
 
 function scheduleWithSource<TSource extends BaseScheduleSource>(
 	schedule: SourcedSchedule<BaseScheduleSource>,
-	source: Omit<TSource, keyof BaseScheduleSource>,
+	source: ScheduleSourceAdditions<TSource>,
 ): SourcedSchedule<TSource> {
 	return {
 		...schedule,

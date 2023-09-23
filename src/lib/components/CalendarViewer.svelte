@@ -3,41 +3,37 @@
 	context="module"
 >
 	export type ScheduleLoader = (weekStart: Temporal.PlainDate) => Promise<SourcedSchedule<BaseScheduleSource>>;
+	export type ScheduleFilter = (schedule: Schedule) => Schedule;
 </script>
 
 <script lang="ts">
 	import type { Temporal } from "@js-temporal/polyfill";
 
-	import type { BaseScheduleSource, ClassPeriod, SourcedSchedule } from "$lib/models/api";
-	import { dateToStringHr, getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
+	import type { BaseScheduleSource, ClassPeriod, Schedule, SourcedSchedule } from "$lib/models/api";
+	import { dateToStringHr, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { Timetable } from "$lib/components/timetable";
 	import { loadSettings, saveSettings } from "$lib/services/settings";
 
-	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
-	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
+	// import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
+	// import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import { defaultSettings, type Settings } from "$lib/models/settings";
-	import { identifierEquals, toIdentifier } from "$lib/services/scheduleFiltering";
-	import { normalizeDepartment } from "$lib/util/other";
-
-	type Schedule = SourcedSchedule<BaseScheduleSource>;
 
 	export let scheduleLoader: ScheduleLoader;
+	export let scheduleFilter: ScheduleFilter;
+	export let onHidePeriod: (ClassPeriod: ClassPeriod) => void;
 
+	// TODO: remove any persistance from this component
 	let currentSettings: Settings = loadSettings();
 	let autoSavePrevious = currentSettings.autoSave;
 
 	export let currentMonday = thisMonday();
 
 	let schedule: Schedule | null = null;
-	let allHiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
-	$: filteredHiddenPeriods = filterHiddenPeriods(
-		allHiddenPeriods,
-		currentSettings.semester.subdepartment,
-		currentAcademicYear,
-	);
+	let filteredSchedule: Schedule | null;
+	$: filteredSchedule = schedule && scheduleFilter(schedule);
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
@@ -53,16 +49,14 @@
 
 	export let loadingSchedule = false;
 
-	$: currentAcademicYear = getAcademicYear(currentMonday);
 	$: loadSchedule(scheduleLoader, currentMonday);
 
-	$: hiddenItemsTitleHint = filteredHiddenPeriods.length > 0 ? ` (${filteredHiddenPeriods.length})` : "";
+	// $: hiddenItemsTitleHint = filteredHiddenPeriods.length > 0 ? ` (${filteredHiddenPeriods.length})` : "";
 
 	async function loadSchedule(scheduleLoader: ScheduleLoader, weekStart: Temporal.PlainDate) {
 		loadingSchedule = true;
 
 		let promise = scheduleLoader(weekStart);
-		console.log("gotten promise", promise);
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;
@@ -85,30 +79,17 @@
 		saveSettings(currentSettings);
 	}
 
-	function filterHiddenPeriods(
-		items: ClassPeriodIdentifier[],
-		subdepartment: string,
-		academicYear: number,
-	): ClassPeriodIdentifier[] {
-		return items.filter(
-			items =>
-				items.semester.subdepartment === normalizeDepartment(subdepartment) &&
-				items.academicYear === academicYear,
-		);
-	}
-
 	function hidePeriod(classPeriod: ClassPeriod) {
 		if (selectedPeriod === classPeriod) {
 			selectedPeriod = null;
 		}
 
-		allHiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
-		allHiddenPeriods = allHiddenPeriods;
+		onHidePeriod(classPeriod);
 	}
 
-	function unhidePeriod(toUnhide: ClassPeriodIdentifier) {
-		allHiddenPeriods = allHiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
-	}
+	// function unhidePeriod(_toUnhide: ClassPeriodIdentifier<BaseScheduleSource>) {
+	// 	allHiddenPeriods2 = allHiddenPeriods2.filter(hidden => !identifierEquals(hidden, toUnhide));
+	// }
 </script>
 
 <svelte:head>
@@ -143,8 +124,7 @@
 		</div>
 
 		<Timetable
-			{schedule}
-			hiddenPeriods={filteredHiddenPeriods}
+			schedule={filteredSchedule}
 			from={currentMonday}
 			bind:selectedPeriod
 			bind:previewedPeriod
@@ -190,13 +170,14 @@
 					</p>
 				</div>
 			</Tab>
-
+			<!-- TODO: move out of component, use slot -->
+			<!-- 
 			<Tab title="Hidden items {hiddenItemsTitleHint}">
 				<HiddenPeriodsList
 					hiddenItems={filteredHiddenPeriods}
 					onUnhideItem={unhidePeriod}
 				/>
-			</Tab>
+			</Tab> -->
 
 			<Tab title="About">About</Tab>
 		</Tabs>

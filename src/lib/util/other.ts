@@ -1,3 +1,5 @@
+import type { Semester } from "$lib/models/api";
+
 const depsStartingWithI = ["INF", "ID", "IRSIM"];
 
 export function normalizeDepartment(department: string): string {
@@ -10,4 +12,11 @@ export function normalizeDepartment(department: string): string {
 	}
 
 	return department;
+}
+
+export function normalizeSemester(semester: Semester): Semester {
+	return {
+		subdepartment: normalizeDepartment(semester.subdepartment),
+		semester: semester.semester,
+	};
 }

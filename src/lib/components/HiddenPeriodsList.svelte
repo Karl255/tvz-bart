@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { ClassType } from "$lib/models/api";
+	import { ClassType, type BaseScheduleSource } from "$lib/models/api";
 	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import type { StringPlainTime } from "$lib/models/temporal";
 	import { Temporal } from "@js-temporal/polyfill";
 
-	export let hiddenItems: ClassPeriodIdentifier[];
-	export let onUnhideItem: (identifier: ClassPeriodIdentifier) => void;
+	type Identifier = ClassPeriodIdentifier<BaseScheduleSource>;
+
+	export let hiddenItems: Identifier[];
+	export let onUnhideItem: (identifier: Identifier) => void;
 
 	function classTypeToStyleClass(type: ClassType): string {
 		let r: string = "other";
@@ -31,7 +33,7 @@
 		return names[dayOfWeek];
 	}
 
-	function orderItems(items: ClassPeriodIdentifier[]): ClassPeriodIdentifier[] {
+	function orderItems(items: Identifier[]): Identifier[] {
 		return [...items].sort((first, second) => {
 			return (
 				first.dayOfWeek - second.dayOfWeek ||

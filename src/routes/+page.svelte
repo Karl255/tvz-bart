@@ -35,7 +35,7 @@
 	);
 
 	let schedule: PageSchedule | null = null;
-	let allHiddenPeriods: ClassPeriodIdentifier[] = []; // TODO: read from localStorage
+	let allHiddenPeriods: ClassPeriodIdentifier<SemesterScheduleSource>[] = []; // TODO: read from localStorage
 	$: filteredHiddenPeriods = filterHiddenPeriods(
 		allHiddenPeriods,
 		currentSettings.semester.subdepartment,
@@ -112,14 +112,14 @@
 	}
 
 	function filterHiddenPeriods(
-		items: ClassPeriodIdentifier[],
+		items: ClassPeriodIdentifier<SemesterScheduleSource>[],
 		subdepartment: string,
 		academicYear: number,
-	): ClassPeriodIdentifier[] {
+	): ClassPeriodIdentifier<SemesterScheduleSource>[] {
 		return items.filter(
-			items =>
-				items.semester.subdepartment === normalizeDepartment(subdepartment) &&
-				items.academicYear === academicYear,
+			item =>
+				item.for.semester.subdepartment === normalizeDepartment(subdepartment) &&
+				item.for.academicYear === academicYear,
 		);
 	}
 
@@ -128,11 +128,15 @@
 			selectedPeriod = null;
 		}
 
-		allHiddenPeriods.push(toIdentifier(classPeriod, currentSettings.semester, currentAcademicYear));
+		const normalizedSemester: Semester = {
+			subdepartment: normalizeDepartment(currentSettings.semester.subdepartment),
+			semester: currentSettings.semester.semester,
+		};
+		allHiddenPeriods.push(toIdentifier(classPeriod, currentAcademicYear, { semester: normalizedSemester }));
 		allHiddenPeriods = allHiddenPeriods;
 	}
 
-	function unhidePeriod(toUnhide: ClassPeriodIdentifier) {
+	function unhidePeriod(toUnhide: ClassPeriodIdentifier<SemesterScheduleSource>) {
 		allHiddenPeriods = allHiddenPeriods.filter(hidden => !identifierEquals(hidden, toUnhide));
 	}
 </script>
@@ -170,7 +174,6 @@
 
 		<Timetable
 			{schedule}
-			hiddenPeriods={filteredHiddenPeriods}
 			from={currentMonday}
 			bind:selectedPeriod
 			bind:previewedPeriod
