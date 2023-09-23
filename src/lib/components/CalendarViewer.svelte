@@ -62,6 +62,7 @@
 		loadingSchedule = true;
 
 		let promise = scheduleLoader(weekStart);
+		console.log("gotten promise", promise);
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;

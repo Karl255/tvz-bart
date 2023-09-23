@@ -2,7 +2,7 @@
 	import type { Semester } from "$lib/models/api";
 
 	export let promisedSemesters: Promise<Semester[]>;
-	export let selectedSemester: Semester;
+	export let selectedSemester: Semester | null;
 	export let disabled: boolean;
 
 	let semesters: Semester[] = [];
@@ -21,8 +21,8 @@
 <div class="group">
 	{#each semesters as semester}
 		{@const selected =
-			semester.subdepartment === selectedSemester.subdepartment &&
-			semester.semester === selectedSemester.semester}
+			semester.subdepartment === selectedSemester?.subdepartment &&
+			semester.semester === selectedSemester?.semester}
 
 		<button
 			class="btn"

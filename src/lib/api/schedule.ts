@@ -52,6 +52,20 @@ const titleParsingRegex = new RegExp(
 	].join(""),
 );
 
+const blankSchedule: SourcedSchedule<BaseScheduleSource> = {
+	periods: new Map(),
+	holidays: new Map(),
+	for: {
+		weekStart: Temporal.PlainDate.from("1970-01-01"),
+	},
+};
+
+export async function getBlankSchedule(_weekStart: Temporal.PlainDate): Promise<SourcedSchedule<BaseScheduleSource>> {
+	const r = Promise.resolve(blankSchedule);
+	console.log(r);
+	return r;
+}
+
 export async function getSemesterSchedule(
 	semester: Semester,
 	weekStart: Temporal.PlainDate,
