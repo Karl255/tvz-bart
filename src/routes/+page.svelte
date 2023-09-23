@@ -61,7 +61,7 @@
 
 	$: currentAcademicYear = getAcademicYear(currentMonday);
 	$: loadSemesters(settingsDepartmentCode, currentAcademicYear);
-	$: loadSchedule(currentMonday, settingsSemester);
+	$: loadSchedule(settingsSemester, currentMonday);
 
 	$: hiddenItemsTitleHint = filteredHiddenPeriods.length > 0 ? ` (${filteredHiddenPeriods.length})` : "";
 
@@ -71,14 +71,26 @@
 		promisedSemesters.then(() => (loadingSemesters = false));
 	}
 
-	async function loadSchedule(weekStart: Temporal.PlainDate, semester: Semester) {
+	async function loadSchedule(semester: Semester, weekStart: Temporal.PlainDate) {
+		if (schedule && scheduleIsFor(schedule, semester, weekStart)) {
+			return;
+		}
+
 		loadingSchedule = true;
 
-		let promise = getWeekSchedule(semester.subdepartment, semester.semester, weekStart);
+		let promise = getWeekSchedule(semester, weekStart);
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;
 		selectedPeriod = null;
+	}
+
+	function scheduleIsFor(schedule: Schedule, semester: Semester, weekStart: Temporal.PlainDate): boolean {
+		return (
+			schedule.for.semester.subdepartment === semester.subdepartment &&
+			schedule.for.semester.semester === semester.semester &&
+			schedule.for.weekStart.equals(weekStart)
+		);
 	}
 
 	function resetWeek() {
