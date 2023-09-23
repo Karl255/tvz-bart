@@ -4,7 +4,7 @@ import type { Temporal } from "@js-temporal/polyfill";
 import { parseSchedule, type UnparsedClassPeriod } from "./_schedule-helpers";
 import { localEndpoints } from "./endpoints";
 
-export async function getSubjectSchedule(
+export async function getUserSchedule(
 	username: string,
 	hash: string,
 	weekStart: Temporal.PlainDate,
