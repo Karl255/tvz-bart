@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { segregatePeriods, workdaysFilterByDate } from "$lib/components/timetable/timetable";
+	import { segregatePeriods, periodsFilterByDate } from "$lib/components/timetable/timetable";
 	import type { ClassPeriod, Holiday, Schedule } from "$lib/models/api";
 	import { dateToStringHr } from "$lib/util/datetime-helpers";
 	import { Temporal } from "@js-temporal/polyfill";
@@ -34,7 +34,7 @@
 			if (s.holidays.has(ds)) {
 				newDays.push(s.holidays.get(ds)!);
 			} else {
-				newDays.push(workdaysFilterByDate(s, d));
+				newDays.push(periodsFilterByDate([...s.periods.values()], d));
 			}
 
 			d = d.add(new Temporal.Duration(0, 0, 0, 1)); // +1 day

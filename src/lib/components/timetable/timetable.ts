@@ -1,4 +1,4 @@
-import type { ClassPeriod, Schedule } from "$lib/models/api";
+import type { ClassPeriod } from "$lib/models/api";
 import { Temporal } from "@js-temporal/polyfill";
 
 export interface ClassPeriodSegregated extends ClassPeriod {
@@ -6,9 +6,8 @@ export interface ClassPeriodSegregated extends ClassPeriod {
 	width: number;
 }
 
-// TODO: remove dependency on whole Schedule type
-export function workdaysFilterByDate(schedule: Schedule, date: Temporal.PlainDate): ClassPeriod[] {
-	return [...schedule.periods.values()].filter(c => date.equals(c.date));
+export function periodsFilterByDate(periods: ClassPeriod[], date: Temporal.PlainDate): ClassPeriod[] {
+	return periods.filter(c => date.equals(c.date));
 }
 
 export function segregatePeriods(periods: ClassPeriod[]): ClassPeriodSegregated[] {
