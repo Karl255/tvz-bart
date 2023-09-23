@@ -23,7 +23,11 @@
 
 	export let data: LoadedData;
 
-	const departmentCode = persistent("regular:departmentCode", data.departments[0].code);
+	const departmentCode = persistent(
+		"regular:departmentCode",
+		data.departments.find(d => d.code === "RAC")?.code ?? data.departments[0].code,
+	);
+
 	const semester = persistent<Semester | null>("regular:semester", null);
 	const allHiddenRules = persistent<ClassPeriodIdentifier<SemesterScheduleSource>[]>("regular:hiddenItems", []);
 
