@@ -15,17 +15,10 @@
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
 	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { Timetable } from "$lib/components/timetable";
-	import { loadSettings, saveSettings } from "$lib/services/settings";
-
-	import { defaultSettings, type Settings } from "$lib/models/settings";
 
 	export let scheduleLoader: ScheduleLoader;
 	export let scheduleFilter: ScheduleFilter;
 	export let onHidePeriod: (ClassPeriod: ClassPeriod) => void;
-
-	// TODO: remove any persistance from this component
-	let currentSettings: Settings = loadSettings();
-	let autoSavePrevious = currentSettings.autoSave;
 
 	export let currentMonday = thisMonday();
 
@@ -35,15 +28,6 @@
 
 	let selectedPeriod: ClassPeriod | null = null;
 	let previewedPeriod: ClassPeriod | null = null;
-
-	$: ({ autoSave: settingsAutoSave } = currentSettings);
-
-	$: {
-		if (settingsAutoSave || autoSavePrevious) {
-			saveSettings(currentSettings);
-			autoSavePrevious = currentSettings.autoSave;
-		}
-	}
 
 	export let loadingSchedule = false;
 
@@ -65,14 +49,6 @@
 
 	function cycleWeek(delta: number) {
 		currentMonday = currentMonday.add({ days: delta * 7 });
-	}
-
-	function resetSettings() {
-		currentSettings = defaultSettings;
-	}
-
-	function manualSave() {
-		saveSettings(currentSettings);
 	}
 
 	function hidePeriod(classPeriod: ClassPeriod) {
@@ -144,29 +120,6 @@
 		<Tabs>
 			<Tab title="Schedule picker">
 				<slot name="schedule-picker" />
-			</Tab>
-
-			<Tab title="Settings">
-				<div class="settings-controls">
-					<div>
-						<input
-							type="checkbox"
-							name="autosave"
-							bind:checked={currentSettings.autoSave}
-						/>
-						<label for="autosave">Auto-save</label>
-					</div>
-
-					<!-- prettier-ignore -->
-					<button class="btn" on:click={manualSave}>Save settings</button>
-					<!-- prettier-ignore -->
-					<button class="btn" on:click={resetSettings}>Reset settings</button>
-
-					<p>
-						Settings include the selected department and semester as well as user-set overrides (added in a
-						future version).
-					</p>
-				</div>
 			</Tab>
 
 			<slot name="tabs" />
@@ -257,12 +210,5 @@
 
 	.description {
 		font-style: italic;
-	}
-
-	.settings-controls {
-		display: flex;
-		flex-direction: column;
-		align-items: start;
-		gap: 1rem;
 	}
 </style>
