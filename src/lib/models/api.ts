@@ -45,15 +45,15 @@ export interface Schedule {
 	holidays: Map<StringPlainDate, Holiday>;
 }
 
-export interface SourcedSchedule<TSource extends ScheduleSource> extends Schedule {
+export interface SourcedSchedule<TSource extends BaseScheduleSource> extends Schedule {
 	for: TSource;
 }
 
-export interface ScheduleSource {
+export interface BaseScheduleSource {
 	weekStart: Temporal.PlainDate;
 }
 
-export interface SemesterScheduleSource extends ScheduleSource {
+export interface SemesterScheduleSource extends BaseScheduleSource {
 	semester: Semester;
 	weekStart: Temporal.PlainDate;
 }

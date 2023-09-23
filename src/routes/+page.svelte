@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getSemesters, getSemesterWeekSchedule } from "$lib/api";
+	import { getSemesters, getSemesterSchedule } from "$lib/api";
 	import type { Temporal } from "@js-temporal/polyfill";
 
 	import type { ClassPeriod, Department, Semester, SemesterScheduleSource, SourcedSchedule } from "$lib/models/api";
@@ -80,7 +80,7 @@
 
 		loadingSchedule = true;
 
-		let promise = getSemesterWeekSchedule(semester, weekStart);
+		let promise = getSemesterSchedule(semester, weekStart);
 		promise.then(() => (loadingSchedule = false));
 
 		schedule = await promise;

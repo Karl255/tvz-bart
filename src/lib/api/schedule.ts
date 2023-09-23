@@ -1,5 +1,6 @@
 import {
 	ClassType,
+	type BaseScheduleSource,
 	type ClassPeriod,
 	type Holiday,
 	type Schedule,
@@ -51,16 +52,47 @@ const titleParsingRegex = new RegExp(
 	].join(""),
 );
 
-export async function getSemesterWeekSchedule(
+export async function getSemesterSchedule(
 	semester: Semester,
-	from: Temporal.PlainDate,
+	weekStart: Temporal.PlainDate,
 ): Promise<SourcedSchedule<SemesterScheduleSource>> {
-	const url = buildUrl(localEndpoints.schedule, document.URL, {
-		department: semester.subdepartment,
-		semester: semester.semester,
-		year: getAcademicYear(from),
-		start: from.toString({ calendarName: "never" }),
-		end: from.add({ days: 6 }).toString({ calendarName: "never" }),
+	const schedule = await getSchedule(
+		localEndpoints.schedule,
+		{
+			department: semester.subdepartment,
+			semester: semester.semester,
+		},
+		weekStart,
+	);
+
+	return scheduleWithSource<SemesterScheduleSource>(schedule, {
+		semester: semester,
+	});
+}
+
+function scheduleWithSource<TSource extends BaseScheduleSource>(
+	schedule: SourcedSchedule<BaseScheduleSource>,
+	source: Omit<TSource, keyof BaseScheduleSource>,
+): SourcedSchedule<TSource> {
+	return {
+		...schedule,
+		for: {
+			...schedule.for,
+			...source,
+		} as TSource,
+	};
+}
+
+async function getSchedule(
+	endpoint: string,
+	params: Record<string, string | number>,
+	weekStart: Temporal.PlainDate,
+): Promise<SourcedSchedule<BaseScheduleSource>> {
+	const url = buildUrl(endpoint, document.URL, {
+		...params,
+		year: getAcademicYear(weekStart),
+		start: weekStart.toString({ calendarName: "never" }),
+		end: weekStart.add({ days: 6 }).toString({ calendarName: "never" }),
 	});
 
 	const response = await fetch(url);
@@ -69,8 +101,7 @@ export async function getSemesterWeekSchedule(
 	return {
 		...parseSchedule(unparsedSchedule),
 		for: {
-			semester,
-			weekStart: from,
+			weekStart,
 		},
 	};
 }
