@@ -85,6 +85,7 @@
 
 		overflow: clip;
 		cursor: pointer;
+		user-select: none;
 	}
 
 	.timestamp {
