@@ -37,3 +37,17 @@ code {
 	border-radius: 0.25rem;
 	padding-inline: 0.125rem;
 }
+
+$link-clr: #1584f3;
+
+a {
+	&:any-link {
+		color: $link-clr;
+		text-decoration: none;
+	}
+
+	&:hover,
+	&:active {
+		text-decoration: 1px solid underline currentColor;
+	}
+}

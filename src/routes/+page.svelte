@@ -4,7 +4,9 @@
 	import DepartmentPicker from "$lib/components/DepartmentPicker.svelte";
 	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
 	import SemesterPicker from "$lib/components/SemesterPicker.svelte";
+	import TemporaryNavigation from "$lib/components/TemporaryNavigation.svelte";
 	import Tab from "$lib/components/tabs/Tab.svelte";
+	import Tabs from "$lib/components/tabs/Tabs.svelte";
 	import type {
 		BaseScheduleSource,
 		ClassPeriod,
@@ -20,7 +22,6 @@
 	import { normalizeDepartment, normalizeSemester } from "$lib/util/other";
 	import type { Temporal } from "@js-temporal/polyfill";
 	import type { LoadedData } from "./+page";
-	import Tabs from "$lib/components/tabs/Tabs.svelte";
 
 	export let data: LoadedData;
 
@@ -110,6 +111,8 @@
 	bind:currentMonday
 	bind:loadingSchedule={isLoadingSchedule}
 >
+	<TemporaryNavigation slot="aside" />
+
 	<Tabs slot="below">
 		<Tab title="Schedule picker">
 			<DepartmentPicker

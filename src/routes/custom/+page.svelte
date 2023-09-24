@@ -2,6 +2,7 @@
 	import { getBlankSchedule } from "$lib/api";
 	import { getCustomSchedule } from "$lib/api/customSchedule";
 	import CalendarViewer, { type ScheduleFilter, type ScheduleLoader } from "$lib/components/CalendarViewer.svelte";
+	import TemporaryNavigation from "$lib/components/TemporaryNavigation.svelte";
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
 	import type { ClassPeriod } from "$lib/models/api";
@@ -44,7 +45,6 @@
 		"semester:PRIN-4",
 		"# Davor Cafuta, Žekljo Kovačević\nuser:datar:d41018c10e02845c8df0b26a14b474cc\nuser:zkovacev1:5bc68e965457ff369dff510e8ccbcea5",
 	];
-	$: console.log("queryInput", queryInput);
 </script>
 
 <CalendarViewer
@@ -52,6 +52,8 @@
 	{scheduleFilter}
 	{onHidePeriod}
 >
+	<TemporaryNavigation slot="aside" />
+
 	<svelte:fragment slot="below">
 		<Tabs>
 			<Tab title="Schedule picker">
