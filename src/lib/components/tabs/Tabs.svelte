@@ -93,6 +93,7 @@
 
 	.tab-panels {
 		display: grid;
+		align-items: start;
 		position: relative;
 		z-index: 2;
 
