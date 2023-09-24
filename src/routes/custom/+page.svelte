@@ -2,6 +2,7 @@
 	import { getBlankSchedule } from "$lib/api";
 	import { getCustomSchedule } from "$lib/api/customSchedule";
 	import CalendarViewer, { type ScheduleFilter, type ScheduleLoader } from "$lib/components/CalendarViewer.svelte";
+	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
 	import type { ClassPeriod } from "$lib/models/api";
 	import type { ScheduleQuery } from "$lib/models/scheduleQuery";
@@ -51,60 +52,67 @@
 	{scheduleFilter}
 	{onHidePeriod}
 >
-	<!-- prettier-ignore -->
-	<section slot="schedule-picker" class="schedule-picker">
-		<h2>Multi-schedule query</h2>
+	<svelte:fragment slot="below">
+		<Tabs>
+			<Tab title="Schedule picker">
+				<!-- prettier-ignore -->
+				<section class="schedule-picker">
+					<h2>Multi-schedule query</h2>
 
-		<textarea
-			bind:value={queryInput}
-			contenteditable="true"
-			class:error={query === null && queryInput !== ""}
-		></textarea>
-	</section>
-
-	<svelte:fragment slot="tabs">
-		<Tab title="How to use">
-			<section class="instructions">
-				<h1>
-					The multi-schedule query consists of multiple rules, one per line. Lines starting with <code>#</code
-					> are ignored. The following rules exist:
-				</h1>
-
-				<section>
-					<h2 class="h2 rule monospace">semester:&lt;semester code&gt;</h2>
+					<textarea
+						bind:value={queryInput}
+						contenteditable="true"
+						class:error={query === null && queryInput !== ""}
+					></textarea>
 				</section>
+			</Tab>
 
-				<section>
-					<h2 class="h2 rule monospace">subject:&lt;subject ID&gt;</h2>
-					<p>You can get the subject ID from the URL on moj.tvz.hr</p>
+			<Tab title="How to use">
+				<section class="instructions">
+					<h1>
+						The multi-schedule query consists of multiple rules, one per line. Lines starting with <code
+							>#</code
+						> are ignored. The following rules exist:
+					</h1>
+
+					<section>
+						<h2 class="h2 rule monospace">semester:&lt;semester code&gt;</h2>
+					</section>
+
+					<section>
+						<h2 class="h2 rule monospace">subject:&lt;subject ID&gt;</h2>
+						<p>You can get the subject ID from the URL on moj.tvz.hr</p>
+					</section>
+
+					<section>
+						<h2 class="h2 rule monospace">user:&lt;username&gt;:&lt;hash&gt;</h2>
+						<!-- prettier-ignore -->
+						<p>
+							Getting the username and hash is a little tricky, but I've created this <a href="TODO">bookmarklet</a>
+							to aid with that. Put the bookmarklet into your bookmarks and run it on professor's schedule
+							page. A popup will extract the parameters and give you the correct rule.
+						</p>
+						<p>
+							What is that hash? I don't know, but the API requires it. Cafuta programmed this after all.
+						</p>
+					</section>
 				</section>
+			</Tab>
 
-				<section>
-					<h2 class="h2 rule monospace">user:&lt;username&gt;:&lt;hash&gt;</h2>
-					<!-- prettier-ignore -->
-					<p>
-						Getting the username and hash is a little tricky, but I've created this <a href="TODO">bookmarklet</a> to aid
-						with that. Put the bookmarklet into your bookmarks and run it on professor's schedule page. A popup
-						will extract the parameters and give you the correct rule.
-					</p>
-					<p>What is that hash? I don't know, but the API requires it. Cafuta programmed this after all.</p>
-				</section>
-			</section>
-		</Tab>
-
-		<Tab title="Example queries">
-			<div class="examples">
-				{#each examples as example}
-					<button
-						class="example-btn monospace"
-						on:click={() => setQuery(example)}
-						disabled={isScheduleLoading}
-					>
-						{example}
-					</button>
-				{/each}
-			</div>
-		</Tab>
+			<Tab title="Example queries">
+				<div class="examples">
+					{#each examples as example}
+						<button
+							class="example-btn monospace"
+							on:click={() => setQuery(example)}
+							disabled={isScheduleLoading}
+						>
+							{example}
+						</button>
+					{/each}
+				</div>
+			</Tab>
+		</Tabs>
 	</svelte:fragment>
 </CalendarViewer>
 

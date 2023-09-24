@@ -20,6 +20,7 @@
 	import { normalizeDepartment, normalizeSemester } from "$lib/util/other";
 	import type { Temporal } from "@js-temporal/polyfill";
 	import type { LoadedData } from "./+page";
+	import Tabs from "$lib/components/tabs/Tabs.svelte";
 
 	export let data: LoadedData;
 
@@ -109,24 +110,26 @@
 	bind:currentMonday
 	bind:loadingSchedule={isLoadingSchedule}
 >
-	<svelte:fragment slot="schedule-picker">
-		<DepartmentPicker
-			departments={availableDepartments}
-			bind:selectedDepartmentCode={$departmentCode}
-			disabled={isLoadingSemesters}
-		/>
-		<SemesterPicker
-			{promisedSemesters}
-			bind:selectedSemester={$semester}
-			disabled={isLoadingSchedule}
-		/>
-	</svelte:fragment>
+	<Tabs slot="below">
+		<Tab title="Schedule picker">
+			<DepartmentPicker
+				departments={availableDepartments}
+				bind:selectedDepartmentCode={$departmentCode}
+				disabled={isLoadingSemesters}
+			/>
+			<SemesterPicker
+				{promisedSemesters}
+				bind:selectedSemester={$semester}
+				disabled={isLoadingSchedule}
+			/>
+		</Tab>
 
-	<!-- prettier-ignore -->
-	<Tab title="Hidden items{hiddenItemsHint(relevantHiddenRules)}" slot="tabs">
-		<HiddenPeriodsList
-			hiddenItems={relevantHiddenRules}
-			{onUnhideIdentifier}
-		/>
-	</Tab>
+		<!-- prettier-ignore -->
+		<Tab title="Hidden items{hiddenItemsHint(relevantHiddenRules)}">
+			<HiddenPeriodsList
+				hiddenItems={relevantHiddenRules}
+				{onUnhideIdentifier}
+			/>
+		</Tab>
+	</Tabs>
 </CalendarViewer>

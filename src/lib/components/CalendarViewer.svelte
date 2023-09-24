@@ -13,7 +13,6 @@
 	import { dateToStringHr, thisMonday } from "$lib/util/datetime-helpers";
 
 	import ClassPeriodInfo from "$lib/components/ClassPeriodInfo.svelte";
-	import { Tab, Tabs } from "$lib/components/tabs/";
 	import { Timetable } from "$lib/components/timetable";
 
 	export let scheduleLoader: ScheduleLoader;
@@ -58,10 +57,6 @@
 
 		onHidePeriod(classPeriod);
 	}
-
-	// function unhidePeriod(_toUnhide: ClassPeriodIdentifier<BaseScheduleSource>) {
-	// 	allHiddenPeriods2 = allHiddenPeriods2.filter(hidden => !identifierEquals(hidden, toUnhide));
-	// }
 </script>
 
 <svelte:head>
@@ -103,9 +98,11 @@
 		/>
 	</div>
 
-	<div class="panel panel--aside">
-		<slot name="aside" />
-	</div>
+	{#if $$slots.aside}
+		<div class="panel panel--aside">
+			<slot name="aside" />
+		</div>
+	{/if}
 
 	<div class="panel panel--info">
 		<ClassPeriodInfo
@@ -116,15 +113,11 @@
 		</ClassPeriodInfo>
 	</div>
 
-	<div class="panel panel--options">
-		<Tabs>
-			<Tab title="Schedule picker">
-				<slot name="schedule-picker" />
-			</Tab>
-
-			<slot name="tabs" />
-		</Tabs>
-	</div>
+	{#if $$slots.below}
+		<div class="panel panel--options">
+			<slot name="below" />
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
