@@ -6,6 +6,7 @@
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
 	import { profRuleBookmarklet } from "$lib/constants/bookmarlets";
+	import { examples } from "$lib/constants/customQueryExamples";
 	import type { ClassPeriod, Schedule } from "$lib/models/api";
 	import type { ScheduleFetchRule, ScheduleFilterRule } from "$lib/models/scheduleQuery";
 	import { parseQuery } from "$lib/services/scheduleQuery";
@@ -78,11 +79,6 @@
 	function setQuery(queryString: string) {
 		queryInput = queryString;
 	}
-
-	const examples = [
-		"semester:PRIN-4",
-		"## Davor Cafuta, Dunja Bjelobrk Knežević\nprof:datar:d41018c10e02845c8df0b26a14b474cc\nprof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78",
-	];
 </script>
 
 <CalendarViewer
@@ -216,9 +212,13 @@
 
 		border-radius: 0.25rem;
 		padding: 0.5rem;
+		max-height: calc(1rem + 1.4 * 10.5rem);
 
 		text-align: left;
 		white-space: pre;
+		text-overflow: ellipsis;
+		overflow-x: hidden;
+		overflow-y: hidden;
 		cursor: pointer;
 		transition: background-color 100ms ease-out;
 

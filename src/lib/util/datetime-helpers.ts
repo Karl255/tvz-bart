@@ -1,8 +1,7 @@
-import { dev } from "$app/environment";
 import { Temporal } from "@js-temporal/polyfill";
 
 export function thisMonday() {
-	return getThisWeeksMonday(dev ? Temporal.PlainDate.from("2023-03-06") : Temporal.Now.plainDateISO());
+	return getThisWeeksMonday(Temporal.Now.plainDateISO());
 }
 
 export function getAcademicYear(d: Temporal.PlainDate): number {
