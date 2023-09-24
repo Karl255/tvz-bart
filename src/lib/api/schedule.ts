@@ -1,10 +1,4 @@
-import type {
-	BaseScheduleSource,
-	ScheduleSourceAdditions,
-	Semester,
-	SemesterScheduleSource,
-	SourcedSchedule,
-} from "$lib/models/api";
+import type { BaseScheduleSource, Semester, SemesterScheduleSource, SourcedSchedule } from "$lib/models/api";
 import { buildUrl } from "$lib/util/url-util";
 import { localEndpoints } from "./endpoints";
 
@@ -28,40 +22,9 @@ export async function getSemesterSchedule(
 	semester: Semester,
 	weekStart: Temporal.PlainDate,
 ): Promise<SourcedSchedule<SemesterScheduleSource>> {
-	const schedule = await fetchSchedule(
-		localEndpoints.schedule,
-		{
-			department: semester.subdepartment,
-			semester: semester.semester,
-		},
-		weekStart,
-	);
-
-	return scheduleWithSource<SemesterScheduleSource>(schedule, {
-		semester: semester,
-	});
-}
-
-function scheduleWithSource<TSource extends BaseScheduleSource>(
-	schedule: SourcedSchedule<BaseScheduleSource>,
-	source: ScheduleSourceAdditions<TSource>,
-): SourcedSchedule<TSource> {
-	return {
-		...schedule,
-		for: {
-			...schedule.for,
-			...source,
-		} as TSource,
-	};
-}
-
-async function fetchSchedule(
-	endpoint: string,
-	params: Record<string, string | number>,
-	weekStart: Temporal.PlainDate,
-): Promise<SourcedSchedule<BaseScheduleSource>> {
-	const url = buildUrl(endpoint, document.URL, {
-		...params,
+	const url = buildUrl(localEndpoints.schedule, document.URL, {
+		department: semester.subdepartment,
+		semester: semester.semester,
 		year: getAcademicYear(weekStart),
 		start: weekStart.toString({ calendarName: "never" }),
 		end: weekStart.add({ days: 6 }).toString({ calendarName: "never" }),
@@ -74,6 +37,7 @@ async function fetchSchedule(
 		...parseSchedule(unparsedSchedule),
 		for: {
 			weekStart,
+			semester: semester,
 		},
 	};
 }

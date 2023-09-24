@@ -31,8 +31,15 @@
 
 	<br />
 
-	<p>{classPeriod.professor}</p>
-	<p><strong>{classPeriod.courseName}</strong></p>
+	{#if classPeriod.professor}
+		<p>{classPeriod.professor}</p>
+	{/if}
+
+	<div class="courses">
+		{#each classPeriod.courseNames.split(",") as courseName}
+			<p><strong>{courseName}</strong></p>
+		{/each}
+	</div>
 
 	<!-- prettier-ignore -->
 	<button class="btn" on:click={() => classPeriod && hide(classPeriod)}>
@@ -41,3 +48,9 @@
 {:else}
 	<slot />
 {/if}
+
+<style lang="scss">
+	.courses > * + * {
+		margin-top: 0.5rem;
+	}
+</style>

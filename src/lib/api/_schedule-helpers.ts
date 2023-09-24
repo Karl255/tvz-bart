@@ -28,16 +28,18 @@ export type UnparsedSchedule = (UnparsedClassPeriod | UnparsedHoliday)[];
 
 const titleParsingRegex = new RegExp(
 	[
-		"^",
-		"\\<strong\\>([^<]+)\\<\\/strong\\> \\- ([^<]+)\\<br\\/\\>",
-		"(.+)\\<br\\/\\>",
-		"Učionica\\: ([^<]+)\\<br\\/\\>",
-		"Smjer\\: ([^<]+)\\<br\\/\\>",
-		"(Napomena: [^<]*\\<br\\/\\>)?",
-		"(Grupa: [^<]*\\<br\\/\\>)?",
-		"Broj studenata na kolegiju\\: (\\d+|Nepoznato)",
-		"$",
-	].join(""),
+		/^/,
+		/<strong>([^<]+)<\/strong> - ([^<]+)/,
+		/(?:<br\/>(.+))?/,
+		/<br\/>Učionica: ([^<]+)/,
+		/<br\/>Smjer(?:ovi)?: ([^<]+)/,
+		/(?:<br\/>Napomena: (.*))?/,
+		/(?:<br\/>Grupa: ([^<]*))?/,
+		/(?:<br\/>Broj studenata na kolegiju: (\d+|Nepoznato))?/,
+		/$/,
+	]
+		.map(r => r.source)
+		.join(""),
 );
 
 export function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
@@ -62,8 +64,6 @@ export function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
 
 function parseClassPeriodPair(unparsedClassPeriod: UnparsedClassPeriod): [number, ClassPeriod] {
 	const titleParts = titleParsingRegex.exec(unparsedClassPeriod.title)!;
-	const note = titleParts[6] ? /^Napomena: (.*)<br\/>$/.exec(titleParts[6])![1] : null;
-	const group = titleParts[7] ? /^Grupa: (.*)<br\/>$/.exec(titleParts[7])![1] : null;
 
 	const classPeriod: ClassPeriod = {
 		id: Number(unparsedClassPeriod.id),
@@ -72,14 +72,14 @@ function parseClassPeriodPair(unparsedClassPeriod: UnparsedClassPeriod): [number
 		start: Temporal.PlainTime.from(unparsedClassPeriod.start),
 		end: Temporal.PlainTime.from(unparsedClassPeriod.end),
 
-		courseName: titleParts[5],
-		className: titleParts[1],
-		professor: titleParts[3],
-		classType: parseClassType(titleParts[2]),
-		classroom: titleParts[4],
-		amountOfStudents: titleParts[8] === "Nepoznato" ? null : Number(titleParts[8]),
-		group,
-		note,
+		courseNames: titleParts ? titleParts[5] : unparsedClassPeriod.title,
+		className: titleParts ? titleParts[1] : "",
+		professor: titleParts ? titleParts[3] ?? null : null,
+		classType: titleParts ? parseClassType(titleParts[2]) : ClassType.Other,
+		classroom: titleParts ? titleParts[4] : "",
+		amountOfStudents: titleParts ? titleParts[8] ?? null : null,
+		group: titleParts ? titleParts[7] ?? null : null,
+		note: titleParts ? titleParts[6] ?? null : null,
 	};
 
 	return [classPeriod.id, classPeriod];

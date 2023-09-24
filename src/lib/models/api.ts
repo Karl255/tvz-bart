@@ -26,12 +26,12 @@ export interface ClassPeriod {
 	start: Temporal.PlainTime;
 	end: Temporal.PlainTime;
 
-	courseName: string;
+	courseNames: string;
 	className: string;
-	professor: string;
+	professor: string | null;
 	classType: ClassType;
 	classroom: string;
-	amountOfStudents: number | null;
+	amountOfStudents: string | null;
 	group: string | null;
 	note: string | null;
 }
