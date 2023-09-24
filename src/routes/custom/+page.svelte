@@ -5,15 +5,20 @@
 	import TemporaryNavigation from "$lib/components/TemporaryNavigation.svelte";
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
-	import type { ClassPeriod } from "$lib/models/api";
-	import type { ScheduleQuery } from "$lib/models/scheduleQuery";
+	import type { ClassPeriod, Schedule } from "$lib/models/api";
+	import type { ScheduleFetchRule, ScheduleFilterRule } from "$lib/models/scheduleQuery";
 	import { parseQuery } from "$lib/services/scheduleQuery";
 	import type { Temporal } from "@js-temporal/polyfill";
 
 	let queryInput: string = "";
-	$: query = parseQuery(queryInput);
-	$: if (query !== null) {
-		createLoader(query);
+	$: [scheduleFetchQuery, scheduleFilterQuery] = parseQuery(queryInput);
+
+	$: if (scheduleFetchQuery) {
+		createLoader(scheduleFetchQuery);
+	}
+
+	$: if (scheduleFilterQuery) {
+		createFilter(scheduleFilterQuery);
 	}
 
 	let isScheduleLoading = false;
@@ -24,15 +29,47 @@
 	let scheduleFilter: ScheduleFilter;
 	scheduleFilter = s => s;
 
-	function createLoader(multiQuery: ScheduleQuery[]) {
+	function createLoader(fetchQuery: ScheduleFetchRule[]) {
 		scheduleLoader = (weekStart: Temporal.PlainDate) => {
 			isScheduleLoading = true;
 
-			const promise = getCustomSchedule(multiQuery, weekStart);
+			const promise = getCustomSchedule(fetchQuery, weekStart);
 			promise.then(() => (isScheduleLoading = false));
 
 			return promise;
 		};
+	}
+
+	function createFilter(filterQuery: ScheduleFilterRule[]) {
+		scheduleFilter = (schedule: Schedule): Schedule => {
+			// prettier-ignore
+			const filteredPeriodPairs = [...schedule.periods.entries()]
+				.filter(([_, classPeriod]) => passesAllFilters(classPeriod, filterQuery));
+
+			return {
+				periods: new Map(filteredPeriodPairs),
+				holidays: schedule.holidays,
+			};
+		};
+
+		function passesAllFilters(classPeriod: ClassPeriod, filters: ScheduleFilterRule[]): boolean {
+			return filters.every(filter => {
+				if (Object.hasOwn(classPeriod, filter.field)) {
+					const value = (classPeriod as unknown as Record<string, unknown>)[filter.field];
+
+					if (typeof value === "string") {
+						return value.includes(filter.value);
+					} else {
+						// prettier-ignore
+						console.log(`Can only filter by string values. Found non-string value in field '${filter.field}'.`);
+						return true;
+					}
+				} else {
+					console.log(`Unknown classPeriod field '${filter.field}'. Ignoring.`);
+					return true;
+				}
+			});
+		}
 	}
 
 	function onHidePeriod(_classPeriod: ClassPeriod) {}
@@ -43,7 +80,7 @@
 
 	const examples = [
 		"semester:PRIN-4",
-		"# Davor Cafuta, Žekljo Kovačević\nuser:datar:d41018c10e02845c8df0b26a14b474cc\nuser:zkovacev1:5bc68e965457ff369dff510e8ccbcea5",
+		"## Davor Cafuta, Dunja Bjelobrk Knežević\nprof:datar:d41018c10e02845c8df0b26a14b474cc\nprof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78",
 	];
 </script>
 
@@ -64,38 +101,55 @@
 					<textarea
 						bind:value={queryInput}
 						contenteditable="true"
-						class:error={query === null && queryInput !== ""}
+						class:error={scheduleFetchQuery === null && queryInput !== ""}
 					></textarea>
 				</section>
 			</Tab>
 
-			<Tab title="How to use">
+			<Tab title="Instruction">
 				<section class="instructions">
-					<h1>
-						The multi-schedule query consists of multiple rules, one per line. Lines starting with <code
-							>#</code
-						> are ignored. The following rules exist:
-					</h1>
+					<h1 class="sr-only">Instructions</h1>
+					<p>
+						The multi-schedule query consists of multiple "rules" - one per line - of which there's 2 types:
+						fetch and filter rules. Everything after a <code>##</code> until the end of the line is ignored.
+					</p>
+					<p>The following rules exist (<code>&lt;&gt;</code> denotes a parameter):</p>
 
 					<section>
-						<h2 class="h2 rule monospace">semester:&lt;semester code&gt;</h2>
-					</section>
-
-					<section>
-						<h2 class="h2 rule monospace">subject:&lt;subject ID&gt;</h2>
-						<p>You can get the subject ID from the URL on moj.tvz.hr</p>
-					</section>
-
-					<section>
-						<h2 class="h2 rule monospace">user:&lt;username&gt;:&lt;hash&gt;</h2>
-						<!-- prettier-ignore -->
+						<h2 class="rule monospace">semester:&lt;semester code&gt;</h2>
 						<p>
-							Getting the username and hash is a little tricky, but I've created this <a href="TODO">bookmarklet</a>
-							to aid with that. Put the bookmarklet into your bookmarks and run it on professor's schedule
-							page. A popup will extract the parameters and give you the correct rule.
+							Gets the schedule for the specified semester code - such as <code>PRIN-4</code>,
+							<code>ELO|ELO ABC-2</code>, <code>IID-6</code>, <code>SPECRAC1-1</code> etc.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="rule monospace">subject:&lt;subject ID&gt;</h2>
+						<p>
+							Gets the schedule for the given subject ID. You can get the subject ID from the URL on
+							moj.tvz.hr.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="rule monospace">prof:&lt;username&gt;:&lt;hash&gt;</h2>
+						<p>
+							Gets the schedule for the specified professor. Getting the username and hash is a little
+							tricky, so I've created this <a href="TODO">bookmarklet</a> to aid with that. Put the bookmarklet
+							into your bookmarks and run it on a professor's schedule page. It will extract the needed parameters
+							and show them in a popup.
 						</p>
 						<p>
 							What is that hash? I don't know, but the API requires it. Cafuta programmed this after all.
+						</p>
+					</section>
+
+					<section>
+						<h2 class="rule monospace">filter:&lt;field&gt;:&lt;value&gt;</h2>
+						<p>
+							Filters all schedule items by the specified value in the specified field. This performs a
+							simple substring search. Available fields: courseNames, className, professor, classroom,
+							group, note and more.
 						</p>
 					</section>
 				</section>
@@ -137,6 +191,8 @@
 	}
 
 	.instructions {
+		max-width: 100ch;
+
 		* + * {
 			margin-top: 1rem;
 		}

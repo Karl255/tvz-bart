@@ -1,19 +1,26 @@
 import type { Semester } from "./api";
 
-export interface SemesterScheduleQuery {
+export interface SemesterFetchRule {
 	type: "semester";
 	semester: Semester;
 }
 
-export interface SubjectScheduleQuery {
+export interface SubjectFetchRule {
 	type: "subject";
 	courseId: number;
 }
 
-export interface UserScheduleQuery {
-	type: "user";
+export interface ProfFetchRule {
+	type: "prof";
 	username: string;
 	hash: string;
 }
 
-export type ScheduleQuery = SemesterScheduleQuery | SubjectScheduleQuery | UserScheduleQuery;
+export interface ScheduleFilterRule {
+	type: "filter";
+	field: string;
+	value: string;
+}
+
+export type ScheduleFetchRule = SemesterFetchRule | SubjectFetchRule | ProfFetchRule;
+export type ScheduleQueryRule = ScheduleFetchRule | ScheduleFilterRule;
