@@ -56,6 +56,10 @@ function parseSemesterRule(args: string[]): SemesterFetchRule {
 }
 
 function parseSubjectRule(args: string[]): SubjectFetchRule {
+	if (!args[0].match(/^\d+$/)) {
+		throw new Error();
+	}
+
 	return {
 		type: "subject",
 		courseId: Number(args[0]),
@@ -77,15 +81,15 @@ function parseProfRule(args: string[]): ProfFetchRule {
 }
 
 function parseFilterRule(args: string[]): ScheduleFilterRule {
-	const [field, value] = args;
+	const [field, values] = args;
 
-	if (typeof field !== "string" || typeof value !== "string") {
+	if (typeof field !== "string" || typeof values !== "string" || values.length === 0) {
 		throw new Error();
 	}
 
 	return {
 		type: "filter",
 		field,
-		value,
+		values: values.split("|"),
 	};
 }

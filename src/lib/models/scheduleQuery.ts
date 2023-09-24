@@ -19,7 +19,7 @@ export interface ProfFetchRule {
 export interface ScheduleFilterRule {
 	type: "filter";
 	field: string;
-	value: string;
+	values: string[];
 }
 
 export type ScheduleFetchRule = SemesterFetchRule | SubjectFetchRule | ProfFetchRule;

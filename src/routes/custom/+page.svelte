@@ -58,7 +58,7 @@
 					const value = (classPeriod as unknown as Record<string, unknown>)[filter.field];
 
 					if (typeof value === "string") {
-						return value.includes(filter.value);
+						return filter.values.some(acceptedValue => value.includes(acceptedValue));
 					} else {
 						// prettier-ignore
 						console.log(`Can only filter by string values. Found non-string value in field '${filter.field}'.`);
@@ -145,11 +145,11 @@
 					</section>
 
 					<section>
-						<h2 class="rule monospace">filter:&lt;field&gt;:&lt;value&gt;</h2>
+						<h2 class="rule monospace">filter:&lt;field&gt;:&lt;value1&gt;|&lt;value2&gt;|...</h2>
 						<p>
-							Filters all schedule items by the specified value in the specified field. This performs a
-							simple substring search. Available fields: courseNames, className, professor, classroom,
-							group, note and more.
+							Keeps only the schedule items which contains at least one of the specified values in the
+							specified field. This performs a simple substring search. Available fields: courseNames,
+							className, professor, classroom, group, note and more.
 						</p>
 					</section>
 				</section>
