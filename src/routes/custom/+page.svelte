@@ -5,6 +5,7 @@
 	import TemporaryNavigation from "$lib/components/TemporaryNavigation.svelte";
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
+	import { profRuleBookmarklet } from "$lib/constants/bookmarlets";
 	import type { ClassPeriod, Schedule } from "$lib/models/api";
 	import type { ScheduleFetchRule, ScheduleFilterRule } from "$lib/models/scheduleQuery";
 	import { parseQuery } from "$lib/services/scheduleQuery";
@@ -135,12 +136,13 @@
 						<h2 class="rule monospace">prof:&lt;username&gt;:&lt;hash&gt;</h2>
 						<p>
 							Gets the schedule for the specified professor. Getting the username and hash is a little
-							tricky, so I've created this <a href="TODO">bookmarklet</a> to aid with that. Put the bookmarklet
-							into your bookmarks and run it on a professor's schedule page. It will extract the needed parameters
-							and show them in a popup.
+							tricky, so I've created this <a href={profRuleBookmarklet}>bookmarklet</a> to aid with that.
+							Put the bookmarklet into your bookmarks and run it on a professor's schedule page. It will extract
+							the needed and show them in a popup.
 						</p>
 						<p>
-							What is that hash? I don't know, but the API requires it. Cafuta programmed this after all.
+							What is that hash? I don't know, but the API requires it. Cafuta programmed all of this
+							after all.
 						</p>
 					</section>
 

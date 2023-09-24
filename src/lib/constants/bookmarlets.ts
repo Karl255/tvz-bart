@@ -1,0 +1,2 @@
+// prettier-ignore
+export const profRuleBookmarklet = "javascript:(()=>{d=document.getElementById(\"download\");if(!d){alert(\"Couldn't find the parameters on this page. Make sure you opened the professor's *schedule tab*!\");return;};u=new URL(d.firstChild.href);prompt(`${document.querySelector(\".jumbotron img.pull-right\").title.trim()}`,`prof:${u.searchParams.get(\"username\")}:${u.searchParams.get(\"hash\")}`);})();";
