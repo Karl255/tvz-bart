@@ -1,14 +1,18 @@
 import type { ScheduleQuery } from "$lib/models/scheduleQuery";
 
-export function parseMultiScheduleQuery(queries: string): ScheduleQuery[] | null {
+export function parseQuery(queries: string): ScheduleQuery[] | null {
 	try {
-		return queries.split("\n").map(parseScheduleQuery);
+		return queries
+			.split("\n")
+			.map(line => line.split("#")[0].trim())
+			.filter(line => line !== "")
+			.map(parseQueryRule);
 	} catch {
 		return null;
 	}
 }
 
-function parseScheduleQuery(query: string): ScheduleQuery {
+function parseQueryRule(query: string): ScheduleQuery {
 	const [type, ...args] = query.split(":");
 
 	if (type === "semester") {
