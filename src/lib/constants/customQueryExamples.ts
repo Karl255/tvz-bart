@@ -25,7 +25,8 @@ prof:gmalcic:0e0fc186b6a988c874cdb49f66345cc2
 prof:ivlasic:a4a2f1d3c8632e58ab8e395272a2393e
 prof:rkovacevi:3757ac21d43ca6ca81fa044e6a2fb8da
 
-filter:className:Metodologija stručnog i istraživačkog rada|Administracija računalnih mreža|Administriranje UNIX sustava|Mrežne usluge|Napredne baze podataka|Napredne tehnike programiranja|Napredno JavaScript programiranje|Napredno programiranje u jeziku Python|Nekonvencionalni računalni postupci|Oblikovanje web stranica|Računala za nadzor i upravljanje tehnickim procesima|Razvoj računalnih igara`;
+filter:className:Metodologija stručnog i istraživačkog rada|Administracija računalnih mreža|Administriranje UNIX sustava|Mrežne usluge|Napredne baze podataka|Napredne tehnike programiranja|Napredno JavaScript programiranje|Napredno programiranje u jeziku Python|Nekonvencionalni računalni postupci|Oblikovanje web stranica|Računala za nadzor i upravljanje tehnickim procesima|Razvoj računalnih igara
+filter:courseNames:Programsko inženjerstvo`;
 
 export const examples = [
 	"semester:PRIN-4",
