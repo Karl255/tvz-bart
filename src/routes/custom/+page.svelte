@@ -1,18 +1,27 @@
 <script lang="ts">
 	import { getBlankSchedule } from "$lib/api";
+	import { getCustomSchedule } from "$lib/api/customSchedule";
 	import CalendarViewer, { type ScheduleFilter, type ScheduleLoader } from "$lib/components/CalendarViewer.svelte";
 	import type { ClassPeriod } from "$lib/models/api";
+	import type { ScheduleQuery } from "$lib/models/scheduleQuery";
 	import { parseMultiScheduleQuery } from "$lib/services/scheduleQuery";
+	import type { Temporal } from "@js-temporal/polyfill";
 
 	let queryInput: string;
 	$: scheduleMultiQuery = parseMultiScheduleQuery(queryInput);
-	$: console.log(scheduleMultiQuery);
+	$: if (scheduleMultiQuery !== null) {
+		createLoader(scheduleMultiQuery);
+	}
 
 	let scheduleLoader: ScheduleLoader;
 	scheduleLoader = () => getBlankSchedule();
 
 	let scheduleFilter: ScheduleFilter;
 	scheduleFilter = s => s;
+
+	function createLoader(multiQuery: ScheduleQuery[]) {
+		scheduleLoader = (weekStart: Temporal.PlainDate) => getCustomSchedule(multiQuery, weekStart);
+	}
 
 	function onHidePeriod(_classPeriod: ClassPeriod) {}
 </script>
