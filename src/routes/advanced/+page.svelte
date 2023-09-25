@@ -168,13 +168,14 @@
 </CalendarViewer>
 
 <style lang="scss">
-	.schedule-picker > * {
-		margin-bottom: 1rem;
-	}
-
 	textarea {
-		min-height: 8rem;
-		min-width: 32rem;
+		width: 100%;
+		min-height: 16rem;
+		resize: vertical;
+
+		&:focus {
+			outline: none;
+		}
 	}
 
 	.error {
@@ -216,11 +217,21 @@
 		text-overflow: ellipsis;
 		overflow-x: hidden;
 		overflow-y: hidden;
+
 		cursor: pointer;
 		transition: background-color 100ms ease-out;
 
 		&:hover {
 			background-color: var(--clr-element);
+		}
+
+		position: relative;
+		&::after {
+			content: "";
+			position: absolute;
+			inset: auto 0 0 0;
+			height: 1rem;
+			background-image: linear-gradient(to top, var(--clr-panel-bg), transparent);
 		}
 	}
 

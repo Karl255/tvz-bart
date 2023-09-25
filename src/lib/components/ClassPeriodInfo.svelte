@@ -53,4 +53,8 @@
 	.courses > * + * {
 		margin-top: 0.5rem;
 	}
+
+	button {
+		margin-top: 1rem;
+	}
 </style>

@@ -39,8 +39,10 @@
 			<button
 				class="tab-button"
 				class:selected={$selectedTab === tab}
-				on:click={() => selectTab(tab)}>{tab.title}</button
+				on:click={() => selectTab(tab)}
 			>
+				{tab.title}
+			</button>
 		</li>
 	{:else}
 		<!-- so content doesn't jump around as the tabs are generated -->
@@ -71,7 +73,7 @@
 	.tab-button {
 		background-color: transparent;
 		border: 1px solid transparent;
-		border-radius: 0.25rem 0.25rem 0 0;
+		border-radius: 0.5rem 0.5rem 0 0;
 		padding: 0.5rem 1rem;
 
 		font-weight: 600;

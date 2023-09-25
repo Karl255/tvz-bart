@@ -104,15 +104,17 @@
 		</div>
 	{/if}
 
-	<div class="panel panel--info">
-		<ClassPeriodInfo
-			classPeriod={selectedPeriod ?? previewedPeriod}
-			hide={hidePeriod}
-		>
-			<p class="description">
-				Stavi miš na stavku u rasporedu ili klikni na nju i detalji će se prikazati ovdje.
-			</p>
-		</ClassPeriodInfo>
+	<div class="panel--info expandable-y">
+		<div class="panel">
+			<ClassPeriodInfo
+				classPeriod={selectedPeriod ?? previewedPeriod}
+				hide={hidePeriod}
+			>
+				<p class="description">
+					Stavi miš na stavku u rasporedu ili klikni na nju i detalji će se prikazati ovdje.
+				</p>
+			</ClassPeriodInfo>
+		</div>
 	</div>
 
 	{#if $$slots.below}
@@ -138,6 +140,10 @@
 		background-color: var(--clr-panel-bg);
 		border: 1px solid var(--clr-panel-border);
 		border-radius: 0.5rem;
+
+		&:not(.panel--calendar, .panel--options) {
+			padding: 1rem;
+		}
 	}
 
 	.panel--calendar {
@@ -189,12 +195,10 @@
 
 	.panel--aside {
 		grid-area: info-preview;
-		padding: 1rem;
 	}
 
 	.panel--info {
 		grid-area: info-selected;
-		padding: 1rem;
 	}
 
 	.panel--options {
@@ -205,5 +209,17 @@
 
 	.description {
 		font-style: italic;
+	}
+
+	.expandable-y {
+		position: relative;
+
+		& > * {
+			position: absolute;
+			inset-block: 0 auto;
+			inset-inline: 0 0;
+			min-height: 100%;
+			z-index: 100;
+		}
 	}
 </style>
