@@ -1,9 +1,9 @@
 <nav>
-	<h1>Pages</h1>
+	<h1>Stranice</h1>
 	<ul>
-		<li><a href="/">Standard schedule</a></li>
-		<li><a href="/custom">Custom schedules</a></li>
+		<li><a href="/">Raspored</a></li>
+		<li><a href="/advanced">Napredni raspored</a></li>
 	</ul>
 
-	<p>You can find the source code in the <a href="https://github.com/Karl255/tvz-bart">GitHub repo</a>.</p>
+	<p>Izvorni kod je dostupan na <a href="https://github.com/Karl255/tvz-bart">GitHub repozitoriju</a>.</p>
 </nav>

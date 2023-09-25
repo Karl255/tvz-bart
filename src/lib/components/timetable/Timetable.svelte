@@ -62,7 +62,7 @@
 	style:--hour-range={hourRange}
 	on:click={() => selectPeriod(null)}
 >
-	{#each ["Time", "Mon", "Tue", "Wed", "Thu", "Fri"] as title}
+	{#each ["Vrijeme", "Pon", "Uto", "Sri", "Čet", "Pet"] as title}
 		<div class="timetable__header">
 			{title}
 		</div>

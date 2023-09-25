@@ -90,10 +90,10 @@
 
 	<svelte:fragment slot="below">
 		<Tabs>
-			<Tab title="Schedule picker">
+			<Tab title="Upit">
 				<!-- prettier-ignore -->
 				<section class="schedule-picker">
-					<h2>Multi-schedule query</h2>
+					<h2 class="sr-only">Upit za raspored</h2>
 
 					<textarea
 						bind:value={queryInput}
@@ -103,53 +103,54 @@
 				</section>
 			</Tab>
 
-			<Tab title="Instruction">
+			<Tab title="Upute">
 				<section class="instructions">
-					<h1 class="sr-only">Instructions</h1>
+					<h1 class="sr-only">Upute</h1>
 					<p>
-						The multi-schedule query consists of multiple "rules" - one per line - of which there's 2 types:
-						fetch and filter rules. Everything after a <code>##</code> until the end of the line is ignored.
+						Upit se sastoji od jednog ili više 'izraza', od kojih ima dvije vrste: izrazi dohvaćanja i
+						izrazi filtriranja. Sve nakon <code>##</code> se ignorira. Redoslijed je nebitan.
 					</p>
-					<p>The following rules exist (<code>&lt;&gt;</code> denotes a parameter):</p>
+					<p>Popis izraza (<code>&lt;&gt;</code> označuje parametar):</p>
 
 					<section>
-						<h2 class="rule monospace">semester:&lt;semester code&gt;</h2>
+						<h2 class="rule monospace">semester:&lt;odjel&gt;</h2>
 						<p>
-							Gets the schedule for the specified semester code - such as <code>PRIN-4</code>,
-							<code>ELO|ELO ABC-2</code>, <code>IID-6</code>, <code>SPECRAC1-1</code> etc.
+							Dohvaća raspored za dan odjel, kao što su <code>PRIN-4</code>,
+							<code>ELO|ELO ABC-2</code>, <code>IID-6</code>, <code>SPECRAC1-1</code> itd.
 						</p>
 					</section>
 
 					<section>
-						<h2 class="rule monospace">subject:&lt;subject ID&gt;</h2>
+						<h2 class="rule monospace">subject:&lt;ID predmeta&gt;</h2>
 						<p>
-							Gets the schedule for the given subject ID. You can get the subject ID from the URL on
+							Dohvaća raspored za dan ID predmeta. ID predmeta možete dobiti iz URL-a stranice predmeta na
 							moj.tvz.hr.
 						</p>
 					</section>
 
 					<section>
-						<h2 class="rule monospace">prof:&lt;username&gt;:&lt;hash&gt;</h2>
+						<h2 class="rule monospace">prof:&lt;korisničko ime&gt;:&lt;hash&gt;</h2>
 						<p>
-							Gets the schedule for the specified professor. Getting the username and hash is a little
-							tricky, so I've created this <a href={profRuleBookmarklet}>bookmarklet</a> to aid with that.
-							Put the bookmarklet into your bookmarks and run it on a professor's schedule page. It will extract
-							the needed and show them in a popup.
+							Dohvaća raspored za dane parametre. Dobivanje korisničkog imena i hash-a profesora je malo
+							zeznuto, stoga sam napravio ovaj <a href={profRuleBookmarklet}>bookmarklet</a> kao pomoć pri
+							tome. Stavite bookmarklet u bookmarkove, otvorite profil nastavnika na moj.tvz.hr, otvorite raspored
+							te pokrenite bookmarklet da vam izvuće parametre.
 						</p>
 					</section>
 
 					<section>
-						<h2 class="rule monospace">filter:&lt;field&gt;:&lt;value1&gt;|&lt;value2&gt;|...</h2>
+						<h2 class="rule monospace">
+							filter:&lt;polje&gt;:&lt;vrijednost 1&gt;|&lt;vrijednost 2&gt;|...
+						</h2>
 						<p>
-							Keeps only the schedule items which contains at least one of the specified values in the
-							specified field. This performs a simple substring search. Available fields: courseNames,
-							className, professor, classroom, group, note and more.
+							Sačuva samo stavke koje sadrže barem jednu od navedenih vrijednosti u navedenom polju.
+							Dostupna polja: courseNames, className, professor, classroom, group, note i više.
 						</p>
 					</section>
 				</section>
 			</Tab>
 
-			<Tab title="Example queries">
+			<Tab title="Primjeri upita">
 				<div class="examples">
 					{#each examples as example}
 						<button

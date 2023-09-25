@@ -62,7 +62,7 @@
 	{/each}
 </div>
 
-<p class="hint">Click to unhide</p>
+<p class="hint">Klikni da stavku da se ponovno prikazuje u raspredu.</p>
 
 <style lang="scss">
 	.hint {

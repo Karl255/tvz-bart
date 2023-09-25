@@ -16,7 +16,7 @@
 	}
 </script>
 
-<h2>Select semester:</h2>
+<h2>Odaberi semestar:</h2>
 
 <div class="group">
 	{#each semesters as semester}

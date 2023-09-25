@@ -42,7 +42,7 @@
 	}
 </script>
 
-<h2>Select department:</h2>
+<h2>Odaberi odjel:</h2>
 
 <div class="department-groups">
 	{#if departments}

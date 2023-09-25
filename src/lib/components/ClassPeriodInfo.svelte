@@ -43,7 +43,7 @@
 
 	<!-- prettier-ignore -->
 	<button class="btn" on:click={() => classPeriod && hide(classPeriod)}>
-		Hide
+		Sakrij
 	</button>
 {:else}
 	<slot />

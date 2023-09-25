@@ -109,7 +109,9 @@
 			classPeriod={selectedPeriod ?? previewedPeriod}
 			hide={hidePeriod}
 		>
-			<p class="description">Hover over an item or click on it. Details about it items will appear here.</p>
+			<p class="description">
+				Stavi miš na stavku u rasporedu ili klikni na nju i detalji će se prikazati ovdje.
+			</p>
 		</ClassPeriodInfo>
 	</div>
 

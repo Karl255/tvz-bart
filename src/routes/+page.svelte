@@ -114,7 +114,7 @@
 	<TemporaryNavigation slot="aside" />
 
 	<Tabs slot="below">
-		<Tab title="Schedule picker">
+		<Tab title="Odabir rasporeda">
 			<DepartmentPicker
 				departments={availableDepartments}
 				bind:selectedDepartmentCode={$departmentCode}
@@ -128,7 +128,7 @@
 		</Tab>
 
 		<!-- prettier-ignore -->
-		<Tab title="Hidden items{hiddenItemsHint(relevantHiddenRules)}">
+		<Tab title="Sakriveno{hiddenItemsHint(relevantHiddenRules)}">
 			<HiddenPeriodsList
 				hiddenItems={relevantHiddenRules}
 				{onUnhideIdentifier}
