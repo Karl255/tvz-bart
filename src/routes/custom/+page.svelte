@@ -136,10 +136,6 @@
 							Put the bookmarklet into your bookmarks and run it on a professor's schedule page. It will extract
 							the needed and show them in a popup.
 						</p>
-						<p>
-							What is that hash? I don't know, but the API requires it. Cafuta programmed all of this
-							after all.
-						</p>
 					</section>
 
 					<section>

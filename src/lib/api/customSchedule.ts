@@ -1,12 +1,12 @@
 import type { CustomScheduleSource, Schedule, SourcedSchedule } from "$lib/models/api";
-import type { ScheduleQueryRules } from "$lib/models/scheduleQuery";
+import type { ScheduleQueryRule } from "$lib/models/scheduleQuery";
 import type { Temporal } from "@js-temporal/polyfill";
 import { getSemesterSchedule } from "./schedule";
 import { getSubjectSchedule } from "./subject-schedule";
 import { getUserSchedule } from "./user-schedule";
 
 export async function getCustomSchedule(
-	queries: ScheduleQueryRules[],
+	queries: ScheduleQueryRule[],
 	weekStart: Temporal.PlainDate,
 ): Promise<SourcedSchedule<CustomScheduleSource>> {
 	const promises = queries.map(query => fetchSingleSchedule(query, weekStart));
@@ -23,7 +23,7 @@ export async function getCustomSchedule(
 	};
 }
 
-function fetchSingleSchedule(query: ScheduleQueryRules, weekStart: Temporal.PlainDate): Promise<Schedule> {
+function fetchSingleSchedule(query: ScheduleQueryRule, weekStart: Temporal.PlainDate): Promise<Schedule> {
 	const { type } = query;
 
 	if (type === "semester") {
