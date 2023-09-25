@@ -2,25 +2,43 @@
 	import { getBlankSchedule } from "$lib/api";
 	import { getCustomSchedule } from "$lib/api/customSchedule";
 	import CalendarViewer, { type ScheduleFilter, type ScheduleLoader } from "$lib/components/CalendarViewer.svelte";
+	import HiddenPeriodsList from "$lib/components/HiddenPeriodsList.svelte";
 	import TemporaryNavigation from "$lib/components/TemporaryNavigation.svelte";
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
 	import { profRuleBookmarklet } from "$lib/constants/bookmarlets";
 	import { examples } from "$lib/constants/customQueryExamples";
-	import type { ClassPeriod, Schedule } from "$lib/models/api";
+	import type { BaseScheduleSource, ClassPeriod, CustomScheduleSource, Schedule } from "$lib/models/api";
+	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import type { ScheduleFetchRule, ScheduleFilterRule } from "$lib/models/scheduleQuery";
+	import { persistent } from "$lib/services/persistence";
+	import { doesPeriodIdentifierMatch, identifierEquals, toIdentifier } from "$lib/services/scheduleFiltering";
 	import { parseQuery } from "$lib/services/scheduleQuery";
+	import { getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 	import type { Temporal } from "@js-temporal/polyfill";
 
+	let currentMonday = thisMonday();
+	$: currentAcademicYear = getAcademicYear(currentMonday);
+
+	const allHiddenRules = persistent<ClassPeriodIdentifier<CustomScheduleSource>[]>("advanced:hiddenItems", []);
+
 	let queryInput: string = "";
-	$: [scheduleFetchQuery, scheduleFilterQuery] = parseQuery(queryInput);
+	$: [queryName, scheduleFetchQuery, scheduleFilterQuery] = parseQuery(queryInput);
+
+	let relevantHiddenRules: ClassPeriodIdentifier<CustomScheduleSource>[];
+	// prettier-ignore
+	$: relevantHiddenRules = $allHiddenRules.filter(
+		item => queryName !== null &&
+			item.for.queryName === queryName && 
+			item.for.academicYear === currentAcademicYear
+	);
 
 	$: if (scheduleFetchQuery) {
 		createLoader(scheduleFetchQuery);
 	}
 
 	$: if (scheduleFilterQuery) {
-		createFilter(scheduleFilterQuery);
+		createFilter(scheduleFilterQuery, relevantHiddenRules);
 	}
 
 	let isScheduleLoading = false;
@@ -35,18 +53,22 @@
 		scheduleLoader = (weekStart: Temporal.PlainDate) => {
 			isScheduleLoading = true;
 
-			const promise = getCustomSchedule(fetchQuery, weekStart);
+			const promise = getCustomSchedule(queryName, fetchQuery, weekStart);
 			promise.then(() => (isScheduleLoading = false));
 
 			return promise;
 		};
 	}
 
-	function createFilter(filterQuery: ScheduleFilterRule[]) {
+	function createFilter(
+		filterQuery: ScheduleFilterRule[],
+		hiddenRules: ClassPeriodIdentifier<CustomScheduleSource>[],
+	) {
 		scheduleFilter = (schedule: Schedule): Schedule => {
 			// prettier-ignore
 			const filteredPeriodPairs = [...schedule.periods.entries()]
-				.filter(([_, classPeriod]) => passesAllFilters(classPeriod, filterQuery));
+				.filter(([_, classPeriod]) => passesAllFilters(classPeriod, filterQuery))
+				.filter(([_, classPeriod]) => !matchesAnyIdentifier(classPeriod, hiddenRules));
 
 			return {
 				periods: new Map(filteredPeriodPairs),
@@ -72,12 +94,34 @@
 				}
 			});
 		}
+
+		function matchesAnyIdentifier(
+			classPeriod: ClassPeriod,
+			identifiers: ClassPeriodIdentifier<CustomScheduleSource>[],
+		) {
+			return identifiers.some(identifier => doesPeriodIdentifierMatch(classPeriod, identifier));
+		}
 	}
 
-	function onHidePeriod(_classPeriod: ClassPeriod) {}
+	function onHidePeriod(classPeriod: ClassPeriod) {
+		if (queryName === null) {
+			return;
+		}
+
+		$allHiddenRules.push(toIdentifier(classPeriod, currentAcademicYear, { queryName }));
+		$allHiddenRules = $allHiddenRules;
+	}
+
+	function onUnhideIdentifier(identifier: ClassPeriodIdentifier<BaseScheduleSource>) {
+		$allHiddenRules = $allHiddenRules.filter(rule => !identifierEquals(rule, identifier));
+	}
 
 	function setQuery(queryString: string) {
 		queryInput = queryString;
+	}
+
+	function hiddenItemsHint(rules: ClassPeriodIdentifier<CustomScheduleSource>[]): string {
+		return rules.length > 0 ? ` (${rules.length})` : "";
 	}
 </script>
 
@@ -109,7 +153,8 @@
 					<h1 class="sr-only">Upute</h1>
 					<p>
 						Upit se sastoji od jednog ili više 'izraza', od kojih ima dvije vrste: izrazi dohvaćanja i
-						izrazi filtriranja. Sve nakon <code>##</code> se ignorira. Redoslijed je nebitan.
+						izrazi filtriranja. <code>##</code> označava inline komentar, a inline komentar na samom početku
+						definira naziv upita (koristi se za poamćenje sakrivenih stavki). Redoslijed izraza je nebitan.
 					</p>
 					<p>Popis izraza (<code>&lt;&gt;</code> označuje parametar):</p>
 
@@ -163,6 +208,18 @@
 						</button>
 					{/each}
 				</div>
+			</Tab>
+
+			<!-- prettier-ignore -->
+			<Tab title="Sakriveno{hiddenItemsHint(relevantHiddenRules)}">
+				{#if !queryName}
+					<p>Upit mora imat naziv da bi se sakrivene stavke mogle zapamtiti!</p>
+				{/if}
+				
+				<HiddenPeriodsList
+					hiddenItems={relevantHiddenRules}
+					{onUnhideIdentifier}
+				/>
 			</Tab>
 		</Tabs>
 	</svelte:fragment>

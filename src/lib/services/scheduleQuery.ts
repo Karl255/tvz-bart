@@ -8,17 +8,30 @@ import type {
 } from "$lib/models/scheduleQuery";
 import { partition } from "$lib/util/array-util";
 
-export function parseQuery(queries: string): [ScheduleFetchRule[], ScheduleFilterRule[]] | [null, null] {
+export function parseQuery(
+	queries: string,
+): [string | null, ScheduleFetchRule[], ScheduleFilterRule[]] | [null, null, null] {
 	try {
+		const queryName = getQueryName(queries);
+
 		const rules = queries
 			.split("\n")
 			.map(line => line.split("##")[0].trim())
 			.filter(line => line !== "")
 			.map(parseRule);
 
-		return partition<ScheduleFetchRule, ScheduleFilterRule>(rules, rule => rule.type === "filter");
+		return [queryName, ...partition<ScheduleFetchRule, ScheduleFilterRule>(rules, rule => rule.type === "filter")];
 	} catch {
-		return [null, null];
+		return [null, null, null];
+	}
+}
+
+function getQueryName(query: string): string | null {
+	if (query.startsWith("##")) {
+		const end = query.indexOf("\n");
+		return query.substring(2, end).trim();
+	} else {
+		return null;
 	}
 }
 

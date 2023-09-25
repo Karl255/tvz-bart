@@ -66,14 +66,14 @@
 			periods: new Map(filteredPeriodPairs),
 			holidays: schedule.holidays,
 		};
-	};
 
-	function matchesAnyIdentifier(
-		classPeriod: ClassPeriod,
-		identifiers: ClassPeriodIdentifier<SemesterScheduleSource>[],
-	): boolean {
-		return identifiers.some(identifier => doesPeriodIdentifierMatch(classPeriod, identifier));
-	}
+		function matchesAnyIdentifier(
+			classPeriod: ClassPeriod,
+			identifiers: ClassPeriodIdentifier<SemesterScheduleSource>[],
+		): boolean {
+			return identifiers.some(identifier => doesPeriodIdentifierMatch(classPeriod, identifier));
+		}
+	};
 
 	async function loadSemesters(departmentCode: string, academicYear: number) {
 		isLoadingSemesters = true;

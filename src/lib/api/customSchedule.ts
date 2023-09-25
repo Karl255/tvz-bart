@@ -6,6 +6,7 @@ import { getSubjectSchedule } from "./subject-schedule";
 import { getUserSchedule } from "./user-schedule";
 
 export async function getCustomSchedule(
+	queryName: string | null,
 	queries: ScheduleQueryRule[],
 	weekStart: Temporal.PlainDate,
 ): Promise<SourcedSchedule<CustomScheduleSource>> {
@@ -18,7 +19,7 @@ export async function getCustomSchedule(
 		holidays: new Map(schedules.flatMap(s => [...s.holidays.entries()])),
 		for: {
 			weekStart,
-			scheduleQueries: queries,
+			queryName,
 		},
 	};
 }

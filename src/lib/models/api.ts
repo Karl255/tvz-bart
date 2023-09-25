@@ -1,6 +1,5 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import type { StringPlainDate } from "./temporal";
-import type { ScheduleQueryRule } from "./scheduleQuery";
 
 export interface Department {
 	code: string;
@@ -61,5 +60,5 @@ export interface SemesterScheduleSource extends BaseScheduleSource {
 }
 
 export interface CustomScheduleSource extends BaseScheduleSource {
-	scheduleQueries: ScheduleQueryRule[];
+	queryName: string | null;
 }
