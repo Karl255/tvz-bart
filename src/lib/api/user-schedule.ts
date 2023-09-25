@@ -20,7 +20,7 @@ export async function getUserSchedule(
 	const unparsedSchedule: UnparsedClassPeriod[] = await response.json();
 
 	return {
-		...parseSchedule(unparsedSchedule),
+		...parseSchedule(unparsedSchedule, username),
 		for: {
 			weekStart,
 		},

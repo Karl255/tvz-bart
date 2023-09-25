@@ -99,6 +99,7 @@
 						bind:value={queryInput}
 						contenteditable="true"
 						class:error={scheduleFetchQuery === null && queryInput !== ""}
+						autocorrect="off"
 					></textarea>
 				</section>
 			</Tab>

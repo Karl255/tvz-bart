@@ -42,7 +42,7 @@ const titleParsingRegex = new RegExp(
 		.join(""),
 );
 
-export function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
+export function parseSchedule(unparsedSchedule: UnparsedSchedule, professorFallback?: string): Schedule {
 	const [unparsedClassPeriods, unparsedHolidays] = partition<UnparsedClassPeriod, UnparsedHoliday>(
 		unparsedSchedule,
 		item => item.id === null,
@@ -52,9 +52,11 @@ export function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
 		.map(parseHoliday)
 		.map(h => [h.date.toString({ calendarName: "never" }), h] as [StringPlainDate, Holiday]);
 
-	const workdayPairs = unparsedClassPeriods.map(parseClassPeriodPair).sort((a, b) => {
-		return Temporal.PlainTime.compare(a[1].start, b[1].start) || Temporal.PlainTime.compare(b[1].end, a[1].end);
-	});
+	const workdayPairs = unparsedClassPeriods
+		.map(c => parseClassPeriodPair(c, professorFallback))
+		.sort((a, b) => {
+			return Temporal.PlainTime.compare(a[1].start, b[1].start) || Temporal.PlainTime.compare(b[1].end, a[1].end);
+		});
 
 	return {
 		periods: new Map<number, ClassPeriod>(workdayPairs),
@@ -62,7 +64,10 @@ export function parseSchedule(unparsedSchedule: UnparsedSchedule): Schedule {
 	};
 }
 
-function parseClassPeriodPair(unparsedClassPeriod: UnparsedClassPeriod): [number, ClassPeriod] {
+function parseClassPeriodPair(
+	unparsedClassPeriod: UnparsedClassPeriod,
+	professorFallback?: string,
+): [number, ClassPeriod] {
 	const titleParts = titleParsingRegex.exec(unparsedClassPeriod.title)!;
 
 	const classPeriod: ClassPeriod = {
@@ -74,7 +79,7 @@ function parseClassPeriodPair(unparsedClassPeriod: UnparsedClassPeriod): [number
 
 		courseNames: titleParts ? titleParts[5] : unparsedClassPeriod.title,
 		className: titleParts ? titleParts[1] : "",
-		professor: titleParts ? titleParts[3] ?? null : null,
+		professor: titleParts ? titleParts[3] ?? professorFallback : null,
 		classType: titleParts ? parseClassType(titleParts[2]) : ClassType.Other,
 		classroom: titleParts ? titleParts[4] : "",
 		amountOfStudents: titleParts ? titleParts[8] ?? null : null,
