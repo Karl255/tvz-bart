@@ -28,8 +28,23 @@ prof:rkovacevi:3757ac21d43ca6ca81fa044e6a2fb8da
 filter:className:Metodologija stručnog i istraživačkog rada|Administracija računalnih mreža|Administriranje UNIX sustava|Mrežne usluge|Napredne baze podataka|Napredne tehnike programiranja|Napredno JavaScript programiranje|Napredno programiranje u jeziku Python|Nekonvencionalni računalni postupci|Oblikovanje web stranica|Računala za nadzor i upravljanje tehnickim procesima|Razvoj računalnih igara
 filter:courseNames:Programsko inženjerstvo`;
 
+const rac6 = `## Računarstvo 6. semestar
+prof:datar:d41018c10e02845c8df0b26a14b474cc
+prof:coki:dc23205afeb0dd188e4d832c7f8b004f
+prof:tkramberg:d7f2fdcc07d3eb337235c5a33d2e9490
+prof:icesar:c5176a8d9ebe5260c9319bbc3e6aa6d0
+prof:omitrovic:7631c30164389d99af217319bff3429a
+prof:aradovan:245f04875721ee0ab9d42cbcf588204c
+prof:rkovacevi:3757ac21d43ca6ca81fa044e6a2fb8da
+prof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78
+
+filter:className:Sigurnost računalnih sustava|Razvoj web aplikacija u ASP.NET MVC tehnologiji|Duboko učenje|Web aplikacije u Javi|Razvoj aplikacija na Android platformi|Napredne teme računalnih mreža
+filter:courseName:Programsko inženjerstvo
+`;
+
 export const examples = [
 	"semester:PRIN-4",
 	"## Davor Cafuta, Dunja Bjelobrk Knežević\nprof:datar:d41018c10e02845c8df0b26a14b474cc\nprof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78",
 	rac5,
+	rac6,
 ];
