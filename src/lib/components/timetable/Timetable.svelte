@@ -14,13 +14,16 @@
 
 	export let schedule: Schedule | null;
 	export let from: Temporal.PlainDate;
-	let timetableDays: (ClassPeriod[] | Holiday | null)[] = [null, null, null, null, null];
+
+	let days = 5;
+
+	let timetableDays: (ClassPeriod[] | Holiday | null)[] = Array(days).map(() => null);
 
 	$: {
 		if (schedule) {
 			createDays(schedule);
 		} else {
-			timetableDays = [null, null, null, null, null];
+			timetableDays = Array(days).map(() => null);
 		}
 	}
 
@@ -28,7 +31,7 @@
 		let newDays: (ClassPeriod[] | Holiday | null)[] = [];
 		let d = from;
 
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < days; i++) {
 			const ds = d.toString({ calendarName: "never" });
 
 			if (s.holidays.has(ds)) {
@@ -57,15 +60,24 @@
 <!-- prettier-ignore -->
 <div
 	class="timetable"
+	style:--days={days}
 	style:--from-hour={fromHour}
 	style:--to-hour={toHour}
 	style:--hour-range={hourRange}
 	on:click={() => selectPeriod(null)}
 >
-	{#each ["Vrijeme", "Pon", "Uto", "Sri", "Čet", "Pet"] as title}
-		<div class="timetable__header">
-			{title}
-		</div>
+	{#each ["Vrijeme", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"] as title, index}
+		{#if index <= days}
+			<div class="timetable__header" class:relative={index === days}>
+				{title}
+				
+				{#if index === days}
+					<button class="btn show-saturday" on:click={() => (days = days == 5 ? 6 : 5)}>
+						{days == 5 ? ">>" : "<<"}
+					</button>
+				{/if}
+			</div>
+		{/if}
 	{/each}
 
 	{#each [...Array(hourRange).keys()].map(x => x) as i}
@@ -108,7 +120,7 @@
 <style lang="scss">
 	.timetable {
 		display: grid;
-		grid-template-columns: auto repeat(5, 1fr);
+		grid-template-columns: auto repeat(var(--days), 1fr);
 		grid-template-rows: auto repeat(var(--hour-range), minmax(60px, 1fr));
 		--gridline-color: var(--clr-panel-border);
 	}
@@ -152,5 +164,18 @@
 		text-align: center;
 		font-weight: 600;
 		color: #f3361d;
+	}
+
+	.show-saturday {
+		position: absolute;
+		right: 4px;
+		top: 50%;
+		translate: 0 -50%;
+
+		font-weight: normal;
+	}
+
+	.relative {
+		position: relative;
 	}
 </style>

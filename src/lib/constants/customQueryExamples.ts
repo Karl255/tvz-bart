@@ -42,9 +42,37 @@ filter:className:Sigurnost računalnih sustava|Razvoj web aplikacija u ASP.NET M
 filter:courseName:Programsko inženjerstvo
 `;
 
+const specinfrac = `## Diplomski informatika - smjer računarstvo 1. semestar
+
+prof:vbuselic:d8476ac15175321c05956d81a037b9b9
+prof:dhorvat3:edee411bf0b6efafa9f5973e3f07a5ad
+prof:kperec:816db6df79a77d8a8d6fcfce5de4752d
+
+prof:sbracun1:93a11101228eaec8e1f642a31949a5e3
+
+prof:iurbiha:9c8e2deb50cf1dcd8916e26d82036f62
+
+prof:valic-ko1:5f8482bc9de018bcf0588865a2750be5
+prof:hrakic:ea8a2eb9c792f3438182b1303839f46f
+prof:vsenci:c2843dc1eb3001b19bdbdc07b764b9ba
+
+prof:pjandric:01583b4defe894572886605e4a867043
+prof:lmatusko:15aafc9bb785da1b7b45178dacd885f7
+prof:mpaukovic:228e01491e2e997d372e5a27f4904b1e
+prof:aguzvanj:6af2fbf16ac3668a1683e87928573dfa
+prof:dtulicic:38b8bd9c930c5d569d12e2f33c0d9510
+prof:astojanov:647042b250251e3ea8b9356f426d0ddb
+prof:apoljicak:5084f1457e9d78e92a4b697364967705
+prof:sdonlic:3bace3dcf933aa71a7a1fcb27d971660
+prof:ostanicic:49aea54f3897a5789fc9a234367117eb
+
+filter:courseNames:Politehnički specijalistički diplomski studij - specijalizacija informatika
+`;
+
 export const examples = [
 	"semester:PRIN-4",
 	"## Davor Cafuta, Dunja Bjelobrk Knežević\nprof:datar:d41018c10e02845c8df0b26a14b474cc\nprof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78",
 	rac5,
 	rac6,
+	specinfrac,
 ];
