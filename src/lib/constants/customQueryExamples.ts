@@ -94,4 +94,23 @@ filter:className:Modeliranje i administracija baza podataka|Napredne tehnike pro
 filter:courseNames:Politehnički specijalistički diplomski studij - specijalizacija informatika
 `;
 
-export const examples: string[] = [EXMAPLE_1, EXMAPLE_2, RAC_5, RAC_6, SPEC_RAC_1, SPEC_RAC_3].map(s => s.trim());
+interface QueryExample {
+	name: string;
+	query: string;
+}
+
+function queryExample(name: string, query: string): QueryExample {
+	return {
+		name,
+		query: query.trim(),
+	};
+}
+
+export const EXAMPLES: QueryExample[] = [
+	queryExample("Example 1", EXMAPLE_1),
+	queryExample("Example 2", EXMAPLE_2),
+	queryExample("RAC 5", RAC_5),
+	queryExample("RAC 6", RAC_6),
+	queryExample("SPEC RAC 1", SPEC_RAC_1),
+	queryExample("SPEC RAC 3", SPEC_RAC_3),
+];

@@ -7,7 +7,7 @@
 	import { Tabs } from "$lib/components/tabs";
 	import Tab from "$lib/components/tabs/Tab.svelte";
 	import { profRuleBookmarklet } from "$lib/constants/bookmarlets";
-	import { examples } from "$lib/constants/customQueryExamples";
+	import { EXAMPLES } from "$lib/constants/customQueryExamples";
 	import type { BaseScheduleSource, ClassPeriod, CustomScheduleSource, Schedule } from "$lib/models/api";
 	import type { ClassPeriodIdentifier } from "$lib/models/scheduleFiltering";
 	import type { ScheduleFetchRule, ScheduleFilterRule } from "$lib/models/scheduleQuery";
@@ -16,6 +16,7 @@
 	import { parseQuery } from "$lib/services/scheduleQuery";
 	import { getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 	import type { Temporal } from "@js-temporal/polyfill";
+	import ExampleCard from "./ExampleCard.svelte";
 
 	let currentMonday = thisMonday();
 	$: currentAcademicYear = getAcademicYear(currentMonday);
@@ -198,14 +199,13 @@
 
 			<Tab title="Primjeri upita">
 				<div class="examples">
-					{#each examples as example}
-						<button
-							class="example-btn monospace"
-							on:click={() => setQuery(example)}
+					{#each EXAMPLES as example}
+						<ExampleCard
+							name={example.name}
+							query={example.query}
 							disabled={isScheduleLoading}
-						>
-							{example}
-						</button>
+							{setQuery}
+						/>
 					{/each}
 				</div>
 			</Tab>
@@ -240,10 +240,6 @@
 		border-color: red;
 	}
 
-	.monospace {
-		font-family: monospace;
-	}
-
 	.instructions {
 		max-width: 100ch;
 
@@ -260,37 +256,6 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 		gap: 2rem;
-	}
-
-	.example-btn {
-		background-color: transparent;
-		border: none;
-
-		border-radius: 0.25rem;
-		padding: 0.5rem;
-		max-height: calc(1rem + 1.4 * 10.5rem);
-
-		text-align: left;
-		white-space: pre;
-		text-overflow: ellipsis;
-		overflow-x: hidden;
-		overflow-y: hidden;
-
-		cursor: pointer;
-		transition: background-color 100ms ease-out;
-
-		&:hover {
-			background-color: var(--clr-element);
-		}
-
-		position: relative;
-		&::after {
-			content: "";
-			position: absolute;
-			inset: auto 0 0 0;
-			height: 1rem;
-			background-image: linear-gradient(to top, var(--clr-panel-bg), transparent);
-		}
 	}
 
 	.rule {
