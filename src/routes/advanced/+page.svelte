@@ -24,7 +24,7 @@
 
 	const allHiddenRules = persistent<ClassPeriodIdentifier<CustomScheduleSource>[]>("advanced:hiddenItems", []);
 
-	let queryInput: string = localStorage.getItem(STORED_QUERY_KEY) ?? "";
+	let queryInput: string = resolveInitialQuery();
 	$: [queryName, scheduleFetchQuery, scheduleFilterQuery] = parseQuery(queryInput);
 
 	let relevantHiddenRules: ClassPeriodIdentifier<CustomScheduleSource>[];
@@ -132,6 +132,18 @@
 	
 	function loadQuery() {
 		queryInput = localStorage.getItem(STORED_QUERY_KEY) ?? queryInput;
+	}
+	
+	function resolveInitialQuery(): string {
+		let hash = document.location.hash;
+		
+		if (hash.length > 0) {
+			hash = decodeURIComponent(hash.slice(1));
+
+			return EXAMPLES.find(example => example.name === hash)?.query ?? "";
+		} else {
+			return localStorage.getItem(STORED_QUERY_KEY) ?? "";
+		}
 	}
 </script>
 
