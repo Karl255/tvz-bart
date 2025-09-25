@@ -17,13 +17,14 @@
 	import { getAcademicYear, thisMonday } from "$lib/util/datetime-helpers";
 	import type { Temporal } from "@js-temporal/polyfill";
 	import ExampleCard from "./ExampleCard.svelte";
+	import { STORED_QUERY_KEY } from "$lib/constants/local-storage.const";
 
 	let currentMonday = thisMonday();
 	$: currentAcademicYear = getAcademicYear(currentMonday);
 
 	const allHiddenRules = persistent<ClassPeriodIdentifier<CustomScheduleSource>[]>("advanced:hiddenItems", []);
 
-	let queryInput: string = "";
+	let queryInput: string = localStorage.getItem(STORED_QUERY_KEY) ?? "";
 	$: [queryName, scheduleFetchQuery, scheduleFilterQuery] = parseQuery(queryInput);
 
 	let relevantHiddenRules: ClassPeriodIdentifier<CustomScheduleSource>[];
@@ -124,6 +125,14 @@
 	function hiddenItemsHint(rules: ClassPeriodIdentifier<CustomScheduleSource>[]): string {
 		return rules.length > 0 ? ` (${rules.length})` : "";
 	}
+	
+	function storeQuery() {
+		localStorage.setItem(STORED_QUERY_KEY, queryInput);
+	}
+	
+	function loadQuery() {
+		queryInput = localStorage.getItem(STORED_QUERY_KEY) ?? queryInput;
+	}
 </script>
 
 <CalendarViewer
@@ -136,10 +145,14 @@
 	<svelte:fragment slot="below">
 		<Tabs>
 			<Tab title="Upit">
-				<!-- prettier-ignore -->
-				<section class="schedule-picker">
+				<section class="query-panel">
 					<h2 class="sr-only">Upit za raspored</h2>
 
+					<div>
+						<button class="btn" on:click={storeQuery}>Spremi upit</button>
+						<button class="btn" on:click={loadQuery}>Učitaj spremljen upit</button>
+					</div>
+					
 					<textarea
 						bind:value={queryInput}
 						contenteditable="true"
@@ -226,6 +239,12 @@
 </CalendarViewer>
 
 <style lang="scss">
+	.query-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	
 	textarea {
 		width: 100%;
 		min-height: 16rem;
