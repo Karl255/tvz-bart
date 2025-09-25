@@ -1,4 +1,12 @@
-const rac5 = `## Računarstvo 5. semestar
+const EXMAPLE_1 = "semester:PRIN-4";
+const EXMAPLE_2 = `
+## Davor Cafuta, Dunja Bjelobrk Knežević
+prof:datar:d41018c10e02845c8df0b26a14b474cc
+prof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78
+`;
+
+const RAC_5 = `
+## Računarstvo 5. semestar
 prof:ltepes2:0c4312bb0381fa6671f15a638bc442de
 prof:sslamic:3b9b2c2648b07095dda4366f63ce1d1d
 prof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78
@@ -28,7 +36,8 @@ prof:rkovacevi:3757ac21d43ca6ca81fa044e6a2fb8da
 filter:className:Metodologija stručnog i istraživačkog rada|Administracija računalnih mreža|Administriranje UNIX sustava|Mrežne usluge|Napredne baze podataka|Napredne tehnike programiranja|Napredno JavaScript programiranje|Napredno programiranje u jeziku Python|Nekonvencionalni računalni postupci|Oblikovanje web stranica|Računala za nadzor i upravljanje tehnickim procesima|Razvoj računalnih igara
 filter:courseNames:Programsko inženjerstvo`;
 
-const rac6 = `## Računarstvo 6. semestar
+const RAC_6 = `
+## Računarstvo 6. semestar
 prof:datar:d41018c10e02845c8df0b26a14b474cc
 prof:coki:dc23205afeb0dd188e4d832c7f8b004f
 prof:tkramberg:d7f2fdcc07d3eb337235c5a33d2e9490
@@ -42,7 +51,8 @@ filter:className:Sigurnost računalnih sustava|Razvoj web aplikacija u ASP.NET M
 filter:courseName:Programsko inženjerstvo
 `;
 
-const specinfrac = `## Diplomski informatika - smjer računarstvo 1. semestar
+const SPEC_RAC_1 = `
+## Diplomski informatika - smjer računarstvo 1. semestar
 
 prof:vbuselic:d8476ac15175321c05956d81a037b9b9
 prof:dhorvat3:edee411bf0b6efafa9f5973e3f07a5ad
@@ -69,10 +79,19 @@ prof:ostanicic:49aea54f3897a5789fc9a234367117eb
 filter:courseNames:Politehnički specijalistički diplomski studij - specijalizacija informatika
 `;
 
-export const examples = [
-	"semester:PRIN-4",
-	"## Davor Cafuta, Dunja Bjelobrk Knežević\nprof:datar:d41018c10e02845c8df0b26a14b474cc\nprof:dbjelobr:f8abccb17b3f898ebf234a26651a7c78",
-	rac5,
-	rac6,
-	specinfrac,
-];
+const SPEC_RAC_3 = `
+## Diplomski informatika - smjer računarstvo 3. semestar
+
+prof:zkovacev1:5bc68e965457ff369dff510e8ccbcea5
+prof:alen:fbbddcea6de9865296310f1ab5855c01
+prof:gklepac:e5eb56cb4d506eb51f8cfb9ae903d036
+prof:ahoic:303da4be7fce61f5c01c42c76313725f
+prof:mcarapina:263eb073ef35368baec360361ff8a4ef
+prof:nuzelac:880a7a6af712ea975f973ab06eae670b
+
+filter:className:Modeliranje i administracija baza podataka|Napredne tehnike projektiranja web servisa (open source, php)|NOSQL i napredna big data analitika|Projektiranje inovacija|Razvoj mobilnih aplikacija|Reinženjering poslovnih procesa
+
+filter:courseNames:Politehnički specijalistički diplomski studij - specijalizacija informatika
+`;
+
+export const examples: string[] = [EXMAPLE_1, EXMAPLE_2, RAC_5, RAC_6, SPEC_RAC_1, SPEC_RAC_3].map(s => s.trim());
